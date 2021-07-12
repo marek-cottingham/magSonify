@@ -7,12 +7,9 @@ import soundfile as sf
 import matplotlib.pyplot as plt
 from scipy.ndimage import uniform_filter1d
 from scipy.interpolate import interp1d
-from . import waveletsLocal as wavelets
-from .waveletsLocal.transform import WaveletTransform
+from . import wavelets
 from .paulstretch_mono import paulstretch
 from ai import cdas
-
-import pySonify
 
 class DataCommon():
     @staticmethod
@@ -59,9 +56,9 @@ class DataAxis(DataCommon):
             s,
             shift=1,
             dj=0.125,
-            wavelet=wavelets.wavelets.Morlet(),
-            interpolateW_n = None,
-            maxNumberSamples = 1200
+            interpolateCoefficients = None,
+            maxNumberSamples = 1200,
+            wavelet=wavelets.Morlet(),
         ):
         """Pitch shifts the data on specified axes by {shift} times using continous wavlet transform.
 
@@ -97,36 +94,35 @@ class DataAxis(DataCommon):
         s.fillNaN()
 
         # Obtain the wavelet spectrum
-        wa = WaveletTransform(
-            s.x,
-            dt=dt,
-            dj=dj,
-            wavelet=wavelet,
-            maxNumberSamples=maxNumberSamples
-        )
         scales = wavelets.transform.generateCwtScales(maxNumberSamples,dj,dt,wavelet,len(s.x))
-        W_n = wa.wavelet_transform
+        coefficients = wavelets.transform.cwt(s.x,wavelet,scales,dt)
+
+        s.coefficients = coefficients
+
         # Rescale the coefficients as in
         #   A Wavelet-based Pitch-shifting Method, Alexander G. Sklar
         #   https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.70.5079&rep=rep1&type=pdf
 
-        magnitude = np.abs(W_n)
-        phase = np.unwrap(np.angle(W_n),axis=1)
+        magnitude = np.abs(coefficients)
+        phase = np.unwrap(np.angle(coefficients),axis=1)
 
-        if interpolateW_n is not None:
-            #W_n = wavelets.interpolateCoeffs(W_n,interpolateW_n)
-            magnitude, phase = wavelets.interpolateCoeffsPolar(magnitude,phase,interpolateW_n)
+        if interpolateCoefficients is not None:
+            magnitude, phase = wavelets.transform.interpolateCoeffsPolar(magnitude,phase,interpolateCoefficients)
             # TODO: NEED TO CORRECT s.t TO ACCOUNT FOR TIME STRETCH
 
-        W_n_shift = magnitude * np.exp(1j * phase * shift)
+        coefficients_shifted = magnitude * np.exp(1j * phase * shift)
 
-        # Reconstruct the wavefuction with pitch shift applied
-        #rx= wa.reconstruction(scales=scales/shift,W_n = W_n_shift)
-        rx= wa.reconstruction(scales=scales,W_n = W_n_shift)
+        # Reconstruct the wavefuction with pitch shift applied using the inverse transform
+        rx = wavelets.transform.icwt(
+            coefficients_shifted,
+            scales,
+            dj,
+            dt,
+            wavelet.C_d,
+            wavelet.time(0)
+        )
 
         s.x = np.real(rx)
-
-        return wa, W_n
     
     def fillNaN(s,const=0):
         """Fills nan values in the magnetic field data with the constant const"""
