@@ -120,10 +120,6 @@ class DataAxis(DataCommon):
 
         W_n_shift = magnitude * np.exp(1j * phase * shift)
 
-        
-
-        
-        
         # Reconstruct the wavefuction with pitch shift applied
         #rx= wa.reconstruction(scales=scales/shift,W_n = W_n_shift)
         rx= wa.reconstruction(scales=scales,W_n = W_n_shift)
