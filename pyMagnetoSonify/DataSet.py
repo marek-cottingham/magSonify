@@ -1,3 +1,4 @@
+from datetime import datetime, time
 import numpy as np
 from scipy.interpolate.interpolate import interp1d
 
@@ -42,17 +43,19 @@ class TimeSeries():
         timeUnit=np.timedelta64(1,'s'),
         startTime = None
     ):
-        """ Initialises time series from array of float, np.datetime64 or np.timedelta64
+        """ Initialises time series from array of float, np.datetime64, datetime.datetime or 
+            np.timedelta64
         timeUnit:
             The time unit to use, must be np.timedelta64
         """
-        if timeData is None:
-            pass
         timeData = np.array(timeData)
+        if type(timeData[0]) == type(datetime(2020,1,1)):
+            timeData = np.array(timeData,dtype=np.datetime64)
+        
         if timeData.dtype.type == np.datetime64:
             # Store the start time and convert timeData to numpy.timedelta64 relative to the
             # start time
-            if startTime is not None:
+            if startTime is None:
                 startTime = timeData[0]
             timeData = timeData - startTime
 
@@ -107,6 +110,9 @@ class TimeSeries():
             self.timeData = self.timeData * (self.timeUnit / newTimeUnit)
             self.timeUnit = newTimeUnit
 
+    def copy(self):
+        return TimeSeries(self.timeData.copy(),self.timeUnit,self.startTime)
+
 
 class DataSeries():
     def __init__(self,timeSeries,data):
@@ -136,11 +142,19 @@ class DataSeries():
                 newTimes = TimeSeries(ref_or_factor.asDateTime(),self.timeSeries.timeUnit,self.timeSeries.startTime)
             # If ref has no start time, consider it to be relative to the start time of the current time series
             except ValueError:
-                newTimes = ref_or_factor.copy().changeUnit(self.timeSeries.timeUnit)
+                newTimes = ref_or_factor.copy()
+                newTimes.changeUnit(self.timeSeries.timeUnit)
         else:
             # Set new times to an interpolation of the current time data
-            newTimes = self.timeSeries.copy().interpolate(ref_or_factor)
-        for i, d in enumerate(self.data):
+            newTimes = self.timeSeries.copy()
+            newTimes.interpolate(ref_or_factor)
+
+        try:
+            dataInterateOver = self.data.items()
+        except AttributeError:
+            dataInterateOver = enumerate(self.data)
+        for i, d in dataInterateOver:
+            print(i,d)
             fd = interp1d(self.timeSeries.asFloat(),d,kind="cubic")
             self.data[i] = fd(newTimes.asFloat())
 
