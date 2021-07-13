@@ -10,6 +10,7 @@ cdas.set_cache("True",cdas_cache_path)
 
 from .MagnetometerData import MagnetometerData, THEMISdata, DataAxis
 from .SimulateData import SimulateData
+from .DataSet import TimeSeries
 
-__all__ = ["MagnetometerData", "THEMISdata","SimulateData","DataAxis",]
+__all__ = ["MagnetometerData", "THEMISdata","SimulateData","DataAxis","TimeSeries"]
 

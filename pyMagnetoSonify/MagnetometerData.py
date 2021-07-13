@@ -232,7 +232,7 @@ class MagnetometerData(DataCommon):
             raise ValueError("Cannot generate a running average for an interval of 0 samples.")
         s.meanB = [None,None,None]
         for i,bi in enumerate(s.b):
-            #s.meanB[i] = np.convolve(bi, np.ones(samples), 'same') / samples
+            # Find the rolling mean using a convolution
             s.meanB[i] = uniform_filter1d(
                 bi,samples,mode='constant',cval=0, origin=0
             )
@@ -386,7 +386,7 @@ class THEMISdata(MagnetometerData):
         
     def importCDAS(s,startDate,endDate,satellite="D"):
         """ Imports magnetic field, satellite and radial distance data for the designated THEMIS
-            satelliet and given date range.
+            satellite and given date range.
             The possible satellite letters are: "A", "B", "C", "D" or "E"
         """
         data = cdas.get_data(
