@@ -2,6 +2,7 @@
 /.vscode
 **__pycache__
 /Audio*
+/*.wav
 
 artifactTest.py
 phaseVOdev.py
