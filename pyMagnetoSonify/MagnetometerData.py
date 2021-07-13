@@ -59,7 +59,8 @@ class DataAxis(DataCommon):
             interpolateCoefficients = None,
             maxNumberSamples = 1200,
             wavelet=wavelets.Morlet(),
-        ):
+            preserveScaling=False
+        ) -> None:
         """Pitch shifts the data on specified axes by {shift} times using continous wavlet transform.
 
         Parameters
@@ -67,11 +68,9 @@ class DataAxis(DataCommon):
         shift:
             The multiple by which to shift the pitch of the input field.
         dj:
-            Spacing parameter of the scales used in wavlet analysis, a lower value leads to higher
-            ...TK... and more processing time.
-        wavelet:
-            Wavelet function to use. If none is given, the Morlet wavelet will be used by default.
-        interpolateW_n:
+            Scale spacing in log space, a lower value leads to higher
+            resolution in frequency space and more processing time.
+        interpolateCoefficients:
             If not None, specifies the facator by which the density of the W_n values should be
             increased. This is used to generate additional data points so as to maintain signal
             fidelity after the pitch shift. Doing this after the forward wavelet transform rather
@@ -79,14 +78,11 @@ class DataAxis(DataCommon):
         maxNumberSamples = 1200:
             The maximum number of samples for the largest scale in the wavelet transform, used to
             prevent computations for inaubidle frequencies.
-
-        Returns
-        --------------
-        Returns a tuple of length 3, where the values corresponding to the axes operated upon 
-        contain the wavelets.WaveletTransform() object.
+        wavelet:
+            Wavelet function to use. If none is given, the Morlet wavelet will be used by default.
+        preserveScaling:
+            Whether to preserve the scaling of the data when outputing.
         """
-
-        #maxNumberSamples *= shift
 
         dt = s.meanSampleIntervalRequireFloat()
         
@@ -94,38 +90,49 @@ class DataAxis(DataCommon):
         s.fillNaN()
 
         # Obtain the wavelet spectrum
-        scales = wavelets.transform.generateCwtScales(maxNumberSamples,dj,dt,wavelet,len(s.x))
-        coefficients = wavelets.transform.cwt(s.x,wavelet,scales,dt)
+        scales = wavelets.transform.generateCwtScales(
+            maxNumberSamples,
+            len(s.x),
+            dj,
+            dt,
+            wavelet,
+        )
+        coefficients = wavelets.transform.cwt(s.x,scales,dt,wavelet)
 
         s.coefficients = coefficients
 
         # Rescale the coefficients as in
         #   A Wavelet-based Pitch-shifting Method, Alexander G. Sklar
         #   https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.70.5079&rep=rep1&type=pdf
-
         magnitude = np.abs(coefficients)
         phase = np.unwrap(np.angle(coefficients),axis=1)
 
         if interpolateCoefficients is not None:
-            magnitude, phase = wavelets.transform.interpolateCoeffsPolar(magnitude,phase,interpolateCoefficients)
+            magnitude, phase = wavelets.transform.interpolateCoeffsPolar(
+                magnitude,phase,interpolateCoefficients
+            )
             # TODO: NEED TO CORRECT s.t TO ACCOUNT FOR TIME STRETCH
 
         coefficients_shifted = magnitude * np.exp(1j * phase * shift)
 
-        # Reconstruct the wavefuction with pitch shift applied using the inverse transform
-        rx = wavelets.transform.icwt(
-            coefficients_shifted,
-            scales,
-            dj,
-            dt,
-            wavelet.C_d,
-            wavelet.time(0)
-        )
+        ### Reconstruct the wavefuction with pitch shift applied using the inverse transform
+        # We don't usually need to pass the constants used to scale the waveform, as this processing 
+        # is used to generate audio which will be normalised before output.
+        if preserveScaling:
+            rx = wavelets.transform.icwt(
+                coefficients_shifted,
+                dj,
+                dt,
+                wavelet.C_d,
+                wavelet.time(0)
+            )
+        else:
+            rx = wavelets.transform.icwt(coefficients_shifted)
 
         s.x = np.real(rx)
     
     def fillNaN(s,const=0):
-        """Fills nan values in the magnetic field data with the constant const"""
+        """Fills nan values in the magnetic field data with the constant {const}"""
         s.x = np.nan_to_num(s.x,nan=const)
 
     def interpolate(s,mult):

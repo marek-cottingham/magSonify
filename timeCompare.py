@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 from copy import deepcopy
 
-import pySonify as Sonify
+import pyMagnetoSonify as Sonify
 
 end = timer()
 print(f"Import time: {end - start}")
@@ -55,12 +55,10 @@ for i,day in enumerate(X):
         axWavelet = deepcopy(axD)
         start = timer()
         axWavelet.interpolate(interpolateBefore)
-        wa, Wn = axWavelet.waveletPitchShift(
-            stretch,interpolateW_n=interpolateAfter,dj = dj,maxNumberSamples=maxNumberSamples,
+        axWavelet.waveletPitchShift(
+            stretch,interpolateCoefficients=interpolateAfter,dj = dj,maxNumberSamples=maxNumberSamples,
         )
         end = timer()
-        #plt.plot(axWavelet.x)
-        plt.show()
         axWavelet.genMono(
             f"wavelet x{stretch} {str(datetime(2007,9,day))[:10]} to {str(datetime(2007,9,day+numberDays-1))[:10]} {interpolateBefore}_{interpolateAfter}.wav",
             sampleRate=int(44100*waveletSampleRateFactor),

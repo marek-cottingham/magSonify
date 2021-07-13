@@ -10,6 +10,8 @@ from scipy.interpolate import interp1d
 
 # Import the memory function. This is used to perform data caching during testing
 # in order to decrease the time needed to rerun the same test
+# @TheMuonNeutrino 2021 07 13: Using caching here is discouraged, this does not appear
+#   to improve performance
 
 if USE_CACHING:
     import joblib
@@ -20,75 +22,95 @@ if USE_CACHING:
         bytes_limit= int(1.07e9)
     )
 
-# Define names to import when importing all methods from this module
-__all__ = ['cwt', 'WaveletAnalysis', 'WaveletTransform']
+def generateCwtScales(maxNumberSamples, N, dj=0.1, dt=1, wavelet=Morlet()):
+    """ Generates a set of scales to be used to when scaling the wavlet function
+    during CWT and ICWT.
 
-def generateCwtScales(maxNumberSamples, dj, dt, wavelet, N):
-        if maxNumberSamples is None or maxNumberSamples > N:
-            maxNumberSamples = N
-        # Smallest scale
-        def f(s):
-            return wavelet.fourier_period(s) - 2 * dt
-        s0 = scipy.optimize.fsolve(f, 1)[0]
-        # Largest scale
-        J = int((1 / dj) * np.log2(maxNumberSamples * dt / s0))
-        # Generate scales
-        sj = s0 * 2 ** (dj * np.arange(0, J + 1))
-        return sj
+    maxNumberSamples:
+        The maximum number of samples in the largest scale, used to limit the lowest
+        frequecies consider by the transforms.
+    N:
+        The length of the data.
+    dj:
+        The scale spacing in log space.
+    dt:
+        Time spacing of data samples.
+    wavelet:
+        The wavlet function to use.
+    """
+    if maxNumberSamples is None or maxNumberSamples > N:
+        maxNumberSamples = N
+    # Smallest scale
+    def f(s):
+        return wavelet.fourier_period(s) - 2 * dt
+    s0 = scipy.optimize.fsolve(f, 1)[0]
+    # Largest scale
+    J = int((1 / dj) * np.log2(maxNumberSamples * dt / s0))
+    # Generate scales
+    sj = s0 * 2 ** (dj * np.arange(0, J + 1))
+    return sj
 
-def cwt(data, wavelet, scales, dt):
-
+def cwt(data, scales, dt=1, wavelet=Morlet()):
+    """ Computes the forward continous wavelet transform.
+    data:
+        Data to perform transform on.
+    scales:
+        Set of scales used to rescale the wavelet function.
+    dt:
+        Time spacing of data samples.
+    wavelet:
+        The wavlet function to use.
+    """
     ### Generate blank output
-    # wavelets can be complex so output is complex
+    # Wavelets can be complex so output is complex
     output = np.zeros((len(scales),) + data.shape, dtype=np.complex128)
 
     for ind, width in enumerate(scales):
-        # number of points needed to capture wavelet
+        # Number of points needed to capture wavelet
         M = 10 * width / dt
-        # times to use, centred at zero
+
+        # Times to use, centred at zero
         t = np.arange((-M + 1) / 2., (M + 1) / 2.) * dt
-        # sample wavelet and normalise
 
-        # square root scaled version
-        #norm = (dt / width) ** (0.5)
-
+        # Normalise wavlets
         norm = (dt** (0.5) / width)
         wavelet_data = norm * wavelet(t, width)
-        output[ind, :] = scipy.signal.fftconvolve(data,
-                                                  wavelet_data,
-                                                  mode='same')
+        output[ind,:] = scipy.signal.fftconvolve(
+            data,
+            wavelet_data,
+            mode='same'
+        )
     return output
 
-if USE_CACHING:
-    cwt = memory.cache(cwt)
+def icwt(coefficients,dj=0.1,dt=1,waveletRescaleFactor=1,waveletTimeFactor=1):
+    """ Computes the inverse continous wavelet transform.
 
-def original_icwt(W_n,s,dj,dt,C_d,Y_00):
-    # square root scaled version
-    #real_sum = np.sum(W_n.real.T / s ** .5, axis=-1).T
-
-    print(dt)
-
-    real_sum = np.sum(W_n.real.T, axis=-1).T
-
-    x_n = real_sum * (dj * dt ** .5 / (C_d * Y_00))
+    coefficients:
+        The coefficients produced from the forward CWT, in a 2D numpy array.
+    dj:
+        The scale spacing in log space
+    dt:
+        Time spacing of data samples
+    waveletResacleFactor, waveletTimeFactor:
+        Rescaling factors which depend on the wavelet function used. Data is rescaled by
+        1 / (waveletRescaleFactor * waveletTimeFactor).
+    """
+    real_sum = np.sum(coefficients.real.T, axis=-1).T
+    x_n =  (dj * dt ** .5 / (waveletRescaleFactor * waveletTimeFactor)) * real_sum
     return x_n
 
-def alternative_icwt(W_n,s,dj,dt,C_d,Y_00):
-    x_n = np.trapz(np.diff(W_n).T,s,axis=-1).T.imag
+def icwt_noAdmissibilityCondition(coefficients,scales,**kwargs):
+    """ Computes the inverse continous wavlet transform.
+    """
+
+    x_n = np.trapz(np.diff(coefficients).T,scales,axis=-1).T.imag
     x_n *= 2*np.pi
     return x_n
 
-icwt = original_icwt
-
-def use_original_icwt():
-    global icwt
-    icwt = original_icwt
-
-def use_alternative_icwt():
-    global icwt
-    icwt = alternative_icwt
-
 def interpolateCoeffs(W_n,interpolate_factor):
+    """ Interpolates the coefficients produced by CWT. Real and imaginary parts interpolated
+    seperately.
+    """
     real = W_n.real
     imag = W_n.imag
 
@@ -113,6 +135,9 @@ def interpolateCoeffs(W_n,interpolate_factor):
     return W_n_new
 
 def interpolateCoeffsPolar(magnitude,phase,interpolate_factor):
+    """ Interpolates the polar form of the coefficients produced by CWT. Magnitude and phase
+    interpolated spereately.
+    """
     original_steps = np.linspace(0,1,magnitude.shape[1])
     new_steps = np.linspace(0,1,int(magnitude.shape[1]*interpolate_factor))
 
