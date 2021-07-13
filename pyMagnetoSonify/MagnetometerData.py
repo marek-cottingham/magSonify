@@ -330,7 +330,7 @@ class MagnetometerData(DataCommon):
         for i,bi in enumerate(s.b):
             bi[indicies[0]:indicies[1]] = const
 
-    def fillLessThanRadius(s,radius=5,const=0):
+    def fillLessThanRadius_withoutInterpolation(s,radius=5,const=0):
         """ Fills data at altitudes less than radius with constant value const.
         Radius should be given in Earth Radii
         """
@@ -360,6 +360,9 @@ class MagnetometerData(DataCommon):
                 )
         for start, end in timeSlicePairs:
             s.fillDateTimeRange(start,end,const)
+
+    def fillLessThanRadius(self,radius):
+        pass
 
     def extractAxis(s,axis):
         return DataAxis(s.t.copy(),s.b[axis].copy())
@@ -420,5 +423,5 @@ class THEMISdata(MagnetometerData):
         s.getMeanSampleInterval()
         s.constrainAbsoluteValueB()
         s.subtractRunningAverage(timeWindow=np.timedelta64(35,'m'))
-        s.fillLessThanRadius(6)
+        s.fillLessThanRadius_withoutInterpolation(6)
         s.fillNaN()
