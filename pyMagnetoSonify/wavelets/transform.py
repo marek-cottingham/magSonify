@@ -14,6 +14,7 @@ from scipy.interpolate import interp1d
 #   to improve performance
 
 if USE_CACHING:
+    # DEPRECIATED
     import joblib
     from ..initialise import memory_cache_path
     memory = joblib.Memory(
@@ -38,6 +39,8 @@ def generateCwtScales(maxNumberSamples, N, dj=0.1, dt=1, wavelet=Morlet()):
     wavelet:
         The wavlet function to use.
     """
+    # Based on CT98: https://psl.noaa.gov/people/gilbert.p.compo/Torrence_compo1998.pdf
+
     if maxNumberSamples is None or maxNumberSamples > N:
         maxNumberSamples = N
     # Smallest scale
@@ -61,6 +64,8 @@ def cwt(data, scales, dt=1, wavelet=Morlet()):
     wavelet:
         The wavlet function to use.
     """
+    # Based on CT98: https://psl.noaa.gov/people/gilbert.p.compo/Torrence_compo1998.pdf
+
     ### Generate blank output
     # Wavelets can be complex so output is complex
     output = np.zeros((len(scales),) + data.shape, dtype=np.complex128)
@@ -95,6 +100,7 @@ def icwt(coefficients,dj=0.1,dt=1,waveletRescaleFactor=1,waveletTimeFactor=1):
         Rescaling factors which depend on the wavelet function used. Data is rescaled by
         1 / (waveletRescaleFactor * waveletTimeFactor).
     """
+    # Based on CT98: https://psl.noaa.gov/people/gilbert.p.compo/Torrence_compo1998.pdf
     real_sum = np.sum(coefficients.real.T, axis=-1).T
     x_n =  (dj * dt ** .5 / (waveletRescaleFactor * waveletTimeFactor)) * real_sum
     return x_n
@@ -102,6 +108,11 @@ def icwt(coefficients,dj=0.1,dt=1,waveletRescaleFactor=1,waveletTimeFactor=1):
 def icwt_noAdmissibilityCondition(coefficients,scales,**kwargs):
     """ Computes the inverse continous wavlet transform.
     """
+
+    # Based on the method presented in: 
+    #   Computational implementation of the inverse continuous wavelet transform without a 
+    #   requirement of the admissibility condition. Eugene B. Postnikov, Elena A. Lebedeva, 
+    #   Anastasia I. Lavrova. 2015. https://arxiv.org/abs/1507.04971
 
     x_n = np.trapz(np.diff(coefficients).T,scales,axis=-1).T.imag
     x_n *= 2*np.pi
