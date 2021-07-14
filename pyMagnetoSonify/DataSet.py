@@ -1,4 +1,4 @@
-from operator import add, neg, sub
+from operator import add, mul, neg, sub
 from pyMagnetoSonify.Audio import writeoutAudio
 import numpy as np
 from scipy.interpolate.interpolate import interp1d
@@ -109,14 +109,15 @@ class DataSet():
         """Execute function {lamb} on each element pair in self.data and self.other with the same 
         keys
         """
-        if (
-            
-        ):
-            raise ValueError("self and other do not have the same time series")
+        self._raiseIfTimeSeriesNotEqual(other)
         res = {}
         for i, d in self.items():
             res[i] = lamb(d,other.data[i])
         return DataSet(self.timeSeries,res)
+
+    def _raiseIfTimeSeriesNotEqual(self, other):
+        if (self.timeSeries != other.timeSeries):
+            raise ValueError("Datasets do not have the same time series")
     
     def __add__(self,other):
         return self._iteratePair(other,add)
@@ -140,3 +141,22 @@ class DataSet_3D(DataSet):
             0.5 * self.data[1] + self.datca[2],
         ])
         writeoutAudio(audio.T,file,**kwargs)
+
+    def cross(self,other):
+        """Computes the cross product of 3D datasets"""
+        self._raiseIfTimeSeriesNotEqual(other)
+        res = {}
+        sd = self.data
+        od = other.data
+        res[0] = sd[1] * od[2] - sd[2] * od[1]
+        res[1] = sd[2] * od[0] - sd[0] * od[2]
+        res[2] = sd[0] * od[1] - od[1] * sd[0]
+        return DataSet_3D(self.timeSeries,res)
+
+    def dot(self,other):
+        """Computes to dot product of 3D datasets"""
+        self._raiseIfTimeSeriesNotEqual(other)
+        res = {}
+        for i in (0,1,2):
+            res[i] = self.data[i] * other.data[i]
+        return DataSet_3D(self.timeSeries,res)
