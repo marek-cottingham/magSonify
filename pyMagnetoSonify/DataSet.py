@@ -160,3 +160,11 @@ class DataSet_3D(DataSet):
         for i in (0,1,2):
             res[i] = self.data[i] * other.data[i]
         return DataSet_3D(self.timeSeries,res)
+
+    def makeUnitVector(self):
+        """Normalises the 3D vector to length 1, giving the unit vector"""
+        sd = self.data
+        vectorMagnitude = sd[0] ** 2 + sd[1] ** 2 + sd[2]**2
+        vectorMagnitude = vectorMagnitude**(1/2)
+        divideByMagnitude = lambda series: series / vectorMagnitude
+        self._iterate(divideByMagnitude)
