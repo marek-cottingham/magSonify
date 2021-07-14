@@ -1,8 +1,7 @@
 
 from pyMagnetoSonify.TimeSeries import TimeSeries
-from pyMagnetoSonify.DataSet import DataSet, DataSet_3D
+from pyMagnetoSonify.DataSet import DataSet_3D
 
-import numpy as np
 from ai import cdas 
 
 class MagnetometerData():
@@ -16,7 +15,7 @@ class MagnetometerData():
 
     def fillLessThanRadius(self,radiusInEarthRadii,const=0):
         assert(self.position.timeSeries == self.magneticField.timeSeries)
-        radiusMask = np.array(self.position.data["radius"] < radiusInEarthRadii, dtype=np.int8 )
+        radiusMask = self.position.data["radius"] < radiusInEarthRadii
         for i,d in self.magneticField.items():
             d[radiusMask] = const
 
@@ -39,8 +38,6 @@ class MagnetometerData():
             polUnitVector,
             torUnitVector
         )
-
-
 
     
 class THEMISdata(MagnetometerData):

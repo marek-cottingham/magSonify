@@ -7,7 +7,7 @@ import audiotsm
 from audiotsm.io.array import ArrayReader, ArrayWriter
 
 class DataSet_1D(DataSet):
-    def __init___(self,timeSeries: TimeSeries,x):
+    def __init__(self,timeSeries: TimeSeries,x):
         self.timeSeries = timeSeries
         self.data = [x,]
 
@@ -114,7 +114,7 @@ class DataSet_1D(DataSet):
     def phaseVocoderStretch(self,stretch,frameLength=512,synthesisHop=None):
         if synthesisHop is None:
             synthesisHop = frameLength//16
-        reader = ArrayReader(self.x)
+        reader = ArrayReader(np.array((self.x,)))
         writer = ArrayWriter(reader.channels)
         timeSeriesModification = audiotsm.phasevocoder(
             reader.channels,
@@ -128,7 +128,7 @@ class DataSet_1D(DataSet):
     def wolsaStretch(self,stretch,frameLength=512,synthesisHop=None,tolerance=None):
         if synthesisHop is None:
             synthesisHop = frameLength//8
-        reader = ArrayReader(self.x)
+        reader = ArrayReader(np.array((self.x,)))
         writer = ArrayWriter(reader.channels)
         timeSeriesModification = audiotsm.wsola(
             reader.channels,

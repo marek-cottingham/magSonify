@@ -1,14 +1,9 @@
-from operator import add, mul, neg, sub
-import re
-from pyMagnetoSonify.Audio import writeoutAudio
+from operator import add, neg, sub
+from .Audio import writeoutAudio
 import numpy as np
 from scipy.interpolate.interpolate import interp1d
 from scipy.ndimage.filters import uniform_filter1d
 from .TimeSeries import TimeSeries
-
-# Placeholder for circular import resolution
-class DataSet_1D():
-    pass
 
 class DataSet():
     def __init__(self,timeSeries: TimeSeries,data):
