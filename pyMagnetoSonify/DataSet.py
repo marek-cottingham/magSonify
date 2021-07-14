@@ -1,128 +1,40 @@
-from datetime import datetime, time
+from operator import add, neg, sub
+from pyMagnetoSonify.Audio import writeoutAudio
 import numpy as np
 from scipy.interpolate.interpolate import interp1d
+from scipy.ndimage.filters import uniform_filter1d
+from . import TimeSeries
+from . import DataSet_1D
 
-def generateTimeSeriesDates(start,end,timeUnit=np.timedelta64(1,'s'),num=None,spacing=None):
-    """Generates a time series.
-    Specify only {num} OR {spacing} exclusively.
-
-    start:
-        Datetime of start time
-    end:
-        Datetime of end time
-    timeUnit:
-        Unit of time to use. Default is 1 second.
-    num:
-        Number of points in time series.
-    spacing:
-        Spacing of points in time series.
-    """
-    start = np.datetime64(start)
-    end = np.datetime64(end)
-    intervalLength = end - start
-    if num is not None and spacing is not None:
-        raise ValueError("Only num or spacing should be specified, not both")
-    if num is not None:
-        t = np.linspace(
-            0,
-            intervalLength / timeUnit,
-            num
-        )
-        time_series = TimeSeries(t,timeUnit,start)
-    if spacing is not None:
-        num = int(intervalLength/spacing)
-        t = np.arange(0,num+1) * spacing
-        time_series = TimeSeries(t,timeUnit,start)
-    return time_series
-    
-
-class TimeSeries():
-    def __init__(
-        self,
-        timeData,
-        timeUnit=np.timedelta64(1,'s'),
-        startTime = None
-    ):
-        """ Initialises time series from array of float, np.datetime64, datetime.datetime or 
-            np.timedelta64
-        timeUnit:
-            The time unit to use, must be np.timedelta64
-        """
-        timeData = np.array(timeData)
-        if type(timeData[0]) == type(datetime(2020,1,1)):
-            timeData = np.array(timeData,dtype=np.datetime64)
-        
-        if timeData.dtype.type == np.datetime64:
-            # Store the start time and convert timeData to numpy.timedelta64 relative to the
-            # start time
-            if startTime is None:
-                startTime = timeData[0]
-            timeData = timeData - startTime
-
-        # Ensure start time is np.datetime64, not datetime.datetime
-        startTime = np.datetime64(startTime)
-
-        if timeData.dtype.type == np.timedelta64:
-            # Convert time data to float, with units timeUnit
-            # This ensures that the time can be manipulated using methods that cannot take
-            # np.datetime64 as input
-            timeData = timeData / timeUnit
-
-        self.timeData = timeData
-        self.timeUnit = timeUnit
-        self.startTime = startTime
-
-    def getMeanSampleInterval(self) -> np.timedelta64:
-        """Return the mean interval between time points"""
-        return self.getMeanSampleIntervalFloat() * self.timeUnit
-    
-    def getMeanSampleIntervalFloat(self) -> float:
-        """Return the mean interval between time points in units timeUnit"""
-        return float((self.timeData[-1] - self.timeData[0])/len(self.timeData))
-
-    def asFloat(self) -> np.array((),dtype=np.float64):
-        return self.timeData
-
-    def asTimeDelta(self) -> np.array((),np.timedelta64):
-        """Return the time data as np.timedelta64 since the start time"""
-        return self.timeData * self.timeUnit
-
-    def asDateTime(self) -> np.array((),np.datetime64):
-        """Returns the time data as np.datatime64"""
-        if self.startTime is None:
-            raise ValueError("Cannot convert to datetime without starting time reference.")
-        return self.asTimeDelta() + self.startTime
-
-    def interpolate(self,factor):
-        """ Convert the time series to a series with evenely space times over the same interval
-        with {factor} times the original sample density.
-        """
-        self.timeData = np.linspace(
-            self.timeData[0],
-            self.timeData[-1],
-            int(len(self.timeData) * factor)
-        )
-    
-    def changeUnit(self,newTimeUnit):
-        """ Change the units of time that the time series is expressed in to {newTimeUnit}
-        """
-        if newTimeUnit != self.timeUnit:
-            self.timeData = self.timeData * (self.timeUnit / newTimeUnit)
-            self.timeUnit = newTimeUnit
-
-    def copy(self):
-        return TimeSeries(self.timeData.copy(),self.timeUnit,self.startTime)
-
-
-class DataSeries():
-    def __init__(self,timeSeries,data):
+class DataSet():
+    def __init__(self,timeSeries: TimeSeries,data):
         self.timeSeries = timeSeries
         self.data = data
 
+    def items(self):
+        """Returns a list of tuples, containg index-data pairs for each element in DataSeries.data
+        """
+        try:
+            dataInterateOver = self.data.items()
+        except AttributeError:
+            dataInterateOver = enumerate(self.data)
+        return dataInterateOver
+    
+    def keys(self):
+        """Returns all keys in DataSeries.data"""
+        return [x[0] for x in self.items()] 
+
     def fillNaN(self,const=0) -> None:
         """Fills nan values in the data with the constant {const}"""
-        for i, d in enumerate(self.data):
-            self.data[i] = np.nan_to_num(self.data[i],nan=const)
+        for i, d in self.items():
+            self.data[i] = np.nan_to_num(d,nan=const)
+
+    def constrainAbsoluteValue(self,max):
+        """Limits the data to within bounds of -max to +max, values outside are set to -max or +max
+        """
+        for i, d in self.items():
+            d[d>max] = max
+            d[d<-max] = -max
 
     def interpolate(self,ref_or_factor) -> None:
         """Interpolates the data and time series
@@ -132,38 +44,99 @@ class DataSeries():
             current TimeSeries density by. If reference is passed, s.TimeSeries will be set to the 
             new time series.
         """
-        if isinstance(ref_or_factor,DataSeries):
-            # If reference is a data series, extract it's time series
+        if isinstance(ref_or_factor,DataSet):
             ref_or_factor = ref_or_factor.timeSeries
-        if isinstance(ref_or_factor,TimeSeries):
-            # Set new times to the reference time series, with units and start time adjusted to match the current
-            # time series
-            try:
-                newTimes = TimeSeries(ref_or_factor.asDateTime(),self.timeSeries.timeUnit,self.timeSeries.startTime)
-            # If ref has no start time, consider it to be relative to the start time of the current time series
-            except ValueError:
-                newTimes = ref_or_factor.copy()
-                newTimes.changeUnit(self.timeSeries.timeUnit)
-        else:
-            # Set new times to an interpolation of the current time data
-            newTimes = self.timeSeries.copy()
-            newTimes.interpolate(ref_or_factor)
 
-        try:
-            dataInterateOver = self.data.items()
-        except AttributeError:
-            dataInterateOver = enumerate(self.data)
-        for i, d in dataInterateOver:
-            print(i,d)
+        newTimes = self._getInterpolationTimeSeries(ref_or_factor)
+
+        for i, d in self.items():
             fd = interp1d(self.timeSeries.asFloat(),d,kind="cubic")
             self.data[i] = fd(newTimes.asFloat())
 
-class DataSeries_1D(DataSeries):
-    def __init___(self,timeSeries,x):
-        self.timeSeries = timeSeries
-        self.data = [x,]
+    def _getInterpolationTimeSeries(self, ref_or_factor):
+        if isinstance(ref_or_factor,TimeSeries):
+            if ref_or_factor.startTime is not None:
+                newTimes = TimeSeries(
+                    ref_or_factor.asDatetime(),
+                    self.timeSeries.timeUnit,
+                    self.timeSeries.startTime
+                )
+            else:
+                newTimes = ref_or_factor.copy()
+                newTimes.changeUnit(self.timeSeries.timeUnit)
+        else: #Treat ref_or_factor as number
+            newTimes = self.timeSeries.copy()
+            newTimes.interpolate(ref_or_factor)
+        return newTimes
 
-class DataSeries_3D(DataSeries):
-    def __init__(self,timeSeries,x,y,z):
-        self.timeSeries = timeSeries
-        self.data = [x,y,z]
+    def runningAverage(self,samples=None,timeWindow=None):
+        """Returns a running average of the data with window size {samples} or period {timeWindow}.
+        Pass only {samples} OR {timeWindow} exculsively.
+        """
+        if timeWindow is not None:
+            samples = int(timeWindow / self.timeSeries.getMeanInterval())
+
+        if samples == 0:
+            raise ValueError("Cannot generate a running average for an interval of 0 samples.")
+
+        def _runningAverage(d):
+            mean_d = uniform_filter1d(
+                d,samples,mode='constant',cval=0, origin=0
+            )
+            # First samples/2 values are distorted by edge effects, so we set them to np.nan
+            mean_d[0:samples//2] = np.nan
+            mean_d[-samples//2+1:] = np.nan
+            return mean_d
+
+        meanData = self._iterate(_runningAverage)
+        return DataSet(self.timeSeries,meanData)
+
+    def extractKey(self,key):
+        """Extract element from data[key] in new DataSet"""
+        return DataSet_1D.DataSet_1D(self.timeSeries,self.data[key])
+
+    def genMonoAudio(self,key,file,**kwargs):
+        writeoutAudio(self.data[key],file,**kwargs)
+
+    def _iterate(self,lamb):
+        """Execute function {lamb} on each element in self.data"""
+        res = {}
+        for i,d in self.items():
+            res[i] = lamb(d)
+        return res
+
+    def _iteratePair(self,other,lamb):
+        """Execute function {lamb} on each element pair in self.data and self.other with the same 
+        keys
+        """
+        if (
+            
+        ):
+            raise ValueError("self and other do not have the same time series")
+        res = {}
+        for i, d in self.items():
+            res[i] = lamb(d,other.data[i])
+        return DataSet(self.timeSeries,res)
+    
+    def __add__(self,other):
+        return self._iteratePair(other,add)
+
+    def __sub__(self,other):
+        return self._iteratePair(other,sub)
+
+    def __neg__(self):
+        return self._iterate(neg)
+        
+class DataSet_3D(DataSet):
+    def __init__(self,timeSeries: TimeSeries,data):
+        indiciesInKeys = 0 in data.keys() and 1 in data.keys and 2 in data.keys
+        if not indiciesInKeys:
+            raise AttributeError("Data must contain the keys 0, 1 and 2")
+        super().__init__(timeSeries,data)
+
+    def genStereoAudio(self,file,**kwargs):
+        audio = np.array([
+            self.data[0] + 0.5 * self.data[1],
+            0.5 * self.data[1] + self.datca[2],
+        ])
+        writeoutAudio(audio.T,file,**kwargs)

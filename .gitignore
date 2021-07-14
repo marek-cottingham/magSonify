@@ -5,7 +5,6 @@
 /*.wav
 
 artifactTest.py
-phaseVOdev.py
 
 /pyMagnetoSonify/THEMISorbitNumber.py
 /pyMagnetoSonify/waveletsLocal/simpleTransform.py
