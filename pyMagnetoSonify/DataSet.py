@@ -29,7 +29,7 @@ class DataSet():
         for i, d in self.items():
             self.data[i] = np.nan_to_num(d,nan=const)
 
-    def constrainAbsoluteValue(self,max):
+    def constrainAbsoluteValue(self,max) -> None:
         """Limits the data to within bounds of -max to +max, values outside are set to -max or +max
         """
         for i, d in self.items():
@@ -89,14 +89,17 @@ class DataSet():
             return mean_d
 
         meanData = self._iterate(_runningAverage)
-        return DataSet(self.timeSeries,meanData)
+        return type(self)(self.timeSeries,meanData)
 
     def extractKey(self,key):
         """Extract element from data[key] in new DataSet"""
         return DataSet_1D.DataSet_1D(self.timeSeries,self.data[key])
 
-    def genMonoAudio(self,key,file,**kwargs):
+    def genMonoAudio(self,key,file,**kwargs) -> None:
         writeoutAudio(self.data[key],file,**kwargs)
+
+    def copy(self):
+        return type(self)(self.timeSeries,self.data)
 
     def _iterate(self,lamb):
         """Execute function {lamb} on each element in self.data"""
@@ -113,7 +116,7 @@ class DataSet():
         res = {}
         for i, d in self.items():
             res[i] = lamb(d,other.data[i])
-        return DataSet(self.timeSeries,res)
+        return type(self)(self.timeSeries,res)
 
     def _raiseIfTimeSeriesNotEqual(self, other):
         if (self.timeSeries != other.timeSeries):
@@ -126,7 +129,8 @@ class DataSet():
         return self._iteratePair(other,sub)
 
     def __neg__(self):
-        return self._iterate(neg)
+        res = self._iterate(neg)
+        return type(self)(self.timeSeries,res)
         
 class DataSet_3D(DataSet):
     def __init__(self,timeSeries: TimeSeries,data):
@@ -135,7 +139,7 @@ class DataSet_3D(DataSet):
             raise AttributeError("Data must contain the keys 0, 1 and 2")
         super().__init__(timeSeries,data)
 
-    def genStereoAudio(self,file,**kwargs):
+    def genStereoAudio(self,file,**kwargs) -> None:
         audio = np.array([
             self.data[0] + 0.5 * self.data[1],
             0.5 * self.data[1] + self.datca[2],
@@ -161,10 +165,18 @@ class DataSet_3D(DataSet):
             res[i] = self.data[i] * other.data[i]
         return DataSet_3D(self.timeSeries,res)
 
-    def makeUnitVector(self):
+    def makeUnitVector(self) -> None:
         """Normalises the 3D vector to length 1, giving the unit vector"""
         sd = self.data
         vectorMagnitude = sd[0] ** 2 + sd[1] ** 2 + sd[2]**2
         vectorMagnitude = vectorMagnitude**(1/2)
         divideByMagnitude = lambda series: series / vectorMagnitude
         self._iterate(divideByMagnitude)
+
+    def coordinateTransform(self,xBasis,yBasis,zBasis):
+        bases = [xBasis,yBasis,zBasis]
+        res = {}
+        for i, basis in enumerate(bases):
+            self._raiseIfTimeSeriesNotEqual(basis)
+            res[i] = self[0] * basis.data[0] + self[1] * basis.data[1] + self[2] * basis.data[2]
+        return DataSet_3D(self.timeSeries,res)

@@ -1,26 +1,27 @@
 from datetime import datetime
+from pyMagnetoSonify.MagnetometerData import THEMISdata
 from pyMagnetoSonify.TimeSeries import TimeSeries, generateTimeSeries
-import pyMagnetoSonify as Sonify
 import numpy as np
 
-mag = Sonify.THEMISdata()
+mag = THEMISdata()
 mag.importCDAS(
     datetime(2007,9,3),
     datetime(2007,9,4)
 )
 
 timeSeries_3s = generateTimeSeries(
-    mag.magneticFieldData.timeSeries.getStart(),
-    mag.magneticFieldData.timeSeries.getEnd(),
+    mag.magneticField.timeSeries.getStart(),
+    mag.magneticField.timeSeries.getEnd(),
     spacing=np.timedelta64(3,'s')
 )
 
-mag.magneticFieldData.interpolate(timeSeries_3s)
-mag.positionData.interpolate(mag.magneticFieldData)
+mag.magneticField.interpolate(timeSeries_3s)
+mag.position.interpolate(mag.magneticField)
 
-mag.magneticFieldData.constrainAbsoluteValue(400)
-mag.meanField = mag.magneticFieldData.runningAverage(timeWindow=np.timedelta64(35,"m"))
-mag.magneticFieldData = mag.magneticFieldData - mag.meanField
+mag.magneticField.constrainAbsoluteValue(400)
+mag.meanField = mag.magneticField.runningAverage(timeWindow=np.timedelta64(35,"m"))
+mag.magneticField = mag.magneticField - mag.meanField
 mag.fillLessThanRadius(5)
+mag.convertToMeanFieldCoordinates()
 
-mag.magneticFieldData.fillNaN()
+mag.magneticField.fillNaN()

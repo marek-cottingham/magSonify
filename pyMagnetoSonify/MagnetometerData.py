@@ -5,14 +5,41 @@ from ai import cdas
 
 class MagnetometerData():
     def __init__(self):
-        self.magneticField = None
-        self.position = None
+        pass
+
+    def importCDAS(self):
+        self.magneticField = DataSet_3D()
+        self.position = DataSet_3D()
+        self.meanField = DataSet_3D()
 
     def fillLessThanRadius(self,radiusInEarthRadii,const=0):
         assert(self.position.timeSeries == self.magneticField.timeSeries)
         radiusMask = np.array(self.position.data["radius"] < radiusInEarthRadii, dtype=np.int8 )
         for i,d in self.magneticField.items():
             d[radiusMask] = const
+
+    def convertToMeanFieldCoordinates(self) -> None:
+        assert(self.position.timeSeries == self.magneticField.timeSeries)
+        assert(self.magneticField.timeSeries == self.meanField.timeSeries)
+
+        fieldUnitVector = self.meanField.copy()
+        fieldUnitVector.makeUnitVector()
+        earthUnitVector = -(self.position.copy())
+        earthUnitVector.makeUnitVector()
+
+        polUnitVector = fieldUnitVector.cross(earthUnitVector)
+        polUnitVector.makeUnitVector()
+        torUnitVector = fieldUnitVector.cross(polUnitVector)
+        torUnitVector.makeUnitVector()
+
+        self.magneticFieldMeanFieldCorrdinates = self.magneticField.coordinateTransform(
+            fieldUnitVector,
+            polUnitVector,
+            torUnitVector
+        )
+
+
+
     
 class THEMISdata(MagnetometerData):
     def importCDAS(s,startDate,endDate,satellite="D"):
@@ -40,7 +67,7 @@ class THEMISdata(MagnetometerData):
             endDate,
             ['XYZ_GSM','RADIUS'],
         )
-        s.position = DataSet(
+        s.position = DataSet_3D(
             TimeSeries(data["EPOCH"]),
             {
                 0: data["X"],
@@ -49,8 +76,7 @@ class THEMISdata(MagnetometerData):
                 "radius": data["RADIUS"]
             }
         )
-
-    def process(s):
-        """ Compact call for the default set of initial processing operations
-        """
-        pass
+        def process(s):
+            """ Compact call for the default set of initial processing operations
+            """
+            pass
