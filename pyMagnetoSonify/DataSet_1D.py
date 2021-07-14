@@ -21,6 +21,9 @@ class DataSet_1D(DataSet.DataSet):
 
     def genMonoAudio(self, file, **kwargs):
         return super().genMonoAudio(0, file, **kwargs)
+ 
+    def normalise(self,maxAmplitude=1):
+        self.x = self.x / np.max(np.abs(self.x)) * maxAmplitude
 
     def waveletPitchShift(
             self,
