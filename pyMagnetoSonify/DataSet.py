@@ -1,10 +1,14 @@
 from operator import add, mul, neg, sub
+import re
 from pyMagnetoSonify.Audio import writeoutAudio
 import numpy as np
 from scipy.interpolate.interpolate import interp1d
 from scipy.ndimage.filters import uniform_filter1d
-from . import TimeSeries
-from . import DataSet_1D
+from .TimeSeries import TimeSeries
+
+# Placeholder for circular import resolution
+class DataSet_1D():
+    pass
 
 class DataSet():
     def __init__(self,timeSeries: TimeSeries,data):
@@ -44,6 +48,7 @@ class DataSet():
             current TimeSeries density by. If reference is passed, s.TimeSeries will be set to the 
             new time series.
         """
+
         if isinstance(ref_or_factor,DataSet):
             ref_or_factor = ref_or_factor.timeSeries
 
@@ -53,17 +58,19 @@ class DataSet():
             fd = interp1d(self.timeSeries.asFloat(),d,kind="cubic")
             self.data[i] = fd(newTimes.asFloat())
 
+        self.timeSeries = newTimes
+
     def _getInterpolationTimeSeries(self, ref_or_factor):
         if isinstance(ref_or_factor,TimeSeries):
             if ref_or_factor.startTime is not None:
-                newTimes = TimeSeries(
-                    ref_or_factor.asDatetime(),
-                    self.timeSeries.timeUnit,
-                    self.timeSeries.startTime
+                self.timeSeries = TimeSeries(
+                    self.timeSeries.asDatetime(),
+                    ref_or_factor.timeUnit,
+                    ref_or_factor.startTime
                 )
             else:
-                newTimes = ref_or_factor.copy()
-                newTimes.changeUnit(self.timeSeries.timeUnit)
+                self.timeSeries.changeUnit(ref_or_factor.timeUnit)
+            newTimes = ref_or_factor
         else: #Treat ref_or_factor as number
             newTimes = self.timeSeries.copy()
             newTimes.interpolate(ref_or_factor)
@@ -93,7 +100,7 @@ class DataSet():
 
     def extractKey(self,key):
         """Extract element from data[key] in new DataSet"""
-        return DataSet_1D.DataSet_1D(self.timeSeries,self.data[key])
+        return DataSet_1D(self.timeSeries,self.data[key])
 
     def genMonoAudio(self,key,file,**kwargs) -> None:
         writeoutAudio(self.data[key],file,**kwargs)
@@ -131,10 +138,15 @@ class DataSet():
     def __neg__(self):
         res = self._iterate(neg)
         return type(self)(self.timeSeries,res)
+
+from .DataSet_1D import DataSet_1D
         
 class DataSet_3D(DataSet):
     def __init__(self,timeSeries: TimeSeries,data):
-        indiciesInKeys = 0 in data.keys() and 1 in data.keys and 2 in data.keys
+        try:
+            indiciesInKeys = 0 in data.keys() and 1 in data.keys() and 2 in data.keys()
+        except AttributeError:
+            indiciesInKeys = len(tuple(enumerate(data))) >= 3
         if not indiciesInKeys:
             raise AttributeError("Data must contain the keys 0, 1 and 2")
         super().__init__(timeSeries,data)
@@ -176,7 +188,8 @@ class DataSet_3D(DataSet):
     def coordinateTransform(self,xBasis,yBasis,zBasis):
         bases = [xBasis,yBasis,zBasis]
         res = {}
+        sd = self.data
         for i, basis in enumerate(bases):
             self._raiseIfTimeSeriesNotEqual(basis)
-            res[i] = self[0] * basis.data[0] + self[1] * basis.data[1] + self[2] * basis.data[2]
+            res[i] = sd[0] * basis.data[0] + sd[1] * basis.data[1] + sd[2] * basis.data[2]
         return DataSet_3D(self.timeSeries,res)

@@ -1,5 +1,7 @@
 
-from pyMagnetoSonify.DataSet import DataSet, DataSet_3D, TimeSeries
+from pyMagnetoSonify.TimeSeries import TimeSeries
+from pyMagnetoSonify.DataSet import DataSet, DataSet_3D
+
 import numpy as np
 from ai import cdas 
 
@@ -56,9 +58,11 @@ class THEMISdata(MagnetometerData):
         )
         s.magneticField = DataSet_3D(
             TimeSeries(data["UT"]),
-            data[f"BX_FGS-{satellite}"],
-            data[f"BY_FGS-{satellite}"],
-            data[f"BZ_FGS-{satellite}"]
+            [
+                data[f"BX_FGS-{satellite}"],
+                data[f"BY_FGS-{satellite}"],
+                data[f"BZ_FGS-{satellite}"]
+            ]
         )
         data = cdas.get_data(
             'sp_phys',

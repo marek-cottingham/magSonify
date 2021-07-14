@@ -115,7 +115,7 @@ class TimeSeries():
 
     def asNumpy(self):
         """Returns the most suitable numpy represenation"""
-        if self.start is not None:
+        if self.startTime is not None:
             return self.asDatetime()
         return self.asTimedelta()
 
@@ -148,6 +148,6 @@ class TimeSeries():
 
     def __eq__(self,other):
         return (
-            self.timeSeries is other.timeSeries 
-            or  np.all(self.timeSeries.asNumpy() == other.timeSeries.asNumpy())
+            self is other 
+            or  np.all(self.asNumpy() == other.asNumpy())
         )

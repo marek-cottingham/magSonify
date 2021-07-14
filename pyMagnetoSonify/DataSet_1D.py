@@ -1,12 +1,12 @@
 from .paulstretch_mono import paulstretch
 from .TimeSeries import TimeSeries
-from . import DataSet
+from .DataSet import DataSet
 import numpy as np
 from . import wavelets
 import audiotsm
 from audiotsm.io.array import ArrayReader, ArrayWriter
 
-class DataSet_1D(DataSet.DataSet):
+class DataSet_1D(DataSet):
     def __init___(self,timeSeries: TimeSeries,x):
         self.timeSeries = timeSeries
         self.data = [x,]
@@ -15,7 +15,7 @@ class DataSet_1D(DataSet.DataSet):
     def x(self):
         return self.data[0]
 
-    @property.setter
+    @x.setter
     def x(self,x):
         self.data[0] = x
 
