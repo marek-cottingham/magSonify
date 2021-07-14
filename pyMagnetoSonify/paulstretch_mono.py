@@ -7,11 +7,11 @@
 # http://hypermammut.sourceforge.net/paulstretch/
 #
 # this file is released under Public Domain
-### Modified version by Marek Cottingham
+
+# Modified version by Marek Cottingham
 
 import numpy as np
 
-########################################
 
 def paulstretch(audioSample,stretch,windowsize_seconds,samplerate=44100):
     
@@ -73,27 +73,14 @@ def paulstretch(audioSample,stretch,windowsize_seconds,samplerate=44100):
 
         #remove the resulted amplitude modulation
         output*=hinv_buf
-        
-        #clamp the values to -1..1 
-        #output[output>1.0]=1.0
-        #output[output<-1.0]=-1.0
-
 
         start_pos+=displace_pos
         if start_pos>=len(smp):
-        #    print ("Paulstretch 100 %")
             break
-        #print("Paulstretch %d %%" % int(100.0*start_pos/len(smp)),end="\r",flush=True)
-
         finalOutput.append(output)
+
     finalOutput = np.concatenate(finalOutput)
-    #print("")
-    #print(len(finalOutput))
     return finalOutput
-
-    
-
-########################################
 
 
 
