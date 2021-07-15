@@ -1,9 +1,6 @@
-from numpy.core.records import array
-from scipy.interpolate.interpolate import interp1d
+
 from .MagnetometerData import MagnetometerData
 import numpy as np
-import scipy as sp
-import matplotlib.pyplot as plt
 
 class SimulateData(MagnetometerData):
     

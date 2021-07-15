@@ -1,5 +1,4 @@
 
-from matplotlib import pyplot as plt
 from pyMagnetoSonify.TimeSeries import TimeSeries, generateTimeSeries
 from pyMagnetoSonify.DataSet import DataSet, DataSet_3D, DataSet_3D_Placeholder, DataSet_Placeholder
 from pyMagnetoSonify.DataSet_1D import DataSet_1D
@@ -62,8 +61,6 @@ class MagnetometerData():
                 )
             )
         )
-        plt.plot(removeSheathMask)
-        plt.show()
         self.magneticField.fillMask(removeSheathMask)
 
     
