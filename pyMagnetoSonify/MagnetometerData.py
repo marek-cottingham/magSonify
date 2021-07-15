@@ -1,6 +1,7 @@
 
 from pyMagnetoSonify.TimeSeries import TimeSeries
-from pyMagnetoSonify.DataSet import DataSet_3D
+from pyMagnetoSonify.DataSet import DataSet, DataSet_3D
+from threading import Thread
 
 from ai import cdas 
 
@@ -42,25 +43,34 @@ class MagnetometerData():
     
 class THEMISdata(MagnetometerData):
     def importCDAS(s,startDate,endDate,satellite="D"):
-        """ Imports magnetic field, satellite and radial distance data for the designated THEMIS
-            satellite and given date range.
-            The possible satellite letters are: "A", "B", "C", "D" or "E"
+        """ Imports magnetic field, position, radial distance and peem data for the designated THEMIS
+            satellite and date range.
+            The possible satellite letters are: "A", "B", "C", "D" or "E".
+            Consider using importCdasAsync instead, as this is faster.
         """
-        data = cdas.get_data(
-            'sp_phys',
-            f'TH{satellite.upper()}_L2_FGM',
-            startDate,
-            endDate,
-            [f'th{satellite.lower()}_fgs_gsmQ']
-        )
-        s.magneticField = DataSet_3D(
-            TimeSeries(data["UT"]),
-            [
-                data[f"BX_FGS-{satellite}"],
-                data[f"BY_FGS-{satellite}"],
-                data[f"BZ_FGS-{satellite}"]
-            ]
-        )
+        args = (startDate,endDate,satellite)
+        s._importCdasMagneticField(*args)
+        s._importCdasPosition(*args)
+        s._importCdasPeem(*args)
+
+    def importCdasAsync(self,startDate,endDate,satellite="D"):
+        """ Imports magnetic field, position, radial distance and peem data for the designated THEMIS
+            satellite and date range.
+            The possible satellite letters are: "A", "B", "C", "D" or "E".
+        """
+        args = (startDate,endDate,satellite)
+        fetchers = []
+        # These cannot modify the same variables/attributes as there is no prevention of a race 
+        # condition
+        funcs = (self._importCdasMagneticField,self._importCdasPosition,self._importCdasPeem)
+        for func in funcs:
+            fetch = Thread(target=func,args=args)
+            fetch.start()
+            fetchers.append(fetch)
+        for fetch in fetchers:
+            fetch.join()
+
+    def _importCdasPosition(s, startDate, endDate, satellite):
         data = cdas.get_data(
             'sp_phys',
             f'TH{satellite.upper()}_OR_SSC',
@@ -77,7 +87,54 @@ class THEMISdata(MagnetometerData):
                 "radius": data["RADIUS"]
             }
         )
-        def process(s):
-            """ Compact call for the default set of initial processing operations
-            """
-            pass
+
+    def _importCdasMagneticField(s, startDate, endDate, satellite):
+        data = cdas.get_data(
+            'sp_phys',
+            f'TH{satellite.upper()}_L2_FGM',
+            startDate,
+            endDate,
+            [f'th{satellite.lower()}_fgs_gsmQ']
+        )
+        s.magneticField = DataSet_3D(
+            TimeSeries(data["UT"]),
+            [
+                data[f"BX_FGS-{satellite}"],
+                data[f"BY_FGS-{satellite}"],
+                data[f"BZ_FGS-{satellite}"]
+            ]
+        )
+    
+    def _importCdasPeem(s,startDate,endDate,satellite):
+        data = cdas.get_data(
+           'sp_phys',
+           f'TH{satellite.upper()}_L2_MOM',
+           startDate,
+           endDate,
+           [
+               f'th{satellite.lower()}_peem_density',
+               f'th{satellite.lower()}_peem_velocity_gsm',
+               f'th{satellite.lower()}_peem_flux'
+            ]
+        )
+        timeSeries = TimeSeries(data["UT"])
+        s.peemDensity = DataSet(
+            timeSeries,
+            [data[f"N_ELEC_MOM_ESA-{satellite.upper()}"]]
+        )
+        s.peemVelocity = DataSet_3D(
+            timeSeries,
+            [
+                f'VX_ELEC_GSM_MOM_ESA-{satellite.upper()}',
+                f'VY_ELEC_GSM_MOM_ESA-{satellite.upper()}',
+                f'VZ_ELEC_GSM_MOM_ESA-{satellite.upper()}'
+            ]
+        )
+        s.peemFlux = DataSet_3D(
+            timeSeries,
+            [
+                f'FX_ELEC_MOM_ESA-{satellite.upper()}',
+                f'FY_ELEC_MOM_ESA-{satellite.upper()}',
+                f'FZ_ELEC_MOM_ESA-{satellite.upper()}',
+            ]
+        )

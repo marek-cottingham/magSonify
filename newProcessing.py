@@ -2,12 +2,20 @@ from datetime import datetime
 from pyMagnetoSonify.MagnetometerData import THEMISdata
 from pyMagnetoSonify.TimeSeries import generateTimeSeries
 import numpy as np
+from ai import cdas
+from timeit import default_timer as timer
+from pyMagnetoSonify.initialise import cdas_cache_path
+
+#cdas.set_cache("False",cdas_cache_path)
 
 mag = THEMISdata()
-mag.importCDAS(
+
+start = timer()
+mag.importCdasAsync(
     datetime(2007,9,4),
     datetime(2007,9,5)
 )
+print(timer()-start)
 
 timeSeries_3s = generateTimeSeries(
     mag.magneticField.timeSeries.getStart(),
