@@ -2,7 +2,7 @@ from .paulstretch_mono import paulstretch
 from .TimeSeries import TimeSeries
 from .DataSet import DataSet
 import numpy as np
-from . import wavelets
+from .wavelets import transform, wavelets
 import audiotsm
 from audiotsm.io.array import ArrayReader, ArrayWriter
 
@@ -58,14 +58,14 @@ class DataSet_1D(DataSet):
         sampleSeperation = self.timeSeries.getMeanIntervalFloat()
         self.fillNaN()
 
-        scales = wavelets.transform.generateCwtScales(
+        scales = transform.generateCwtScales(
             maxNumberSamples,
             len(self.x),
             scaleLogSpacing,
             sampleSeperation,
             wavelet,
         )
-        coefficients = wavelets.transform.cwt(self.x,scales,sampleSeperation,wavelet)
+        coefficients = transform.cwt(self.x,scales,sampleSeperation,wavelet)
 
         self.coefficients = coefficients
 
@@ -77,7 +77,7 @@ class DataSet_1D(DataSet):
         phase = np.unwrap(np.angle(coefficients),axis=1)
 
         if interpolateFactor is not None:
-            magnitude, phase = wavelets.transform.interpolateCoeffsPolar(
+            magnitude, phase = transform.interpolateCoeffsPolar(
                 magnitude,phase,interpolateFactor
             )
             self.timeSeries.interpolate(interpolateFactor)
@@ -88,7 +88,7 @@ class DataSet_1D(DataSet):
 
         # Scaling constants are generally redudant if generating audio as data will be normalised
         if preserveScaling:
-            rx = wavelets.transform.icwt(
+            rx = transform.icwt(
                 coefficients_shifted,
                 scaleLogSpacing,
                 sampleSeperation,
@@ -96,7 +96,7 @@ class DataSet_1D(DataSet):
                 wavelet.time(0)
             )
         else:
-            rx = wavelets.transform.icwt(coefficients_shifted)
+            rx = transform.icwt(coefficients_shifted)
 
         self.x = np.real(rx)
 
