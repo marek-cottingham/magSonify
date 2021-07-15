@@ -10,12 +10,10 @@ from pyMagnetoSonify.initialise import cdas_cache_path
 
 mag = THEMISdata()
 
-start = timer()
 mag.importCdasAsync(
     datetime(2007,9,4),
     datetime(2007,9,5)
 )
-print(timer()-start)
 
 timeSeries_3s = generateTimeSeries(
     mag.magneticField.timeSeries.getStart(),
