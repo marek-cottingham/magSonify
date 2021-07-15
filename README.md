@@ -10,8 +10,8 @@ pip install git+https://github.com/TheMuonNeutrino/magSonify
 Look at the example in `processingExample.py`
 
 ### Note on DataSet_3D ###
-DataSet_3D is the class most commonly used to store satellite data
-This is stored in 2 attributes: timeSeries and data
+DataSet_3D is the class most commonly used to store satellite data.
+This is stored in 2 attributes: timeSeries and data.
 The x, y and z axes can be accessed by indexing DataSet_3D.data
 
 ```python
