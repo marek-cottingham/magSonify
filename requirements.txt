@@ -1,4 +1,5 @@
 ai.cdas==1.2.3
+astropy==4.2.1
 audiotsm==0.1.2
 numpy==1.21.0
 scipy==1.7.0
