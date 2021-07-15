@@ -125,7 +125,7 @@ class DataSet_1D(DataSet):
         timeSeriesModification.run(reader, writer)
         self.x = writer.data.flatten()
 
-    def wolsaStretch(self,stretch,frameLength=512,synthesisHop=None,tolerance=None):
+    def wsolaStretch(self,stretch,frameLength=512,synthesisHop=None,tolerance=None):
         if synthesisHop is None:
             synthesisHop = frameLength//8
         reader = ArrayReader(np.array((self.x,)))
