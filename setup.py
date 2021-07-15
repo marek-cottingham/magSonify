@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name='pyMagnetoSonify',  
     version='0.1',
-    scripts=['pyMagnetoSonify'] ,
+    packages=['pyMagnetoSonify'] ,
     author="Marek Cottingham",
     author_email="mcottingham@outlook.com",
     description="Package for the sonification of space magnetosphere data",
