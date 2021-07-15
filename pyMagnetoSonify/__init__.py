@@ -1,3 +1,4 @@
+# WARNING: Delete cache before package uninstall by calling cacheControl.deleteCache()
 CACHING_ENABLED = False
 
 from ai import cdas
