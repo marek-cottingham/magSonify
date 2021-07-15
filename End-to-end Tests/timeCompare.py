@@ -1,4 +1,7 @@
 
+import context
+context.get()
+
 from timeit import default_timer as timer
 import os, sys
 
