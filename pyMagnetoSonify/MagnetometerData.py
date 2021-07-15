@@ -1,9 +1,11 @@
 
-from datetime import time
+from matplotlib import pyplot as plt
 from pyMagnetoSonify.TimeSeries import TimeSeries, generateTimeSeries
 from pyMagnetoSonify.DataSet import DataSet, DataSet_3D, DataSet_3D_Placeholder, DataSet_Placeholder
+from pyMagnetoSonify.DataSet_1D import DataSet_1D
 from threading import Thread
 import numpy as np
+from numpy import logical_or, logical_and
 
 from ai import cdas 
 
@@ -14,14 +16,17 @@ class MagnetometerData():
         self.meanField = DataSet_3D_Placeholder()
         self.magneticFieldMeanFieldCorrdinates = DataSet_3D_Placeholder()
 
+        self.peemDensity = DataSet_Placeholder()
+        self.peemFlux = DataSet_3D_Placeholder()
+        self.peemVelocity = DataSet_3D_Placeholder()
+
     def importCDAS(self):
         raise NotImplementedError
 
     def fillLessThanRadius(self,radiusInEarthRadii,const=0):
         assert(self.position.timeSeries == self.magneticField.timeSeries)
         radiusMask = self.position.data["radius"] < radiusInEarthRadii
-        for i,d in self.magneticField.items():
-            d[radiusMask] = const
+        self.magneticField.fillMask(radiusMask,const)
 
     def convertToMeanFieldCoordinates(self) -> None:
         assert(self.position.timeSeries == self.magneticField.timeSeries)
@@ -43,13 +48,26 @@ class MagnetometerData():
             torUnitVector
         )
 
+    def removeMagnetosheath(self):
+        # Beta
+        perpflux = self.peemFlux.data[0]**2 + self.peemFlux.data[1]**2
+        perpflux = perpflux**(1/2)
+        removeSheathMask = logical_and(
+            (self.position.data["radius"] > 8),
+            logical_or(
+                (self.peemDensity.x > 10),
+                logical_or(
+                    (self.peemVelocity.data[0] < -200),
+                    (perpflux > 2e7)
+                )
+            )
+        )
+        plt.plot(removeSheathMask)
+        plt.show()
+        self.magneticField.fillMask(removeSheathMask)
+
     
 class THEMISdata(MagnetometerData):
-    def __init__(self):
-        self.peemDensity = DataSet_Placeholder()
-        self.peemFlux = DataSet_3D_Placeholder()
-        self.peemVelocity = DataSet_3D_Placeholder()
-
     def interpolate_3s(self):
         """Iterpolates all data to 3 second spacing"""
         timeSeries_3s = generateTimeSeries(
@@ -65,7 +83,6 @@ class THEMISdata(MagnetometerData):
             self.peemFlux
         ):
             x.interpolate(timeSeries_3s)
-
 
     def importCDAS(s,startDate,endDate,satellite="D"):
         """ Imports magnetic field, position, radial distance and peem data for the designated THEMIS
@@ -143,9 +160,9 @@ class THEMISdata(MagnetometerData):
             ]
         )
         timeSeries = TimeSeries(data["UT"])
-        s.peemDensity = DataSet(
+        s.peemDensity = DataSet_1D(
             timeSeries,
-            [data[f"N_ELEC_MOM_ESA-{satellite.upper()}"]]
+            data[f"N_ELEC_MOM_ESA-{satellite.upper()}"]
         )
         s.peemVelocity = DataSet_3D(
             timeSeries,

@@ -19,6 +19,7 @@ mag.magneticField.constrainAbsoluteValue(400)
 mag.meanField = mag.magneticField.runningAverage(timeWindow=np.timedelta64(35,"m"))
 mag.magneticField = mag.magneticField - mag.meanField
 mag.fillLessThanRadius(6)
+#mag.removeMagnetosheath()
 mag.convertToMeanFieldCoordinates()
 
 mag.magneticFieldMeanFieldCorrdinates.fillNaN()

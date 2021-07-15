@@ -107,11 +107,18 @@ class DataSet():
     def copy(self):
         return type(self)(self.timeSeries,self.data)
 
-    def _iterate(self,lamb):
+    def fillMask(self,mask,const=0):
+        for i,d in self.items():
+            d[mask] = const
+
+    def _iterate(self,lamb,replace=False):
         """Execute function {lamb} on each element in self.data"""
         res = {}
         for i,d in self.items():
-            res[i] = lamb(d)
+            if replace:
+                self.data[i] = lamb(d)
+            else:
+                res[i] = lamb(d)
         return res
 
     def _iteratePair(self,other,lamb):
@@ -182,7 +189,7 @@ class DataSet_3D(DataSet):
         vectorMagnitude = sd[0] ** 2 + sd[1] ** 2 + sd[2]**2
         vectorMagnitude = vectorMagnitude**(1/2)
         divideByMagnitude = lambda series: series / vectorMagnitude
-        self._iterate(divideByMagnitude)
+        self._iterate(divideByMagnitude,replace=True)
 
     def coordinateTransform(self,xBasis,yBasis,zBasis):
         bases = [xBasis,yBasis,zBasis]
