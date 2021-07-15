@@ -1,18 +1,19 @@
 
 from pyMagnetoSonify.TimeSeries import TimeSeries
-from pyMagnetoSonify.DataSet import DataSet, DataSet_3D
+from pyMagnetoSonify.DataSet import DataSet, DataSet_3D, DataSet_3D_Placeholder, DataSet_Placeholder
 from threading import Thread
 
 from ai import cdas 
 
 class MagnetometerData():
     def __init__(self):
-        pass
+        self.magneticField = DataSet_3D_Placeholder()
+        self.position = DataSet_3D_Placeholder()
+        self.meanField = DataSet_3D_Placeholder()
+        self.magneticFieldMeanFieldCorrdinates = DataSet_3D_Placeholder()
 
     def importCDAS(self):
-        self.magneticField = DataSet_3D()
-        self.position = DataSet_3D()
-        self.meanField = DataSet_3D()
+        raise NotImplementedError
 
     def fillLessThanRadius(self,radiusInEarthRadii,const=0):
         assert(self.position.timeSeries == self.magneticField.timeSeries)
@@ -42,6 +43,11 @@ class MagnetometerData():
 
     
 class THEMISdata(MagnetometerData):
+    def __init__(self):
+        self.peemDensity = DataSet_Placeholder()
+        self.peemFlux = DataSet_3D_Placeholder()
+        self.peemVelocity = DataSet_3D_Placeholder()
+
     def importCDAS(s,startDate,endDate,satellite="D"):
         """ Imports magnetic field, position, radial distance and peem data for the designated THEMIS
             satellite and date range.
@@ -54,14 +60,14 @@ class THEMISdata(MagnetometerData):
         s._importCdasPeem(*args)
 
     def importCdasAsync(self,startDate,endDate,satellite="D"):
-        """ Imports magnetic field, position, radial distance and peem data for the designated THEMIS
-            satellite and date range.
+        """ Imports magnetic field, position, radial distance and peem data for the designated 
+            THEMIS satellite and date range.
             The possible satellite letters are: "A", "B", "C", "D" or "E".
         """
         args = (startDate,endDate,satellite)
         fetchers = []
-        # These cannot modify the same variables/attributes as there is no prevention of a race 
-        # condition
+        # These functions cannot modify the same variables/attributes as there 
+        # is no prevention of a race condition
         funcs = (self._importCdasMagneticField,self._importCdasPosition,self._importCdasPeem)
         for func in funcs:
             fetch = Thread(target=func,args=args)
