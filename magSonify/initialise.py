@@ -2,7 +2,7 @@ import os
 
 local_app_path = os.path.join(
     os.getenv("LOCALAPPDATA"),
-    "pyMagnetoSonify"
+    "magSonify"
 )
 
 cdas_cache_path = os.path.join(

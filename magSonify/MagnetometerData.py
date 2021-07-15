@@ -1,7 +1,7 @@
 
-from pyMagnetoSonify.TimeSeries import TimeSeries, generateTimeSeries
-from pyMagnetoSonify.DataSet import DataSet, DataSet_3D, DataSet_3D_Placeholder, DataSet_Placeholder
-from pyMagnetoSonify.DataSet_1D import DataSet_1D
+from .TimeSeries import TimeSeries, generateTimeSeries
+from .DataSet import DataSet, DataSet_3D, DataSet_3D_Placeholder, DataSet_Placeholder
+from .DataSet_1D import DataSet_1D
 from threading import Thread
 import numpy as np
 from numpy import logical_or, logical_and

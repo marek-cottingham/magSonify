@@ -5,15 +5,15 @@ with open("README.md", "r") as fh:
 
 
 setuptools.setup(
-    name='pyMagnetoSonify',  
+    name='magSonify',  
     version='0.1',
-    packages=['pyMagnetoSonify','pyMagnetoSonify/wavelets'] ,
+    packages=['magSonify','magSonify/wavelets'] ,
     author="Marek Cottingham",
     author_email="mcottingham@outlook.com",
     description="Package for the sonification of space magnetosphere data",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/TheMuonNeutrino/pyMagnetoSonify",
+    url="https://github.com/TheMuonNeutrino/magSonify",
     classifiers=[
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",
