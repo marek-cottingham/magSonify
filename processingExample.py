@@ -1,5 +1,5 @@
 from datetime import datetime
-from pyMagnetoSonify.MagnetometerData import THEMISdata
+from magSonify.MagnetometerData import THEMISdata
 import numpy as np
 
 mag = THEMISdata()
