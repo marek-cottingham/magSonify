@@ -2,7 +2,7 @@ from .paulstretch_mono import paulstretch
 from .TimeSeries import TimeSeries
 from .DataSet import DataSet
 import numpy as np
-from .wavelets import transform, wavelets
+from . import wavelets
 import audiotsm
 from audiotsm.io.array import ArrayReader, ArrayWriter
 
@@ -34,7 +34,7 @@ class DataSet_1D(DataSet):
             wavelet=wavelets.Morlet(),
             preserveScaling=False
         ) -> None:
-        """Pitch shifts the data on specified axes by {shift} times using continous wavlet transform.
+        """Pitch shifts the data on specified axes by {shift} times using continous wavlet wavelets.transform.
 
         Parameters
         ----------
@@ -47,7 +47,7 @@ class DataSet_1D(DataSet):
             If not None, specifies the facator by which the density of the coefficients should be
             increased. Used when generating time stretched audio.
         maxNumberSamples:
-            The maximum number of samples for the largest scale in the wavelet transform, used to
+            The maximum number of samples for the largest scale in the wavelet wavelets.transform, used to
             prevent computations for inaubidle frequencies.
         wavelet:
             Wavelet function to use. If none is given, the Morlet wavelet will be used by default.
@@ -58,14 +58,14 @@ class DataSet_1D(DataSet):
         sampleSeperation = self.timeSeries.getMeanIntervalFloat()
         self.fillNaN()
 
-        scales = transform.generateCwtScales(
+        scales = wavelets.transform.generateCwtScales(
             maxNumberSamples,
             len(self.x),
             scaleLogSpacing,
             sampleSeperation,
             wavelet,
         )
-        coefficients = transform.cwt(self.x,scales,sampleSeperation,wavelet)
+        coefficients = wavelets.transform.cwt(self.x,scales,sampleSeperation,wavelet)
 
         self.coefficients = coefficients
 
@@ -77,7 +77,7 @@ class DataSet_1D(DataSet):
         phase = np.unwrap(np.angle(coefficients),axis=1)
 
         if interpolateFactor is not None:
-            magnitude, phase = transform.interpolateCoeffsPolar(
+            magnitude, phase = wavelets.transform.interpolateCoeffsPolar(
                 magnitude,phase,interpolateFactor
             )
             self.timeSeries.interpolate(interpolateFactor)
@@ -88,7 +88,7 @@ class DataSet_1D(DataSet):
 
         # Scaling constants are generally redudant if generating audio as data will be normalised
         if preserveScaling:
-            rx = transform.icwt(
+            rx = wavelets.transform.icwt(
                 coefficients_shifted,
                 scaleLogSpacing,
                 sampleSeperation,
@@ -96,7 +96,7 @@ class DataSet_1D(DataSet):
                 wavelet.time(0)
             )
         else:
-            rx = transform.icwt(coefficients_shifted)
+            rx = wavelets.transform.icwt(coefficients_shifted)
 
         self.x = np.real(rx)
 
