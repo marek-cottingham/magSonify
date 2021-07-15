@@ -150,16 +150,16 @@ class THEMISdata(MagnetometerData):
         s.peemVelocity = DataSet_3D(
             timeSeries,
             [
-                f'VX_ELEC_GSM_MOM_ESA-{satellite.upper()}',
-                f'VY_ELEC_GSM_MOM_ESA-{satellite.upper()}',
-                f'VZ_ELEC_GSM_MOM_ESA-{satellite.upper()}'
+                data[f'VX_ELEC_GSM_MOM_ESA-{satellite.upper()}'],
+                data[f'VY_ELEC_GSM_MOM_ESA-{satellite.upper()}'],
+                data[f'VZ_ELEC_GSM_MOM_ESA-{satellite.upper()}']
             ]
         )
         s.peemFlux = DataSet_3D(
             timeSeries,
             [
-                f'FX_ELEC_MOM_ESA-{satellite.upper()}',
-                f'FY_ELEC_MOM_ESA-{satellite.upper()}',
-                f'FZ_ELEC_MOM_ESA-{satellite.upper()}',
+                data[f'FX_ELEC_MOM_ESA-{satellite.upper()}'],
+                data[f'FY_ELEC_MOM_ESA-{satellite.upper()}'],
+                data[f'FZ_ELEC_MOM_ESA-{satellite.upper()}'],
             ]
         )

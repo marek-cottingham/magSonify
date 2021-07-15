@@ -36,13 +36,16 @@ class DataSet():
             d[d<-max] = -max
 
     def interpolate(self,ref_or_factor) -> None:
-        """Interpolates the data and time series
+        """Interpolates the data and time series.
         
         ref_or_factor:
             Either reference (TimeSeries or DataSeries) to interpolate data to or factor to multiply
             current TimeSeries density by. If reference is passed, s.TimeSeries will be set to the 
             new time series.
         """
+        # Warning: This can extrapolate outside the data range - there is not range checking. 
+        # This extrapolation is not reliable and should only be allowed for points very slightly 
+        # outside the data range.
 
         if isinstance(ref_or_factor,DataSet):
             ref_or_factor = ref_or_factor.timeSeries
@@ -50,7 +53,7 @@ class DataSet():
         newTimes = self._getInterpolationTimeSeries(ref_or_factor)
 
         for i, d in self.items():
-            fd = interp1d(self.timeSeries.asFloat(),d,kind="cubic")
+            fd = interp1d(self.timeSeries.asFloat(),d,kind="cubic",fill_value="extrapolate")
             self.data[i] = fd(newTimes.asFloat())
 
         self.timeSeries = newTimes
@@ -64,6 +67,7 @@ class DataSet():
                     ref_or_factor.startTime
                 )
             else:
+                self.timeSeries = self.timeSeries.copy()
                 self.timeSeries.changeUnit(ref_or_factor.timeUnit)
             newTimes = ref_or_factor
         else: #Treat ref_or_factor as number
