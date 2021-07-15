@@ -1,4 +1,4 @@
-Sonification of space magnetic field data in Python.
+Sonification of space magnetic field data in python
 ----------------------------------------
 ### Installation ###
 
