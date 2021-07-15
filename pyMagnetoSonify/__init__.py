@@ -3,9 +3,8 @@ CACHING_ENABLED = False
 
 from ai import cdas
 
-from .initialise import ensurePath,local_app_path,cdas_cache_path,memory_cache_path
-
 if CACHING_ENABLED:
+    from .initialise import ensurePath,local_app_path,cdas_cache_path,memory_cache_path
     ensurePath(local_app_path)
     ensurePath(cdas_cache_path)
     ensurePath(memory_cache_path)
