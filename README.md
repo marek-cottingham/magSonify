@@ -21,12 +21,3 @@ DataSet_3d.data[1]: # Second axis
 DataSet_3d.data[2]: # Third axis
 DataSet_3d.data["key"]: # Additional data
 ```
-
-### Requirements ###
-
-- Python 3.6+
-- Numpy (developed with 1.21.0)
-- Scipy (developed with 1.7.0)
-- SoundFile
-- ai.cdas (developed with 1.2.3)
-- audiotsm (developed with 0.1.2)
