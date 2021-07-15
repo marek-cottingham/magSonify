@@ -1,11 +1,6 @@
 from datetime import datetime
 from pyMagnetoSonify.MagnetometerData import THEMISdata
-from pyMagnetoSonify.TimeSeries import generateTimeSeries
 import numpy as np
-from ai import cdas
-from pyMagnetoSonify.initialise import cdas_cache_path
-
-#cdas.set_cache("False",cdas_cache_path)
 
 mag = THEMISdata()
 
