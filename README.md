@@ -3,7 +3,7 @@ Sonification of space magnetic field data in Python.
 ### Installation ###
 
 ```sh
-pip install git+https://github.com/TheMuonNeutrino/pyMagnetoSonify
+pip install git+https://github.com/TheMuonNeutrino/magSonify
 ```
 
 ### Quick start ###
