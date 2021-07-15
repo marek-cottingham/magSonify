@@ -26,11 +26,10 @@ def generateCwtScales(
     )
     
     scales = smallestScale * 2**(scaleSpacingLog * np.arange(0, LargestScaleIndex + 1))
-
     return scales
 
 def _generateLargestScaleIndex(maxNumberSamples, scaleSpacingLog, sampleSpacingTime, smallestScale):
-    int((1 / scaleSpacingLog) * np.log2(maxNumberSamples * sampleSpacingTime / smallestScale))
+    return int((1 / scaleSpacingLog) * np.log2(maxNumberSamples * sampleSpacingTime / smallestScale))
 
 def _generateSmallestScale(sampleSpacingTime, wavelet):
     def f(s):
@@ -41,10 +40,11 @@ def cwt(x, scales, sampleSpacingTime=1, waveletFunction=Morlet()):
     """ Computes the forward continous wavelet transform.
     """
     # Based on CT98: https://psl.noaa.gov/people/gilbert.p.compo/Torrence_compo1998.pdf
-    output = np.zeros(
-        (len(scales),) + x.shape,
-        dtype=np.complex128
-    )
+    # output = np.zeros(
+    #     (len(scales),) + x.shape,
+    #     dtype=np.complex128
+    # )
+    output = []
 
     for i, s in enumerate(scales):
         pointsToCaptureWavelet = 10 * s / sampleSpacingTime
@@ -55,7 +55,8 @@ def cwt(x, scales, sampleSpacingTime=1, waveletFunction=Morlet()):
         normalisationConstant = (sampleSpacingTime** (0.5) / s)
         wavelet = normalisationConstant * waveletFunction(times, s)
 
-        output[i,:] = scipy.signal.fftconvolve(x,wavelet,mode='same')
+        output.append( scipy.signal.fftconvolve(x,wavelet,mode='same') )
+    output = np.array(output,dtype=np.complex128)
     return output
 
 def icwt(

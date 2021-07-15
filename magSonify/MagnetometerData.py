@@ -1,4 +1,5 @@
 
+from datetime import datetime
 from .TimeSeries import TimeSeries, generateTimeSeries
 from .DataSet import DataSet, DataSet_3D, DataSet_3D_Placeholder, DataSet_Placeholder
 from .DataSet_1D import DataSet_1D
@@ -177,3 +178,19 @@ class THEMISdata(MagnetometerData):
                 data[f'FZ_ELEC_MOM_ESA-{satellite.upper()}'],
             ]
         )
+    
+    def defaultProcessing(self):
+        self.importCdasAsync(
+            datetime(2007,9,4),
+            datetime(2007,9,5)
+        )
+
+        self.interpolate_3s()
+        self.magneticField.constrainAbsoluteValue(400)
+        self.meanField = self.magneticField.runningAverage(timeWindow=np.timedelta64(35,"m"))
+        self.magneticField = self.magneticField - self.meanField
+        self.fillLessThanRadius(6)
+        #mag.removeMagnetosheath()
+        self.convertToMeanFieldCoordinates()
+
+        self.magneticFieldMeanFieldCorrdinates.fillNaN()

@@ -5,6 +5,7 @@ import numpy as np
 from . import wavelets
 import audiotsm
 from audiotsm.io.array import ArrayReader, ArrayWriter
+from copy import deepcopy
 
 class DataSet_1D(DataSet):
     def __init__(self,timeSeries: TimeSeries,x):
@@ -24,6 +25,9 @@ class DataSet_1D(DataSet):
  
     def normalise(self,maxAmplitude=1):
         self.x = self.x / np.max(np.abs(self.x)) * maxAmplitude
+
+    def copy(self):
+        return type(self)(self.timeSeries,deepcopy(self.x))
 
     def waveletPitchShift(
             self,
@@ -57,7 +61,7 @@ class DataSet_1D(DataSet):
 
         sampleSeperation = self.timeSeries.getMeanIntervalFloat()
         self.fillNaN()
-
+        
         scales = wavelets.transform.generateCwtScales(
             maxNumberSamples,
             len(self.x),
@@ -97,8 +101,14 @@ class DataSet_1D(DataSet):
             )
         else:
             rx = wavelets.transform.icwt(coefficients_shifted)
-
         self.x = np.real(rx)
+
+    def waveletStretch(self,stretch,interpolateBefore=None,interpolateAfter=None,scaleLogSpacing=0.12):
+        if interpolateBefore is None and interpolateAfter is None:
+            interpolateAfter = stretch
+        if interpolateBefore is not None:
+            self.interpolate(interpolateBefore)
+        self.waveletPitchShift(stretch,scaleLogSpacing,interpolateAfter)
 
     def paulStretch(self,stretch,timeWindow=0.015):
         """ Stretches the data according the paulstretch algorithm
@@ -139,4 +149,6 @@ class DataSet_1D(DataSet):
         )
         timeSeriesModification.run(reader, writer)
         self.x = writer.data.flatten()
-
+class DataSet_1D_placeholder(DataSet_1D):
+    def __init__(self):
+        pass

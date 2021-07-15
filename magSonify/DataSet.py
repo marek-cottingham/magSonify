@@ -4,6 +4,7 @@ import numpy as np
 from scipy.interpolate.interpolate import interp1d
 from scipy.ndimage.filters import uniform_filter1d
 from .TimeSeries import TimeSeries
+from copy import deepcopy
 
 class DataSet():
     def __init__(self,timeSeries: TimeSeries,data):
@@ -99,13 +100,13 @@ class DataSet():
 
     def extractKey(self,key):
         """Extract element from data[key] in new DataSet"""
-        return DataSet_1D(self.timeSeries,self.data[key])
+        return DataSet_1D(self.timeSeries,deepcopy(self.data[key]))
 
     def genMonoAudio(self,key,file,**kwargs) -> None:
         writeoutAudio(self.data[key],file,**kwargs)
 
     def copy(self):
-        return type(self)(self.timeSeries,self.data)
+        return type(self)(self.timeSeries,deepcopy(self.data))
 
     def fillMask(self,mask,const=0):
         for i,d in self.items():
