@@ -1,7 +1,9 @@
 
-from pyMagnetoSonify.TimeSeries import TimeSeries
+from datetime import time
+from pyMagnetoSonify.TimeSeries import TimeSeries, generateTimeSeries
 from pyMagnetoSonify.DataSet import DataSet, DataSet_3D, DataSet_3D_Placeholder, DataSet_Placeholder
 from threading import Thread
+import numpy as np
 
 from ai import cdas 
 
@@ -47,6 +49,23 @@ class THEMISdata(MagnetometerData):
         self.peemDensity = DataSet_Placeholder()
         self.peemFlux = DataSet_3D_Placeholder()
         self.peemVelocity = DataSet_3D_Placeholder()
+
+    def interpolate_3s(self):
+        """Iterpolates all data to 3 second spacing"""
+        timeSeries_3s = generateTimeSeries(
+            self.magneticField.timeSeries.getStart(),
+            self.magneticField.timeSeries.getEnd(),
+            spacing=np.timedelta64(3,'s')
+        )
+        for x in (
+            self.magneticField,
+            self.position,
+            self.peemDensity,
+            self.peemVelocity,
+            self.peemFlux
+        ):
+            x.interpolate(timeSeries_3s)
+
 
     def importCDAS(s,startDate,endDate,satellite="D"):
         """ Imports magnetic field, position, radial distance and peem data for the designated THEMIS
