@@ -11,19 +11,19 @@ class SimulateData():
             timeSeries.interpolate(stretch)
         return timeSeries
     
-    def genSine(s,timeSeries: TimeSeries,amplitude,frequency,phase=0):
+    def genSine(s,timeSeries: TimeSeries,frequency,amplitude=1,phase=0):
         """Generates a sine wave signal
         """
         timeSeries = s._setupTimeSeries(timeSeries)
         return np.sin(2*np.pi*frequency*timeSeries.asFloat() + phase)*amplitude
 
-    def genSineExpectation(s,timeSeries: TimeSeries,stretch,amplitude,frequency,phase=0):
+    def genSineExpectation(s,timeSeries: TimeSeries,stretch,frequency,amplitude=1,phase=0):
         """Generates the expected output after sine wave signal is time stretched by 
             a factor of {stretch}
         """
         frequency = stretch*frequency
         timeSeries = s._setupTimeSeries(timeSeries,stretch)
-        return s.genSine(timeSeries,amplitude,frequency,phase)
+        return s.genSine(timeSeries,frequency,amplitude,phase)
 
 
     def genHarmonic(s,timeSeries: TimeSeries,frequencies,amplitude=1,phase=0):
@@ -34,15 +34,15 @@ class SimulateData():
         frequencies = np.array(frequencies)
         
         amplitude = np.array(amplitude)
-        if len(amplitude) == 1:
+        if amplitude.size == 1:
             amplitude = np.ones(frequencies.shape) * amplitude
 
         phase = np.array(phase)
-        if len(phase) == 1:
+        if phase.size == 1:
             phase = np.ones(frequencies.shape) * phase
 
         for i,f in enumerate(frequencies):
-            signal = signal + s.genSine(timeSeries,amplitude[i],f,phase[i])
+            signal = signal + s.genSine(timeSeries,f,amplitude[i],phase[i])
         return signal
 
     def genHarmonicExpectation(s,timeSeries: TimeSeries,stretch,frequencies,amplitude=1,phase=0):
