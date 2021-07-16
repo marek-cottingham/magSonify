@@ -1,65 +1,54 @@
 
-from .MagnetometerData import MagnetometerData
+from datetime import time
 import numpy as np
+from .TimeSeries import TimeSeries
 
-class SimulateData(MagnetometerData):
+class SimulateData():
+    def _setupTimeSeries(s, timeSeries, stretch=None):
+        timeSeries = timeSeries.copy()
+        timeSeries.changeUnit(np.timedelta64(1,'s'))
+        if stretch is not None:
+            timeSeries.interpolate(stretch)
+        return timeSeries
     
-    def genSine(s,t,amplitude,frequency,phase=0):
+    def genSine(s,timeSeries: TimeSeries,amplitude,frequency,phase=0):
         """Generates a sine wave signal
-        Requires that s.t is populated with time values
         """
-        if t is None:
-            t = s.t
-        return np.sin(2*np.pi*frequency*(t) + phase)*amplitude
+        timeSeries = s._setupTimeSeries(timeSeries)
+        return np.sin(2*np.pi*frequency*timeSeries.asFloat() + phase)*amplitude
 
-    def genSineExpectation(s,t,stretch,amplitude,frequency,phase=0):
-        """Generates the expected output after sine signal is time stretched by a factor of stretch
+    def genSineExpectation(s,timeSeries: TimeSeries,stretch,amplitude,frequency,phase=0):
+        """Generates the expected output after sine wave signal is time stretched by 
+            a factor of {stretch}
         """
         frequency = stretch*frequency
-        if t is None:
-            t = s.t
-        t = np.linspace(
-            t[0],
-            t[-1],
-            int(stretch*len(t))
-        )
-        return s.genSine(t,amplitude,frequency,phase)
+        timeSeries = s._setupTimeSeries(timeSeries,stretch)
+        return s.genSine(timeSeries,amplitude,frequency,phase)
 
-    def genHarmonic(s,t,frequencies,amplitude=1,phase=0):
+
+    def genHarmonic(s,timeSeries: TimeSeries,frequencies,amplitude=1,phase=0):
         """Generates a set of overlapped sine waves
-        Requires that s.t is populated with time values
         """
-        if t is None:
-            t = s.t
-
-        signal = t*0
+        timeSeries = s._setupTimeSeries(timeSeries)
+        signal = timeSeries.asFloat() * 0
         frequencies = np.array(frequencies)
-
-        try:
-            amplitude = np.array(amplitude)
-            assert len(amplitude) != 1
-        except:
+        
+        amplitude = np.array(amplitude)
+        if len(amplitude) == 1:
             amplitude = np.ones(frequencies.shape) * amplitude
-        try:
-            phase = np.array(phase)
-            assert len(phase) != 1
-        except:
+
+        phase = np.array(phase)
+        if len(phase) == 1:
             phase = np.ones(frequencies.shape) * phase
 
         for i,f in enumerate(frequencies):
-            signal = signal + s.genSine(t,amplitude[i],f,phase[i])
+            signal = signal + s.genSine(timeSeries,amplitude[i],f,phase[i])
         return signal
 
-    def genHarmonicExpectation(s,t,stretch,frequencies,amplitude=1,phase=0):
+    def genHarmonicExpectation(s,timeSeries: TimeSeries,stretch,frequencies,amplitude=1,phase=0):
         frequencies = stretch * np.array(frequencies)
-        if t is None:
-            t = s.t
-        t = np.linspace(
-            t[0],
-            t[-1],
-            int(stretch*len(t))
-        )
-        return s.genHarmonic(t,frequencies,amplitude,phase)
+        timeSeries = s._setupTimeSeries(timeSeries,stretch)
+        return s.genHarmonic(timeSeries,frequencies,amplitude,phase)
 
     def waveOrientOffset(s,waveform,direction=(1,0,0),offset=(0,0,0)):
         """ Rotate and offset a given waveform in 3D space, returning a list with the series for the
