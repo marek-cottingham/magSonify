@@ -110,16 +110,16 @@ class DataSet_1D(DataSet):
             self.interpolate(interpolateBefore)
         self.waveletPitchShift(stretch,scaleLogSpacing,interpolateAfter)
 
-    def paulStretch(self,stretch,timeWindow=0.015):
+    def paulStretch(self,stretch,window=0.015):
         """ Stretches the data according the paulstretch algorithm
         stretch:
             The factor by which to stretch the data
-        timeWindow:
-            The window size to be used by the paulstrtch algorithm. A timeWindow of 0.1 is
-            equivalent to a window of 4410 data points.
+        window:
+            The window size to be used by the paulstrtch algorithm. A {window} of 0.1 is
+            equivalent to 4410 data points.
         """
         self.timeSeries.interpolate(stretch)
-        self.x = paulstretch(self.x,stretch,timeWindow)
+        self.x = paulstretch(self.x,stretch,window)
 
     def phaseVocoderStretch(self,stretch,frameLength=512,synthesisHop=None):
         if synthesisHop is None:
