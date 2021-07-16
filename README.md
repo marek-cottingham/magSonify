@@ -7,7 +7,7 @@ pip install git+https://github.com/TheMuonNeutrino/magSonify
 ```
 
 ### Quick start ###
-Look at the example in `processingExample.py`
+Look at the example in `Example Code/processingExample.py`
 
 ### Note on DataSet_3D ###
 `DataSet_3D` is the class most commonly used to store satellite data.
