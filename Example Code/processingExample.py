@@ -1,3 +1,6 @@
+import context
+context.get()
+
 from datetime import datetime
 from magSonify.MagnetometerData import THEMISdata
 import numpy as np
