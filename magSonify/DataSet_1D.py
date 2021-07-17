@@ -1,8 +1,8 @@
-from .paulstretch_mono import paulstretch
+from .sonificationMethods.paulstretch_mono import paulstretch
 from .TimeSeries import TimeSeries
 from .DataSet import DataSet
 import numpy as np
-from . import wavelets
+from .sonificationMethods import wavelets
 import audiotsm
 from audiotsm.io.array import ArrayReader, ArrayWriter
 from copy import deepcopy
