@@ -135,6 +135,13 @@ class DataSet():
     def _raiseIfTimeSeriesNotEqual(self, other):
         if (self.timeSeries != other.timeSeries):
             raise ValueError("Datasets do not have the same time series")
+
+    def __getitem__(self,subscript):
+        if isinstance(subscript,slice):
+            res = self._iterate(
+                lambda series: series[subscript]
+            )
+            return type(self)(self.timeSeries[subscript],res)
     
     def __add__(self,other):
         return self._iteratePair(other,add)

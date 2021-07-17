@@ -29,6 +29,9 @@ class DataSet_1D(DataSet):
     def copy(self):
         return type(self)(self.timeSeries,deepcopy(self.x))
 
+    def __getitem__(self, subscript):
+        return type(self)(self.timeSeries[subscript],self.x[subscript])
+
     def waveletPitchShift(
             self,
             shift=1,

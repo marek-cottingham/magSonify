@@ -144,10 +144,14 @@ class TimeSeries():
             self.timeUnit = newTimeUnit
 
     def copy(self):
-        return TimeSeries(self.times.copy(),self.timeUnit,self.startTime)
+        return type(self)(self.times.copy(),self.timeUnit,self.startTime)
 
     def __eq__(self,other):
         return (
             self is other 
             or  np.all(self.asNumpy() == other.asNumpy())
         )
+    
+    def __getitem__(self,subscript):
+        if isinstance(subscript,slice):
+            return type(self)(self.times[subscript],self.timeUnit,self.startTime)
