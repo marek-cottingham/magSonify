@@ -99,21 +99,37 @@ def reducePlotResolution(frequencies,PSD,n=1000):
     redPSD = normalisePSD(redPSD)
     return reducedFreq, redPSD
 
-def getAfterPaustretch(before: magSonify.DataSet_1D, stretch):
+def getAfterAlgorithm(before: magSonify.DataSet_1D,stretch,algorithm):
     after = before.copy()
-    after.paulStretch(stretch)
+    getattr(after,algorithm)(stretch)
     return after
 
-def plotPSDpaulstretchSine(freq,stretch,showPlot=True):
+def plotPSD_Sine(algorithm,freq, stretch, showPlot=True):
+    expectation, after = compare_Sine(algorithm, freq, stretch)
+    plotPSD(expectation,after,showPlot)
+
+def compare_Sine(algorithm, freq, stretch):
     before, expectation = getBeforeAndExpectation_Sine(freq,0.2,stretch)
-    after = getAfterPaustretch(before, stretch)
+    after = getAfterAlgorithm(before, stretch,algorithm)
+    return expectation,after
+
+def plotPSD_Harmonic(algorithm,freqs, stretch, showPlot=True):
+    expectation, after = compare_Harmonic(algorithm, freqs, stretch)
     plotPSD(expectation,after,showPlot)
 
-def plotPSDpaulstretchHarmonic(freqs,stretch,showPlot=True):
+def compare_Harmonic(algorithm, freqs, stretch):
     before,expectation = getBeforeAndExpectation_Harmonic(freqs,0.2,stretch)
-    after = getAfterPaustretch(before,stretch)
-    plotPSD(expectation,after,showPlot)
+    after = getAfterAlgorithm(before,stretch,algorithm)
+    return expectation, after
 
+def getAfterPaustretch(before: magSonify.DataSet_1D, stretch):
+    return getAfterAlgorithm(before,stretch,'paulStretch')
+
+def plotPSDpaulstretchSine(freq,stretch,showPlot=True):
+    plotPSD_Sine('paulStretch',freq, stretch, showPlot)
+
+def plotPSDpaulstretchHarmonic(freqs,stretch,showPlot=True,):
+    plotPSD_Harmonic('paulStretch',freqs, stretch, showPlot)
 
 # def processing_PSD_runningMean_gaussianFit(expecation,actual,**kwargs):
 #     pass
