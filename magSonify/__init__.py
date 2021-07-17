@@ -1,14 +1,22 @@
 # WARNING: Delete cache before package uninstall by calling cacheControl.deleteCache()
-CACHING_ENABLED = False
+
 
 from ai import cdas
 
-if CACHING_ENABLED:
-    from .initialise import ensurePath,local_app_path,cdas_cache_path,memory_cache_path
+try:
+    from .devCaching.config import CACHING_ENABLED
+except ImportError:
+    CACHING_ENABLED = False
+
+def enableCaching():
+    from .devCaching.initialise import ensurePath,local_app_path,cdas_cache_path,memory_cache_path
     ensurePath(local_app_path)
     ensurePath(cdas_cache_path)
     ensurePath(memory_cache_path)
     cdas.set_cache("True",cdas_cache_path)
+
+if CACHING_ENABLED:
+    enableCaching()
 
 from .MagnetometerData import MagnetometerData, THEMISdata
 from .SimulateData import SimulateData
