@@ -20,6 +20,8 @@ class MagnetometerData():
         self.peemFlux = DataSet_3D_Placeholder()
         self.peemVelocity = DataSet_3D_Placeholder()
 
+        self.peemIdentifyMagnetosheath = DataSet_Placeholder()
+
     def importCDAS(self):
         raise NotImplementedError
 
@@ -50,15 +52,18 @@ class MagnetometerData():
 
     def removeMagnetosheath(self):
         # Beta
-        perpflux = self.peemFlux.data[0]**2 + self.peemFlux.data[1]**2
-        perpflux = perpflux**(1/2)
+        fluxX = self.peemIdentifyMagnetosheath.data['flux_x']
+        fluxY = self.peemIdentifyMagnetosheath.data['flux_y']
+        perpFlux = (fluxX**2 + fluxY**2)**(1/2)
+        density = self.peemIdentifyMagnetosheath.data['density']
+        velocityX = self.peemIdentifyMagnetosheath.data['velocity_x']
         removeSheathMask = logical_and(
             (self.position.data["radius"] > 8),
             logical_or(
-                (self.peemDensity.x > 10),
+                (density > 10),
                 logical_or(
-                    (self.peemVelocity.data[0] < -200),
-                    (perpflux > 2e7)
+                    (velocityX < -200),
+                    (perpFlux > 2e7)
                 )
             )
         )
@@ -76,9 +81,7 @@ class THEMISdata(MagnetometerData):
         for x in (
             self.magneticField,
             self.position,
-            self.peemDensity,
-            self.peemVelocity,
-            self.peemFlux
+            self.peemIdentifyMagnetosheath
         ):
             x.interpolate(timeSeries_3s)
 
@@ -158,25 +161,14 @@ class THEMISdata(MagnetometerData):
             ]
         )
         timeSeries = TimeSeries(data["UT"])
-        s.peemDensity = DataSet_1D(
+        s.peemIdentifyMagnetosheath = DataSet(
             timeSeries,
-            data[f"N_ELEC_MOM_ESA-{satellite.upper()}"]
-        )
-        s.peemVelocity = DataSet_3D(
-            timeSeries,
-            [
-                data[f'VX_ELEC_GSM_MOM_ESA-{satellite.upper()}'],
-                data[f'VY_ELEC_GSM_MOM_ESA-{satellite.upper()}'],
-                data[f'VZ_ELEC_GSM_MOM_ESA-{satellite.upper()}']
-            ]
-        )
-        s.peemFlux = DataSet_3D(
-            timeSeries,
-            [
-                data[f'FX_ELEC_MOM_ESA-{satellite.upper()}'],
-                data[f'FY_ELEC_MOM_ESA-{satellite.upper()}'],
-                data[f'FZ_ELEC_MOM_ESA-{satellite.upper()}'],
-            ]
+            {
+                'density': data[f"N_ELEC_MOM_ESA-{satellite.upper()}"],
+                'velocity_x': data[f'VX_ELEC_GSM_MOM_ESA-{satellite.upper()}'],
+                'flux_x': data[f'FX_ELEC_MOM_ESA-{satellite.upper()}'],
+                'flux_y': data[f'FY_ELEC_MOM_ESA-{satellite.upper()}']
+            }
         )
     
     def defaultProcessing(self,removeMagnetosheath=False):
