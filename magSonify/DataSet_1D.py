@@ -32,6 +32,16 @@ class DataSet_1D(DataSet):
     def __getitem__(self, subscript):
         return type(self)(self.timeSeries[subscript],self.x[subscript])
 
+    def _iteratePair(self,other,lamb):
+        """Execute function {lamb} on each element pair in self.data and self.other with the same 
+        keys
+        """
+        self._raiseIfTimeSeriesNotEqual(other)
+        res = {}
+        for i, d in self.items():
+            res[i] = lamb(d,other.data[i])
+        return type(self)(self.timeSeries,res[0])
+
     def waveletPitchShift(
             self,
             shift=1,
