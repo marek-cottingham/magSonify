@@ -1,7 +1,10 @@
 
 from datetime import time
 import numpy as np
+from numpy.core.arrayprint import _array_str_implementation
+from scipy import signal
 from .TimeSeries import TimeSeries
+from scipy.signal import chirp
 
 class SimulateData():
     def _setupTimeSeries(s, timeSeries, stretch=None):
@@ -24,7 +27,6 @@ class SimulateData():
         frequency = stretch*frequency
         timeSeries = s._setupTimeSeries(timeSeries,stretch)
         return s.genSine(timeSeries,frequency,amplitude,phase)
-
 
     def genHarmonic(s,timeSeries: TimeSeries,frequencies,amplitude=1,phase=0):
         """Generates a set of overlapped sine waves
@@ -49,6 +51,20 @@ class SimulateData():
         frequencies = stretch * np.array(frequencies)
         timeSeries = s._setupTimeSeries(timeSeries,stretch)
         return s.genHarmonic(timeSeries,frequencies,amplitude,phase)
+
+    def genSweep(self,timeSeries: TimeSeries, f0, f1, amplitude=1, method='linear'):
+        timeSeries = self._setupTimeSeries(timeSeries)
+        times = timeSeries.asFloat()
+        t1 = np.max(times)
+        signal = chirp(times,f0,t1,f1,method=method) * amplitude
+        return signal
+
+    def genSweepExpectation(self,timeSeries:TimeSeries,stretch,f0,f1,amplitdue=1,method='linear'):
+        timeSeries = self._setupTimeSeries(timeSeries,stretch)
+        times = timeSeries.asFloat()
+        t1 = np.max(times)
+        signal = chirp(times,f0*stretch,t1,f1*stretch,method=method) * amplitdue
+        return signal
 
     def waveOrientOffset(s,waveform,direction=(1,0,0),offset=(0,0,0)):
         """ Rotate and offset a given waveform in 3D space, returning a list with the series for the
