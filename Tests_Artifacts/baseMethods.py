@@ -131,39 +131,4 @@ def plotPSDpaulstretchSine(freq,stretch,showPlot=True):
 def plotPSDpaulstretchHarmonic(freqs,stretch,showPlot=True,):
     plotPSD_Harmonic('paulStretch',freqs, stretch, showPlot)
 
-# def processing_PSD_runningMean_gaussianFit(expecation,actual,**kwargs):
-#     pass
 
-# def processing_PSD_gaussianfit(expectation, actual,**kwargs):
-#     """ Returns the fractional change in the parameters of a gaussian fit to the data
-#     """
-#     expectationPSD, actualPSD, expectation_frequencies, actual_frequencies = PSD_with_freqs(expectation, actual)
-    
-#     expectationPeaks = fitNnarrowGaussian(expectation_frequencies,expectationPSD,**kwargs)
-#     actualPeaks = fitNnarrowGaussian(actual_frequencies,actualPSD,**kwargs)
-    
-#     return expectationPeaks, actualPeaks
-
-# def gaussianFunction(x,amp,u,sigma):
-#     return amp * np.exp(
-#         -(x-u)**2 / (2 * sigma**2)
-#     )
-
-# def fitNnarrowGaussian(x,y,n=2,windowDist=15):
-#     y = y.copy()
-#     xPeaks = []
-#     for i in range(n):
-#         imax = np.argmax(y)
-#         start = max(0,imax-windowDist)
-#         end = min(len(x),imax+windowDist)
-#         window_x = x[start:end]
-#         window_y = y[start:end]
-#         params, _ = curve_fit(gaussianFunction,window_x,window_y,[y[imax],x[imax],5])
-#         xPeaks.append(np.abs(params))
-#         y[start:end] = 0
-    
-#     def keyFunc(x):
-#         return x[1]
-
-#     xPeaks.sort(key=keyFunc)
-#     return xPeaks
