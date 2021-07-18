@@ -1,5 +1,6 @@
 
 
+
 import context
 
 context.get()
@@ -11,6 +12,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy as sp
 from magSonify import DataSet_1D, SimulateData
+from magSonify import TimeSeries
 from scipy.interpolate.interpolate import interp1d
 from scipy.ndimage import uniform_filter1d
 from scipy.optimize.minpack import curve_fit
@@ -20,8 +22,11 @@ def getBeforeAndExpectation_Sine(freq,duration_seconds,stretch = 16):
     ts = _getTestingTimeSeries(duration_seconds)
     genFunc = SimulateData().genSine
     genFuncExpectaion = SimulateData().genSineExpectation
+    kwargs = {
+        'frequency': freq,
+    }
     before, expectation = _getBeforeAndExpectation_Func(
-        freq, stretch, ts, genFunc, genFuncExpectaion
+        kwargs, stretch, ts, genFunc, genFuncExpectaion
     )
     return before, expectation
 
@@ -29,25 +34,44 @@ def getBeforeAndExpectation_Harmonic(freqs,duration_seconds,stretch = 16):
     ts = _getTestingTimeSeries(duration_seconds)
     genFunc = SimulateData().genHarmonic
     genFuncExpectaion = SimulateData().genHarmonicExpectation
+    kwargs = {
+        'frequencies': freqs,
+    }
     before, expectation = _getBeforeAndExpectation_Func(
-        freqs, stretch, ts, genFunc, genFuncExpectaion
+        kwargs, stretch, ts, genFunc, genFuncExpectaion
     )
     return before, expectation
 
-def _getBeforeAndExpectation_Func(freq, stretch, ts, genFunc, genFuncExpectaion):
+def getBeforeAndExpectation_Sweep(f0,f1,duration_seconds,stretch=16,method='logarithmic'):
+    ts = _getTestingTimeSeries(duration_seconds)
+    genFunc = SimulateData().genSweep
+    genFuncExpectation = SimulateData().genSweepExpectation
+    kwargs = {
+        'f0': f0,
+        'f1': f1,
+        'method': method
+    }
+    before, expect = _getBeforeAndExpectation_Func(
+        kwargs, stretch, ts, genFunc, genFuncExpectation
+    )
+    return before, expect
+
+def _getBeforeAndExpectation_Func(kwargs, stretch, ts: TimeSeries, genFunc, genFuncExpectation):
     before = magSonify.DataSet_1D(
         ts,
         genFunc(
             ts,
-            freq,
+            **kwargs,
         )
     )
+    new_ts = ts.copy()
+    new_ts.interpolate(stretch)
     expectation = magSonify.DataSet_1D(
-        ts,
-        genFuncExpectaion(
+        new_ts,
+        genFuncExpectation(
             ts,
             stretch,
-            freq,
+            **kwargs,
         )
     )
     return before,expectation
