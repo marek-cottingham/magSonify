@@ -1,0 +1,202 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>magSonify &#8212; magSonify 0.1dev documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="magsonify">
+<h1>magSonify<a class="headerlink" href="#magsonify" title="Permalink to this headline">¶</a></h1>
+<p>magSonify enables the sonification of space magnetic field data in python.</p>
+<p>It allows for downloading of satellite data from CDA web, processing of this data and generation of
+audio. It includes time stretching methods in order to aid sonification of data at low sample rates.</p>
+<p>Currently the project provides ready built support for THEMIS satellites only. Users can specify
+imports from other satellietes by defining their own subclasses.</p>
+</section>
+<section id="index">
+<h1>Index<a class="headerlink" href="#index" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Import data from CDA web</p></li>
+<li><p>Interpolate datasets to standard sample spacing</p></li>
+<li><p>Subtract the mean field from data</p></li>
+<li><p>Convert magnetic field to mean field align coordinates</p></li>
+<li><p>Remove data below a certain altitude</p></li>
+<li><p>Remove data in the magnotosheath</p></li>
+<li><dl class="simple">
+<dt>Time stretch data for sonification using 4 different algorithms:</dt><dd><ul>
+<li><p>Wavelet based stretch</p></li>
+<li><p>Paulstretch</p></li>
+<li><p>Phase vocoder</p></li>
+<li><p>WSOLA</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>pip install git+https://github.com/TheMuonNeutrino/magSonify</p>
+</div></blockquote>
+</section>
+<section id="usage-example">
+<h2>Usage example<a class="headerlink" href="#usage-example" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">magSonify</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2008</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">end</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2008</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">myTHEMISdata</span> <span class="o">=</span> <span class="n">magSonify</span><span class="o">.</span><span class="n">THEMISdata</span><span class="p">()</span>
+<span class="n">myTHEMISdata</span><span class="o">.</span><span class="n">importCdasAsync</span><span class="p">(</span>
+   <span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">,</span><span class="n">satellite</span><span class="o">=</span><span class="s1">&#39;D&#39;</span>
+<span class="p">)</span>
+<span class="n">myTHEMISdata</span><span class="o">.</span><span class="n">defaultProcessing</span><span class="p">(</span><span class="n">removeMagnetosheath</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">minRadius</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="n">pol</span> <span class="o">=</span> <span class="n">myTHEMISdata</span><span class="o">.</span><span class="n">magneticFieldMeanFieldCorrdinates</span><span class="o">.</span><span class="n">extractKey</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">pol</span><span class="o">.</span><span class="n">phaseVocoderStretch</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">pol</span><span class="o">.</span><span class="n">normalise</span><span class="p">()</span>
+<span class="n">pol</span><span class="o">.</span><span class="n">genMonoAudio</span><span class="p">(</span><span class="s2">&quot;Example of pol x16 with phase vocoder.wav&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="contribute">
+<h2>Contribute<a class="headerlink" href="#contribute" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Issue Tracker: github.com/TheMuonNeutrino/magSonify/issues</p></li>
+<li><p>Source Code: github.com/TheMuonNeutrino/magSonify</p></li>
+</ul>
+</section>
+<section id="license">
+<h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
+<p>To be determined</p>
+</section>
+<section id="doctest">
+<h2>DocTest<a class="headerlink" href="#doctest" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="magSonify.MagnetometerData">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">magSonify.</span></span><span class="sig-name descname"><span class="pre">MagnetometerData</span></span><a class="headerlink" href="#magSonify.MagnetometerData" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="magSonify.MagnetometerData.convertToMeanFieldCoordinates">
+<span class="sig-name descname"><span class="pre">convertToMeanFieldCoordinates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#magSonify.MagnetometerData.convertToMeanFieldCoordinates" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="magSonify.MagnetometerData.fillLessThanRadius">
+<span class="sig-name descname"><span class="pre">fillLessThanRadius</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radiusInEarthRadii</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#magSonify.MagnetometerData.fillLessThanRadius" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="magSonify.MagnetometerData.importCDAS">
+<span class="sig-name descname"><span class="pre">importCDAS</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#magSonify.MagnetometerData.importCDAS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="magSonify.MagnetometerData.removeMagnetosheath">
+<span class="sig-name descname"><span class="pre">removeMagnetosheath</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#magSonify.MagnetometerData.removeMagnetosheath" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">magSonify</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Marek Cottingham.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

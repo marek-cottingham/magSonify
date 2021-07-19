@@ -22,15 +22,23 @@ class MagnetometerData():
 
         self.peemIdentifyMagnetosheath = DataSet_Placeholder()
 
-    def importCDAS(self):
+    def importCDAS(self) -> None:
+        """Derived classes should implement"""
         raise NotImplementedError
 
-    def fillLessThanRadius(self,radiusInEarthRadii,const=0):
+    def fillLessThanRadius(self,radiusInEarthRadii,const=0) -> None:
+        """Fills all values in the magnetic field with {const} when the radius is below the 
+        specificed value.
+        """
         assert(self.position.timeSeries == self.magneticField.timeSeries)
         radiusMask = self.position.data["radius"] < radiusInEarthRadii
         self.magneticField.fillMask(radiusMask,const)
 
     def convertToMeanFieldCoordinates(self) -> None:
+        """ Converts the magnetic field data in self.magneticField to mean field coordinates,
+        saving the output in self.magneticFieldMeanFieldCoordinates. self.meanField must be 
+        specified and contain a 3D dataset with the mean magnetic field.
+        """
         assert(self.position.timeSeries == self.magneticField.timeSeries)
         assert(self.magneticField.timeSeries == self.meanField.timeSeries)
 
@@ -50,8 +58,9 @@ class MagnetometerData():
             torUnitVector
         )
 
-    def removeMagnetosheath(self):
-        # Beta
+    def removeMagnetosheath(self) -> None:
+        """Removes portions of magnetic field data while the satelliet is in the magnetosheath.
+        self.peemIdentifyMagnetosheath must be specified."""
         fluxX = self.peemIdentifyMagnetosheath.data['flux_x']
         fluxY = self.peemIdentifyMagnetosheath.data['flux_y']
         perpFlux = (fluxX**2 + fluxY**2)**(1/2)
@@ -71,7 +80,7 @@ class MagnetometerData():
 
     
 class THEMISdata(MagnetometerData):
-    def interpolate_3s(self):
+    def interpolate_3s(self) -> None:
         """Iterpolates all data to 3 second spacing"""
         timeSeries_3s = generateTimeSeries(
             self.magneticField.timeSeries.getStart(),
@@ -85,7 +94,7 @@ class THEMISdata(MagnetometerData):
         ):
             x.interpolate(timeSeries_3s)
 
-    def importCDAS(s,startDate,endDate,satellite="D"):
+    def importCDAS(s,startDate,endDate,satellite="D") -> None:
         """ Imports magnetic field, position, radial distance and peem data for the designated THEMIS
             satellite and date range.
             The possible satellite letters are: "A", "B", "C", "D" or "E".
@@ -96,9 +105,9 @@ class THEMISdata(MagnetometerData):
         s._importCdasPosition(*args)
         s._importCdasPeem(*args)
 
-    def importCdasAsync(self,startDate,endDate,satellite="D"):
+    def importCdasAsync(self,startDate,endDate,satellite="D") -> None:
         """ Imports magnetic field, position, radial distance and peem data for the designated 
-            THEMIS satellite and date range.
+            THEMIS satellite and date range. Uses asyncronous web requests.
             The possible satellite letters are: "A", "B", "C", "D" or "E".
         """
         args = (startDate,endDate,satellite)
@@ -113,7 +122,7 @@ class THEMISdata(MagnetometerData):
         for fetch in fetchers:
             fetch.join()
 
-    def _importCdasPosition(s, startDate, endDate, satellite):
+    def _importCdasPosition(s, startDate, endDate, satellite) -> None:
         data = cdas.get_data(
             'sp_phys',
             f'TH{satellite.upper()}_OR_SSC',
@@ -131,7 +140,7 @@ class THEMISdata(MagnetometerData):
             }
         )
 
-    def _importCdasMagneticField(s, startDate, endDate, satellite):
+    def _importCdasMagneticField(s, startDate, endDate, satellite) -> None:
         data = cdas.get_data(
             'sp_phys',
             f'TH{satellite.upper()}_L2_FGM',
@@ -148,7 +157,7 @@ class THEMISdata(MagnetometerData):
             ]
         )
     
-    def _importCdasPeem(s,startDate,endDate,satellite):
+    def _importCdasPeem(s,startDate,endDate,satellite) -> None:
         data = cdas.get_data(
            'sp_phys',
            f'TH{satellite.upper()}_L2_MOM',
@@ -171,7 +180,11 @@ class THEMISdata(MagnetometerData):
             }
         )
     
-    def defaultProcessing(self,removeMagnetosheath=False,minRadius=4):
+    def defaultProcessing(self,removeMagnetosheath=False,minRadius=4) -> None:
+        """Performs a standard processing procedure on THEMIS data.
+        :param removeMagnetosheath: Whether to remove data while in the magnetosheath
+        :param minRadius: Radius in earth radii below which to remove magnetic field data
+        """
         self.importCdasAsync(
             datetime(2007,9,4),
             datetime(2007,9,5)
