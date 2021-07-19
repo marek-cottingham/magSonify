@@ -171,7 +171,7 @@ class THEMISdata(MagnetometerData):
             }
         )
     
-    def defaultProcessing(self,removeMagnetosheath=False):
+    def defaultProcessing(self,removeMagnetosheath=False,minRadius=4):
         self.importCdasAsync(
             datetime(2007,9,4),
             datetime(2007,9,5)
@@ -181,7 +181,7 @@ class THEMISdata(MagnetometerData):
         self.magneticField.constrainAbsoluteValue(400)
         self.meanField = self.magneticField.runningAverage(timeWindow=np.timedelta64(35,"m"))
         self.magneticField = self.magneticField - self.meanField
-        self.fillLessThanRadius(4)
+        self.fillLessThanRadius(minRadius)
         if removeMagnetosheath:
             self.removeMagnetosheath()
         self.convertToMeanFieldCoordinates()
