@@ -14,7 +14,7 @@ class MagnetometerData():
         self.magneticField = DataSet_3D_Placeholder()
         self.position = DataSet_3D_Placeholder()
         self.meanField = DataSet_3D_Placeholder()
-        self.magneticFieldMeanFieldCorrdinates = DataSet_3D_Placeholder()
+        self.magneticFieldMeanFieldCoordinates = DataSet_3D_Placeholder()
 
         self.peemDensity = DataSet_Placeholder()
         self.peemFlux = DataSet_3D_Placeholder()
@@ -44,7 +44,7 @@ class MagnetometerData():
         torUnitVector = fieldUnitVector.cross(polUnitVector)
         torUnitVector.makeUnitVector()
 
-        self.magneticFieldMeanFieldCorrdinates = self.magneticField.coordinateTransform(
+        self.magneticFieldMeanFieldCoordinates = self.magneticField.coordinateTransform(
             fieldUnitVector,
             polUnitVector,
             torUnitVector
@@ -186,4 +186,4 @@ class THEMISdata(MagnetometerData):
             self.removeMagnetosheath()
         self.convertToMeanFieldCoordinates()
 
-        self.magneticFieldMeanFieldCorrdinates.fillNaN()
+        self.magneticFieldMeanFieldCoordinates.fillNaN()

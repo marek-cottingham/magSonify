@@ -59,7 +59,7 @@ for i,day in enumerate(X):
                 datetime(2007,9,day+1),
             )
             mag.defaultProcessing(removeMagnetosheath= False)
-            pol = mag.magneticFieldMeanFieldCorrdinates.extractKey(1)
+            pol = mag.magneticFieldMeanFieldCoordinates.extractKey(1)
 
     for algName, args in sonificationAlgorithms.items():
         _pol = pol.copy()

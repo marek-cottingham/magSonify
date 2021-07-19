@@ -23,19 +23,19 @@ mag.fillLessThanRadius(4)
 mag.removeMagnetosheath()
 mag.convertToMeanFieldCoordinates()
 
-mag.magneticFieldMeanFieldCorrdinates.fillNaN()
+mag.magneticFieldMeanFieldCoordinates.fillNaN()
 
-com = mag.magneticFieldMeanFieldCorrdinates.extractKey(0)
+com = mag.magneticFieldMeanFieldCoordinates.extractKey(0)
 com.phaseVocoderStretch(16)
 com.normalise()
 com.genMonoAudio("Example of com x16 with phase vocoder.wav")
 
-pol = mag.magneticFieldMeanFieldCorrdinates.extractKey(1)
+pol = mag.magneticFieldMeanFieldCoordinates.extractKey(1)
 pol.phaseVocoderStretch(16)
 pol.normalise()
 pol.genMonoAudio("Example of pol x16 with phase vocoder.wav")
 
-tor = mag.magneticFieldMeanFieldCorrdinates.extractKey(2)
+tor = mag.magneticFieldMeanFieldCoordinates.extractKey(2)
 tor.phaseVocoderStretch(16)
 tor.normalise()
 tor.genMonoAudio("Example of tor x16 with phase vocoder.wav")
