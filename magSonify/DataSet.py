@@ -10,12 +10,15 @@ from .TimeSeries import TimeSeries
 from copy import deepcopy
 
 class DataSet():
+    """Represents a data set with multiple data series sampled at common time points."""
     def __init__(self,timeSeries: TimeSeries,data):
         self.timeSeries = timeSeries
+        """:class:`TimeSeries` represeting the sampling times for the dataset"""
         self.data = data
+        """Dictionary containing the data series"""
 
     def items(self) -> Tuple:
-        """Returns a list of tuples, containg index-data pairs for each element in DataSeries.data
+        """Returns a list of tuples, containg index-data pairs for each element in :attr:`data`
         """
         try:
             dataInterateOver = self.data.items()
@@ -24,11 +27,11 @@ class DataSet():
         return dataInterateOver
     
     def keys(self) -> List:
-        """Returns all keys in ``DataSeries.data``"""
+        """Returns all keys in :attr:`data`"""
         return [x[0] for x in self.items()] 
 
     def fillNaN(self,const=0) -> None:
-        """Fills ``nan`` values in the data with the constant ``const``"""
+        """Fills ``NaN`` values in the data with the constant ``const``"""
         for i, d in self.items():
             self.data[i] = np.nan_to_num(d,nan=const)
 
@@ -46,7 +49,7 @@ class DataSet():
         :param ref_or_factor:
             A reference object or factor to use to interpolate the data.
 
-            If ``TimeSeries`` or ``DataSet`` is passed, this will interpolate the data to have a matching 
+            If :class:`TimeSeries` or :class:`DataSet` is passed, this will interpolate the data to have a matching 
             time series.
 
             If a numerical type is passed, the data will be interpolated to an evenly spaced time
@@ -107,13 +110,13 @@ class DataSet():
         return type(self)(self.timeSeries,meanData)
 
     def extractKey(self,key) -> DataSet_1D:
-        """Extract element from ``data[key]`` in new data set"""
+        """Extract element from ``self.data[key]`` in new data set"""
         return DataSet_1D(self.timeSeries,deepcopy(self.data[key]))
 
     def genMonoAudio(self,key,file,**kwargs) -> None:
         """Generate a mono audio file from data in the series ``self.data[key]``
         
-        :param sampleRate:
+        :param int sampleRate:
             The sample rate of the output audio, default is 44100.
         """
         writeoutAudio(self.data[key],file,**kwargs)
@@ -137,8 +140,11 @@ class DataSet():
         for i,d in self.items():
             self.data[i] = d[index]
 
-    def _iterate(self,lamb,replace=False):
-        """Execute function ``lamb`` on each element in ``self.data``"""
+    def _iterate(self,lamb,replace=False) -> dict:
+        """Execute function ``lamb`` on each element in :attr:`data`
+        
+        :return dict: Returns a dict with the equivalent keys as in :attr:`data`
+        """
         res = {}
         for i,d in self.items():
             if replace:
@@ -147,9 +153,10 @@ class DataSet():
                 res[i] = lamb(d)
         return res
 
-    def _iteratePair(self,other,lamb):
+    def _iteratePair(self,other,lamb) -> DataSet:
         """Execute function ``lamb`` on each element pair in ``self.data`` and ``other.data`` with 
-        the same keys
+        the same keys. ``self`` and ``other`` must have the same time series and same keys in 
+        :attr:`data`.
         """
         self._raiseIfTimeSeriesNotEqual(other)
         res = {}
@@ -162,7 +169,12 @@ class DataSet():
             raise ValueError("Datasets do not have the same time series")
 
     def __getitem__(self,subscript):
-        """Supports using slices to extract a subsection along the time axis."""
+        """
+        Supports using slices to extract a subsection along the time axis::
+
+            myNewDataSet   = myDataSet[100:200]
+            myOtherDataSet = myDataSet[200:None:3]
+        """
         if isinstance(subscript,slice):
             res = self._iterate(
                 lambda series: series[subscript]
@@ -170,21 +182,33 @@ class DataSet():
             return type(self)(self.timeSeries[subscript],res)
     
     def __add__(self,other) -> DataSet:
-        """Supports addition"""
+        """
+        Supports addition: ``sumDataSet = firstDataSet + secondDataSet``
+
+        Requires: ``firstDataSet.timeSeries == secondDataSet.timeSeries``
+        """
         return self._iteratePair(other,add)
 
     def __sub__(self,other) -> DataSet:
-        """Supports subtration"""
+        """Supports subtraction: ``diffDataSet = firstDataSet - secondDataSet```"""
         return self._iteratePair(other,sub)
 
     def __neg__(self) -> DataSet:
-        """Supports negative"""
+        """Supports negation: ``negDataSet = - DateSet``"""
         res = self._iterate(neg)
         return type(self)(self.timeSeries,res)
 
 from .DataSet_1D import DataSet_1D
         
 class DataSet_3D(DataSet):
+    """Represents a vector quantity sampled at multiple time points.
+    
+    :param TimeSeries timeSeries:
+        The sampling time point
+    :param dict data:
+        The data series.
+        The keys ``0, 1, 2`` must be defined, though not exclusively.
+    """
     def __init__(self,timeSeries: TimeSeries,data):
         try:
             indiciesInKeys = 0 in data.keys() and 1 in data.keys() and 2 in data.keys()
@@ -195,7 +219,7 @@ class DataSet_3D(DataSet):
         super().__init__(timeSeries,data)
 
     def genStereoAudio(self,file,**kwargs) -> None:
-        """Generates a stereo audio output"""
+        """Generates a stereo audio output in the specified file"""
         audio = np.array([
             self.data[0] + 0.5 * self.data[1],
             0.5 * self.data[1] + self.datca[2],
@@ -213,8 +237,8 @@ class DataSet_3D(DataSet):
         res[2] = sd[0] * od[1] - od[1] * sd[0]
         return DataSet_3D(self.timeSeries,res)
 
-    def dot(self,other) -> DataSet_1D:
-        """Computes to dot product of 3D datasets"""
+    def dot(self,other) -> DataSet_3D:
+        """Computes the dot product of 3D datasets"""
         self._raiseIfTimeSeriesNotEqual(other)
         res = {}
         for i in (0,1,2):

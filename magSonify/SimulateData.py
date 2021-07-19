@@ -22,7 +22,7 @@ class SimulateData():
 
     def genSineExpectation(s,timeSeries: TimeSeries,stretch,frequency,amplitude=1,phase=0):
         """Generates the expected output after sine wave signal is time stretched by 
-            a factor of {stretch}
+            a factor of ``stretch``
         """
         frequency = stretch*frequency
         timeSeries = s._setupTimeSeries(timeSeries,stretch)
@@ -70,10 +70,10 @@ class SimulateData():
         """ Rotate and offset a given waveform in 3D space, returning a list with the series for the
         3 components
         
-        direction:
+        :param direction:
             The axis the field amplitude oscillates in as a vector. This will be normalised to a 
             unit vector.
-        offset:
+        :param offset:
             The offset of the origin of the wave.
         """
         b = [None,None,None]

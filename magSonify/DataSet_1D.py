@@ -26,6 +26,7 @@ class DataSet_1D(DataSet):
 
     @property
     def x(self) -> np.array:
+        """Quick get/set access for ``self.data[0]``"""
         return self.data[0]
 
     @x.setter
@@ -66,10 +67,9 @@ class DataSet_1D(DataSet):
             wavelet=wavelets.Morlet(),
             preserveScaling=False
         ) -> None:
-        """Pitch shifts the data on specified axes by {shift} times using continous wavlet wavelets.transform.
-
-        Parameters
-        ----------
+        """Pitch shifts the data on specified axes by ``shift`` times using 
+        the continous wavlet transform.
+        
         :param shift:
             The multiple by which to shift the pitch of the input field.
         :param scaleLogSpacing:
@@ -131,15 +131,29 @@ class DataSet_1D(DataSet):
             rx = wavelets.transform.icwt(coefficients_shifted)
         self.x = np.real(rx)
 
-    def waveletStretch(self,stretch,interpolateBefore=None,interpolateAfter=None,scaleLogSpacing=0.12):
-        """Stretches the data using wavelet transforms"""
+    def waveletStretch(
+        self,stretch,interpolateBefore=None,interpolateAfter=None,scaleLogSpacing=0.12
+    ) -> None:
+        """Time stretches the data using wavelet transforms.
+        
+        :param stretch:
+            The factor by which to stretch the data.
+        :param interpolateBefore:
+            Interpolation factor prior to forward CWT.
+        :param interpolateAfter:
+            Interpolation factor after the forward CWT. Default is ``stretch`` if both
+            ``interpolateBefore`` and ``interpolateAfter`` are ``None``.
+        :param scaleLogSpacing:
+            Spacing between scales for the CWT. Lower values improve frequency resolution
+            at the cost of increasing computation time.
+        """
         if interpolateBefore is None and interpolateAfter is None:
             interpolateAfter = stretch
         if interpolateBefore is not None:
             self.interpolate(interpolateBefore)
         self.waveletPitchShift(stretch,scaleLogSpacing,interpolateAfter)
 
-    def paulStretch(self,stretch,window=0.015):
+    def paulStretch(self,stretch,window=0.015) -> None:
         """Stretches the data according the paulstretch algorithm
 
         :param stretch:
@@ -151,8 +165,8 @@ class DataSet_1D(DataSet):
         self.timeSeries.interpolate(stretch)
         self.x = paulstretch(self.x,stretch,window)
 
-    def phaseVocoderStretch(self,stretch,frameLength=512,synthesisHop=None):
-        """Stretches the data using a phase vocoder"""
+    def phaseVocoderStretch(self,stretch,frameLength=512,synthesisHop=None) -> None:
+        """Time stretches the data using a phase vocoder"""
         if synthesisHop is None:
             synthesisHop = frameLength//16
         reader = ArrayReader(np.array((self.x,)))
@@ -166,8 +180,8 @@ class DataSet_1D(DataSet):
         timeSeriesModification.run(reader, writer)
         self.x = writer.data.flatten()
 
-    def wsolaStretch(self,stretch,frameLength=512,synthesisHop=None,tolerance=None):
-        """Stretches the data using WSOLA"""
+    def wsolaStretch(self,stretch,frameLength=512,synthesisHop=None,tolerance=None) -> None:
+        """Time stretches the data using WSOLA"""
         if synthesisHop is None:
             synthesisHop = frameLength//8
         reader = ArrayReader(np.array((self.x,)))

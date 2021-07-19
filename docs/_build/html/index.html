@@ -1,475 +1,235 @@
 
+
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>&lt;no title&gt; &mdash; magSonify 0.1dev documentation</title>
+  
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
-    <title>magSonify &#8212; magSonify 0.1dev documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="MagSonify" href="src/introduction.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
    
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
-  </head><body>
-  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
           
 
-          <div class="body" role="main">
+          
+            <a href="#" class="icon icon-home"> magSonify
+          
+
+          
+          </a>
+
+          
             
-  <section id="magsonify">
-<h1>magSonify<a class="headerlink" href="#magsonify" title="Permalink to this headline">¶</a></h1>
-<p>magSonify enables the sonification of space magnetic field data in python.</p>
-<p>It allows for downloading of satellite data from CDA web, processing of this data and generation of
-audio. It includes time stretching methods in order to aid sonification of data at low sample rates.</p>
-<p>Currently the project provides ready built support for THEMIS satellites only. Users can specify
-imports from other satellietes by defining their own subclasses.</p>
-</section>
-<section id="index">
-<h1>Index<a class="headerlink" href="#index" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
 </div>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Table of contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="src/introduction.html">MagSonify</a></li>
+<li class="toctree-l1"><a class="reference internal" href="src/usage_notes.html">Usage notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="src/apidocs.html">API docs</a></li>
 </ul>
-<section id="features">
-<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><p>Import data from CDA web</p></li>
-<li><p>Interpolate datasets to standard sample spacing</p></li>
-<li><p>Subtract the mean field from data</p></li>
-<li><p>Convert magnetic field to mean field align coordinates</p></li>
-<li><p>Remove data below a certain altitude</p></li>
-<li><p>Remove data in the magnotosheath</p></li>
-<li><p>Removing duplicate data points in CDAS data</p></li>
-<li><dl class="simple">
-<dt>Time stretch data for sonification using 4 different algorithms:</dt><dd><ul>
-<li><p>Wavelet based stretch</p></li>
-<li><p>Paulstretch</p></li>
-<li><p>Phase vocoder</p></li>
-<li><p>WSOLA</p></li>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">magSonify</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>&lt;no title&gt;</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Table of contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="src/introduction.html">MagSonify</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="src/introduction.html#features">Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src/introduction.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src/introduction.html#usage-example">Usage example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src/introduction.html#license">License</a></li>
 </ul>
-</dd>
-</dl>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="src/usage_notes.html">Usage notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="src/usage_notes.html#note-on-dataset-3d">Note on DataSet_3D</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="src/apidocs.html">API docs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="src/apidocs.html#magnetometer-data">Magnetometer data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src/apidocs.html#themis-data">THEMIS data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src/apidocs.html#dataset">DataSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src/apidocs.html#dataset-3d">DataSet_3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src/apidocs.html#dataset-1d">DataSet_1D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src/apidocs.html#timeseries">TimeSeries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src/apidocs.html#simulate-data">Simulate Data</a></li>
+</ul>
 </li>
 </ul>
-</section>
-<section id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div><p>pip install git+https://github.com/TheMuonNeutrino/magSonify</p>
-</div></blockquote>
-</section>
-<section id="usage-example">
-<h2>Usage example<a class="headerlink" href="#usage-example" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">magSonify</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-
-<span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2008</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
-<span class="n">end</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2008</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">myTHEMISdata</span> <span class="o">=</span> <span class="n">magSonify</span><span class="o">.</span><span class="n">THEMISdata</span><span class="p">()</span>
-<span class="n">myTHEMISdata</span><span class="o">.</span><span class="n">importCdasAsync</span><span class="p">(</span>
-   <span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">,</span><span class="n">satellite</span><span class="o">=</span><span class="s1">&#39;D&#39;</span>
-<span class="p">)</span>
-<span class="n">myTHEMISdata</span><span class="o">.</span><span class="n">defaultProcessing</span><span class="p">(</span><span class="n">removeMagnetosheath</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">minRadius</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-
-<span class="n">pol</span> <span class="o">=</span> <span class="n">myTHEMISdata</span><span class="o">.</span><span class="n">magneticFieldMeanFieldCorrdinates</span><span class="o">.</span><span class="n">extractKey</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">pol</span><span class="o">.</span><span class="n">phaseVocoderStretch</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
-<span class="n">pol</span><span class="o">.</span><span class="n">normalise</span><span class="p">()</span>
-<span class="n">pol</span><span class="o">.</span><span class="n">genMonoAudio</span><span class="p">(</span><span class="s2">&quot;Example of pol x16 with phase vocoder.wav&quot;</span><span class="p">)</span>
-</pre></div>
 </div>
-</section>
-<section id="contribute">
-<h2>Contribute<a class="headerlink" href="#contribute" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><p>Issue Tracker: github.com/TheMuonNeutrino/magSonify/issues</p></li>
-<li><p>Source Code: github.com/TheMuonNeutrino/magSonify</p></li>
-</ul>
-</section>
-<section id="license">
-<h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
-<p>The MIT License. See LICENSE.txt for details.</p>
-</section>
-</section>
-<hr class="docutils" />
-<section id="api-docs">
-<h1>API docs<a class="headerlink" href="#api-docs" title="Permalink to this headline">¶</a></h1>
-<section id="magnetometer-data">
-<h2>Magnetometer data<a class="headerlink" href="#magnetometer-data" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="magSonify.MagnetometerData">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">magSonify.</span></span><span class="sig-name descname"><span class="pre">MagnetometerData</span></span><a class="headerlink" href="#magSonify.MagnetometerData" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py method">
-<dt class="sig sig-object py" id="magSonify.MagnetometerData.convertToMeanFieldCoordinates">
-<span class="sig-name descname"><span class="pre">convertToMeanFieldCoordinates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#magSonify.MagnetometerData.convertToMeanFieldCoordinates" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts the magnetic field data in <code class="docutils literal notranslate"><span class="pre">self.magneticField</span></code> to mean field coordinates,
-saving the output in <code class="docutils literal notranslate"><span class="pre">self.magneticFieldMeanFieldCoordinates</span></code>. <code class="docutils literal notranslate"><span class="pre">self.meanField</span></code> must be 
-specified and contain a 3D dataset with the mean magnetic field.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="magSonify.MagnetometerData.fillLessThanRadius">
-<span class="sig-name descname"><span class="pre">fillLessThanRadius</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radiusInEarthRadii</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#magSonify.MagnetometerData.fillLessThanRadius" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fills all values in the magnetic field with <code class="docutils literal notranslate"><span class="pre">const</span></code> when the radius is below the 
-specified value.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="magSonify.MagnetometerData.removeMagnetosheath">
-<span class="sig-name descname"><span class="pre">removeMagnetosheath</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#magSonify.MagnetometerData.removeMagnetosheath" title="Permalink to this definition">¶</a></dt>
-<dd><p>Removes portions of magnetic field data while the satellite is in the magnetosheath.
-<code class="docutils literal notranslate"><span class="pre">self.peemIdentifyMagnetosheath</span></code> must be specified.</p>
-</dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="themis-data">
-<h2>THEMIS data<a class="headerlink" href="#themis-data" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="magSonify.THEMISdata">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">magSonify.</span></span><span class="sig-name descname"><span class="pre">THEMISdata</span></span><a class="headerlink" href="#magSonify.THEMISdata" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py method">
-<dt class="sig sig-object py" id="magSonify.THEMISdata.defaultProcessing">
-<span class="sig-name descname"><span class="pre">defaultProcessing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">removeMagnetosheath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minRadius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#magSonify.THEMISdata.defaultProcessing" title="Permalink to this definition">¶</a></dt>
-<dd><p>Performs a standard processing procedure on THEMIS data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>removeMagnetosheath</strong> – Whether to remove data while in the magnetosheath</p></li>
-<li><p><strong>minRadius</strong> – Radius in earth radii below which to remove magnetic field data</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="magSonify.THEMISdata.importCDAS">
-<span class="sig-name descname"><span class="pre">importCDAS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">startDate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endDate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">satellite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'D'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#magSonify.THEMISdata.importCDAS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Imports magnetic field, position, radial distance and peem data for the designated THEMIS
-satellite and date range.
-The possible satellite letters are: “A”, “B”, “C”, “D” or “E”.</p>
-<p>Consider using <code class="docutils literal notranslate"><span class="pre">importCdasAsync</span></code> instead, as this is faster.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="magSonify.THEMISdata.importCdasAsync">
-<span class="sig-name descname"><span class="pre">importCdasAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">startDate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endDate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">satellite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'D'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#magSonify.THEMISdata.importCdasAsync" title="Permalink to this definition">¶</a></dt>
-<dd><p>Imports magnetic field, position, radial distance and peem data for the designated 
-THEMIS satellite and date range. Uses asyncronous web requests.
-The possible satellite letters are: “A”, “B”, “C”, “D” or “E”.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="magSonify.THEMISdata.interpolate_3s">
-<span class="sig-name descname"><span class="pre">interpolate_3s</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#magSonify.THEMISdata.interpolate_3s" title="Permalink to this definition">¶</a></dt>
-<dd><p>Iterpolates all data to 3 second spacing</p>
-</dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="dataset">
-<h2>DataSet<a class="headerlink" href="#dataset" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="magSonify.DataSet">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">magSonify.</span></span><span class="sig-name descname"><span class="pre">DataSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeSeries</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">magSonify.TimeSeries.TimeSeries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#magSonify.DataSet" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py method">
-<dt class="sig sig-object py" id="magSonify.DataSet.constrainAbsoluteValue">
-<span class="sig-name descname"><span class="pre">constrainAbsoluteValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#magSonify.DataSet.constrainAbsoluteValue" title="Permalink to this definition">¶</a></dt>
-<dd><p>Limits the data to within bounds of <code class="docutils literal notranslate"><span class="pre">-max</span></code> to <code class="docutils literal notranslate"><span class="pre">+max</span></code>, values outside 
-are set to <code class="docutils literal notranslate"><span class="pre">-max</span></code> or <code class="docutils literal notranslate"><span class="pre">+max</span></code> respectively.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="magSonify.DataSet.copy">
-<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#magSonify.DataSet.copy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a copy of the data set</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="magSonify.DataSet.extractKey">
-<span class="sig-name descname"><span class="pre">extractKey</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#magSonify.DataSet_1D" title="magSonify.DataSet_1D.DataSet_1D"><span class="pre">magSonify.DataSet_1D.DataSet_1D</span></a></span></span><a class="headerlink" href="#magSonify.DataSet.extractKey" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extract element from <code class="docutils literal notranslate"><span class="pre">data[key]</span></code> in new data set</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="magSonify.DataSet.fillMask">
-<span class="sig-name descname"><span class="pre">fillMask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#magSonify.DataSet.fillMask" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fill values according to a mask across all components</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="magSonify.DataSet.fillNaN">
-<span class="sig-name descname"><span class="pre">fillNaN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#magSonify.DataSet.fillNaN" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fills <code class="docutils literal notranslate"><span class="pre">nan</span></code> values in the data with the constant <code class="docutils literal notranslate"><span class="pre">const</span></code></p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="magSonify.DataSet.genMonoAudio">
-<span class="sig-name descname"><span class="pre">genMonoAudio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#magSonify.DataSet.genMonoAudio" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate a mono audio file from data in the series <code class="docutils literal notranslate"><span class="pre">self.data[key]</span></code></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>sampleRate</strong> – The sample rate of the output audio, default is 44100.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="magSonify.DataSet.interpolate">
-<span class="sig-name descname"><span class="pre">interpolate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_or_factor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#magSonify.DataSet.interpolate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interpolates the data and time series.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ref_or_factor</strong> – <p>A reference object or factor to use to interpolate the data.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code> or <code class="docutils literal notranslate"><span class="pre">DataSet</span></code> is passed, this will interpolate the data to have a matching 
-time series.</p>
-<p>If a numerical type is passed, the data will be interpolated to an evenly spaced time
-series with <code class="docutils literal notranslate"><span class="pre">factor</span></code> times the original sample point density.</p>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="magSonify.DataSet.items">
-<span class="sig-name descname"><span class="pre">items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span></span></span><a class="headerlink" href="#magSonify.DataSet.items" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a list of tuples, containg index-data pairs for each element in DataSeries.data</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="magSonify.DataSet.keys">
-<span class="sig-name descname"><span class="pre">keys</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#magSonify.DataSet.keys" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns all keys in <code class="docutils literal notranslate"><span class="pre">DataSeries.data</span></code></p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="magSonify.DataSet.removeDuplicateTimes">
-<span class="sig-name descname"><span class="pre">removeDuplicateTimes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#magSonify.DataSet.removeDuplicateTimes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Removes duplicate values in the time series by deleting all but the first occurence.
-Removes correspoinding points in each data series.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="magSonify.DataSet.runningAverage">
-<span class="sig-name descname"><span class="pre">runningAverage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeWindow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#magSonify.DataSet" title="magSonify.DataSet.DataSet"><span class="pre">magSonify.DataSet.DataSet</span></a></span></span><a class="headerlink" href="#magSonify.DataSet.runningAverage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a running average of the data with window size <code class="docutils literal notranslate"><span class="pre">samples</span></code> or period <code class="docutils literal notranslate"><span class="pre">timeWindow</span></code>.
-Pass only <code class="docutils literal notranslate"><span class="pre">samples</span></code> OR <code class="docutils literal notranslate"><span class="pre">timeWindow</span></code> exculsively.</p>
-</dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="dataset-3d">
-<h2>DataSet_3D<a class="headerlink" href="#dataset-3d" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="magSonify.DataSet_3D">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">magSonify.</span></span><span class="sig-name descname"><span class="pre">DataSet_3D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeSeries</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">magSonify.TimeSeries.TimeSeries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#magSonify.DataSet_3D" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py method">
-<dt class="sig sig-object py" id="magSonify.DataSet_3D.coordinateTransform">
-<span class="sig-name descname"><span class="pre">coordinateTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xBasis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yBasis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zBasis</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#magSonify.DataSet_3D" title="magSonify.DataSet.DataSet_3D"><span class="pre">magSonify.DataSet.DataSet_3D</span></a></span></span><a class="headerlink" href="#magSonify.DataSet_3D.coordinateTransform" title="Permalink to this definition">¶</a></dt>
-<dd><p>Performs a coordinate transform to a system with the specified basis vectors.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>'_Basis'</strong> (<a class="reference internal" href="#magSonify.DataSet_3D" title="magSonify.DataSet_3D"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataSet_3D</span></code></a>) – The basis vectors to use, varying in time. Must be unit vectors.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="magSonify.DataSet_3D.cross">
-<span class="sig-name descname"><span class="pre">cross</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#magSonify.DataSet_3D" title="magSonify.DataSet.DataSet_3D"><span class="pre">magSonify.DataSet.DataSet_3D</span></a></span></span><a class="headerlink" href="#magSonify.DataSet_3D.cross" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the cross product of 3D datasets</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="magSonify.DataSet_3D.dot">
-<span class="sig-name descname"><span class="pre">dot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#magSonify.DataSet_1D" title="magSonify.DataSet_1D.DataSet_1D"><span class="pre">magSonify.DataSet_1D.DataSet_1D</span></a></span></span><a class="headerlink" href="#magSonify.DataSet_3D.dot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes to dot product of 3D datasets</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="magSonify.DataSet_3D.genStereoAudio">
-<span class="sig-name descname"><span class="pre">genStereoAudio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#magSonify.DataSet_3D.genStereoAudio" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generates a stereo audio output</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="magSonify.DataSet_3D.makeUnitVector">
-<span class="sig-name descname"><span class="pre">makeUnitVector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#magSonify.DataSet_3D.makeUnitVector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Normalises the 3D vector to length 1, giving the unit vector</p>
-</dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="dataset-1d">
-<h2>DataSet_1D<a class="headerlink" href="#dataset-1d" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="magSonify.DataSet_1D">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">magSonify.</span></span><span class="sig-name descname"><span class="pre">DataSet_1D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeSeries</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">magSonify.TimeSeries.TimeSeries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#magSonify.DataSet_1D" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py method">
-<dt class="sig sig-object py" id="magSonify.DataSet_1D.copy">
-<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#magSonify.DataSet_1D.copy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a copy of the data set</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="magSonify.DataSet_1D.genMonoAudio">
-<span class="sig-name descname"><span class="pre">genMonoAudio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#magSonify.DataSet_1D.genMonoAudio" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate a mono audio file from data in the series <code class="docutils literal notranslate"><span class="pre">self.data[key]</span></code></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>sampleRate</strong> – The sample rate of the output audio, default is 44100.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="magSonify.DataSet_1D.normalise">
-<span class="sig-name descname"><span class="pre">normalise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maxAmplitude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#magSonify.DataSet_1D.normalise" title="Permalink to this definition">¶</a></dt>
-<dd><p>Normalises the data set to within a maximum amplitude. Should be used before
-attempting to output audio.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="magSonify.DataSet_1D.paulStretch">
-<span class="sig-name descname"><span class="pre">paulStretch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stretch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.015</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#magSonify.DataSet_1D.paulStretch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stretches the data according the paulstretch algorithm</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>stretch</strong> – The factor by which to stretch the data.</p></li>
-<li><p><strong>window</strong> – The window size to be used by the paulstrtch algorithm. A <code class="docutils literal notranslate"><span class="pre">window</span></code> of 0.1 is
-equivalent to 4410 data points.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="magSonify.DataSet_1D.phaseVocoderStretch">
-<span class="sig-name descname"><span class="pre">phaseVocoderStretch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stretch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frameLength</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">512</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">synthesisHop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#magSonify.DataSet_1D.phaseVocoderStretch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stretches the data using a phase vocoder</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="magSonify.DataSet_1D.waveletPitchShift">
-<span class="sig-name descname"><span class="pre">waveletPitchShift</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">shift=1</span></em>, <em class="sig-param"><span class="pre">scaleLogSpacing=0.125</span></em>, <em class="sig-param"><span class="pre">interpolateFactor=None</span></em>, <em class="sig-param"><span class="pre">maxNumberSamples=1200</span></em>, <em class="sig-param"><span class="pre">wavelet=&lt;magSonify.sonificationMethods.wavelets.wavelets.Morlet</span> <span class="pre">object&gt;</span></em>, <em class="sig-param"><span class="pre">preserveScaling=False</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#magSonify.DataSet_1D.waveletPitchShift" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pitch shifts the data on specified axes by {shift} times using continous wavlet wavelets.transform.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>shift</strong> – The multiple by which to shift the pitch of the input field.</p></li>
-<li><p><strong>scaleLogSpacing</strong> – Scale spacing in log space, a lower value leads to higher
-resolution in frequency space and more processing time.</p></li>
-<li><p><strong>interpolateFactor</strong> – If not None, specifies the facator by which the density of the coefficients should be
-increased. Used when generating time stretched audio.</p></li>
-<li><p><strong>maxNumberSamples</strong> – The maximum number of samples for the largest scale in the wavelet wavelets.transform, used to
-prevent computations for inaubidle frequencies.</p></li>
-<li><p><strong>wavelet</strong> – Wavelet function to use. If none is given, the Morlet wavelet will be used by default.</p></li>
-<li><p><strong>preserveScaling</strong> – Whether to preserve the scaling of the data when outputing.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="magSonify.DataSet_1D.waveletStretch">
-<span class="sig-name descname"><span class="pre">waveletStretch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stretch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interpolateBefore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interpolateAfter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaleLogSpacing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.12</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#magSonify.DataSet_1D.waveletStretch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stretches the data using wavelet transforms</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="magSonify.DataSet_1D.wsolaStretch">
-<span class="sig-name descname"><span class="pre">wsolaStretch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stretch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frameLength</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">512</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">synthesisHop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#magSonify.DataSet_1D.wsolaStretch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stretches the data using WSOLA</p>
-</dd></dl>
-
-</dd></dl>
-
-</section>
-</section>
 
 
+           </div>
+           
           </div>
-          
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="src/introduction.html" class="btn btn-neutral float-right" title="MagSonify" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Marek Cottingham.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="#">magSonify</a></h1>
 
+    </section>
 
+  </div>
+  
 
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
 
-
-
-
-
-<h3>Navigation</h3>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="#">Documentation overview</a><ul>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2021, Marek Cottingham.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.1.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="_sources/index.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
-
+  
+  
     
+   
 
-    
-  </body>
+</body>
 </html>

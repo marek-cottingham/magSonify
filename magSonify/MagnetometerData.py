@@ -10,17 +10,21 @@ from numpy import logical_or, logical_and
 from ai import cdas 
 
 class MagnetometerData():
+    """Class providing a high level api for data import and processing"""
     def __init__(self):
         self.magneticField = DataSet_3D_Placeholder()
+        """The magnetic field at the satellite"""
         self.position = DataSet_3D_Placeholder()
+        """The position of the satellite"""
         self.meanField = DataSet_3D_Placeholder()
+        """The mean magnetic field after a rolling average"""
         self.magneticFieldMeanFieldCoordinates = DataSet_3D_Placeholder()
-
-        self.peemDensity = DataSet_Placeholder()
-        self.peemFlux = DataSet_3D_Placeholder()
-        self.peemVelocity = DataSet_3D_Placeholder()
+        """The magnetic field in mean field align coordinates"""
 
         self.peemIdentifyMagnetosheath = DataSet_Placeholder()
+        """Required series for removal of magnetosheath
+
+        ``keys: 'density','velocit_x','flux_x',flux_y'`` """
 
     def fillLessThanRadius(self,radiusInEarthRadii,const=0) -> None:
         """Fills all values in the magnetic field with ``const`` when the radius is below the 
@@ -95,7 +99,7 @@ class THEMISdata(MagnetometerData):
             satellite and date range.
             The possible satellite letters are: "A", "B", "C", "D" or "E".
             
-            Consider using ``importCdasAsync`` instead, as this is faster.
+            Consider using :meth:`importCdasAsync` instead, as this is faster.
         """
         args = (startDate,endDate,satellite)
         s._importCdasMagneticField(*args)
