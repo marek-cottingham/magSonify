@@ -22,8 +22,11 @@ class encloseTimer():
     def printout(self):
         numberDays = 1
         for name, times in self.times.items():
-            print(f"{name}: {round(np.mean(times)/numberDays,2)} " 
-                "seconds per day of themis data")
+            if name == "Import":
+                print(f"{name}: {round(np.mean(times)/numberDays,2)} seconds")
+            else:
+                print(f"{name}: {round(np.mean(times)/numberDays,2)}" 
+                    " seconds per day of themis data")
 
 class HiddenPrints:
     def __enter__(self):

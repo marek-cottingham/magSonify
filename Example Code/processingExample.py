@@ -41,19 +41,20 @@ tor.phaseVocoderStretch(16)
 tor.normalise()
 tor.genMonoAudio("Example of tor x16 with phase vocoder.wav")
 
-# Only run these if you have time for the wavelet stretch to run
+# Disable the wavelet stretch output if it's taking too long
+# exit()
 
-# com = mag.magneticFieldMeanFieldCoordinates.extractKey(0)
-# com.waveletStretch(16)
-# com.normalise()
-# com.genMonoAudio("Example of com x16 with wavelets.wav")
+com = mag.magneticFieldMeanFieldCoordinates.extractKey(0)
+com.waveletStretch(16,0.5,16)
+com.normalise()
+com.genMonoAudio("Example of com x16 with wavelets.wav",sampleRate=44100//2)
 
-# pol = mag.magneticFieldMeanFieldCoordinates.extractKey(1)
-# pol.waveletStretch(16)
-# pol.normalise()
-# pol.genMonoAudio("Example of pol x16 with wavelets.wav")
+pol = mag.magneticFieldMeanFieldCoordinates.extractKey(1)
+pol.waveletStretch(16,0.5,16)
+pol.normalise()
+pol.genMonoAudio("Example of pol x16 with wavelets.wav",sampleRate=44100//2)
 
-# tor = mag.magneticFieldMeanFieldCoordinates.extractKey(2)
-# tor.waveletStretch(16)
-# tor.normalise()
-# tor.genMonoAudio("Example of tor x16 with wavelets.wav")
+tor = mag.magneticFieldMeanFieldCoordinates.extractKey(2)
+tor.waveletStretch(16,0.5,16)
+tor.normalise()
+tor.genMonoAudio("Example of tor x16 with wavelets.wav",sampleRate=44100//2)
