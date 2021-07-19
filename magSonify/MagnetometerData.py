@@ -190,7 +190,9 @@ class THEMISdata(MagnetometerData):
             datetime(2007,9,4),
             datetime(2007,9,5)
         )
-
+        
+        self.magneticField.removeDuplicateTimes()
+        self.peemIdentifyMagnetosheath.removeDuplicateTimes()
         self.interpolate_3s()
         self.magneticField.constrainAbsoluteValue(400)
         self.meanField = self.magneticField.runningAverage(timeWindow=np.timedelta64(35,"m"))

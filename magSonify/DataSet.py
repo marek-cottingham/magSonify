@@ -121,6 +121,16 @@ class DataSet():
         for i,d in self.items():
             d[mask] = const
 
+    def removeDuplicateTimes(self) -> None:
+        """Removes duplicate values in the time series by deleting all but the first occurence.
+        Removes correspoinding points in each data series.
+        """
+        unique, index = np.unique(self.timeSeries.times, return_index=True)
+        self.timeSeries = self.timeSeries.copy()
+        self.timeSeries.times = unique
+        for i,d in self.items():
+            self.data[i] = d[index]
+
     def _iterate(self,lamb,replace=False):
         """Execute function ``lamb`` on each element in ``self.data``"""
         res = {}
