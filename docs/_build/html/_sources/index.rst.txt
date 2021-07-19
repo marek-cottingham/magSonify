@@ -33,6 +33,7 @@ Features
 * Convert magnetic field to mean field align coordinates
 * Remove data below a certain altitude
 * Remove data in the magnotosheath
+* Removing duplicate data points in CDAS data
 * Time stretch data for sonification using 4 different algorithms:
    * Wavelet based stretch
    * Paulstretch
@@ -76,22 +77,33 @@ Contribute
 
 License
 ----------------
+The MIT License. See LICENSE.txt for details.
 
-To be determined
+===============================
 
-DocTest
-----------------
+API docs
+==============
+Magnetometer data
+-----------------
 .. autoclass:: magSonify.MagnetometerData
    :members:
 
+THEMIS data
+---------------
 .. autoclass:: magSonify.THEMISdata
    :members:
 
+DataSet
+------------
 .. autoclass:: magSonify.DataSet
    :members:
 
+DataSet_3D
+--------------
 .. autoclass:: magSonify.DataSet_3D
    :members:
 
+DataSet_1D
+------------
 .. autoclass:: magSonify.DataSet_1D
    :members:

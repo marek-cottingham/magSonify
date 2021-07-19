@@ -22,10 +22,6 @@ class MagnetometerData():
 
         self.peemIdentifyMagnetosheath = DataSet_Placeholder()
 
-    def importCDAS(self) -> None:
-        """Derived classes should implement"""
-        raise NotImplementedError
-
     def fillLessThanRadius(self,radiusInEarthRadii,const=0) -> None:
         """Fills all values in the magnetic field with ``const`` when the radius is below the 
         specified value.
@@ -98,7 +94,8 @@ class THEMISdata(MagnetometerData):
         """ Imports magnetic field, position, radial distance and peem data for the designated THEMIS
             satellite and date range.
             The possible satellite letters are: "A", "B", "C", "D" or "E".
-            Consider using importCdasAsync instead, as this is faster.
+            
+            Consider using ``importCdasAsync`` instead, as this is faster.
         """
         args = (startDate,endDate,satellite)
         s._importCdasMagneticField(*args)

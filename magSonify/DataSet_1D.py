@@ -25,20 +25,23 @@ class DataSet_1D(DataSet):
             return False
 
     @property
-    def x(self):
+    def x(self) -> np.array:
         return self.data[0]
 
     @x.setter
     def x(self,x):
         self.data[0] = x
 
-    def genMonoAudio(self, file, **kwargs):
+    def genMonoAudio(self, file, **kwargs) -> None:
         return super().genMonoAudio(0, file, **kwargs)
  
-    def normalise(self,maxAmplitude=1):
+    def normalise(self,maxAmplitude=1) -> None:
+        """Normalises the data set to within a maximum amplitude. Should be used before
+        attempting to output audio.
+        """
         self.x = self.x / np.max(np.abs(self.x)) * maxAmplitude
 
-    def copy(self):
+    def copy(self) -> None:
         return type(self)(self.timeSeries,deepcopy(self.x))
 
     def __getitem__(self, subscript):

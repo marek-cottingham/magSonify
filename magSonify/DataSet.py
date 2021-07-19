@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from operator import add, neg, sub
-from typing import List
+from typing import List, Tuple, Union
 from .Audio import writeoutAudio
 import numpy as np
 from scipy.interpolate.interpolate import interp1d
@@ -14,7 +14,7 @@ class DataSet():
         self.timeSeries = timeSeries
         self.data = data
 
-    def items(self):
+    def items(self) -> Tuple:
         """Returns a list of tuples, containg index-data pairs for each element in DataSeries.data
         """
         try:
@@ -24,16 +24,17 @@ class DataSet():
         return dataInterateOver
     
     def keys(self) -> List:
-        """Returns all keys in DataSeries.data"""
+        """Returns all keys in ``DataSeries.data``"""
         return [x[0] for x in self.items()] 
 
     def fillNaN(self,const=0) -> None:
-        """Fills nan values in the data with the constant {const}"""
+        """Fills ``nan`` values in the data with the constant ``const``"""
         for i, d in self.items():
             self.data[i] = np.nan_to_num(d,nan=const)
 
     def constrainAbsoluteValue(self,max) -> None:
-        """Limits the data to within bounds of -max to +max, values outside are set to -max or +max
+        """Limits the data to within bounds of ``-max`` to ``+max``, values outside 
+        are set to ``-max`` or ``+max`` respectively.
         """
         for i, d in self.items():
             d[d>max] = max
@@ -66,7 +67,7 @@ class DataSet():
 
         self.timeSeries = newTimes
 
-    def _getInterpolationTimeSeries(self, ref_or_factor):
+    def _getInterpolationTimeSeries(self, ref_or_factor) -> TimeSeries:
         if isinstance(ref_or_factor,TimeSeries):
             if ref_or_factor.startTime is not None:
                 self.timeSeries = TimeSeries(
@@ -110,6 +111,11 @@ class DataSet():
         return DataSet_1D(self.timeSeries,deepcopy(self.data[key]))
 
     def genMonoAudio(self,key,file,**kwargs) -> None:
+        """Generate a mono audio file from data in the series ``self.data[key]``
+        
+        :param sampleRate:
+            The sample rate of the output audio, default is 44100.
+        """
         writeoutAudio(self.data[key],file,**kwargs)
 
     def copy(self) -> None:
@@ -156,19 +162,23 @@ class DataSet():
             raise ValueError("Datasets do not have the same time series")
 
     def __getitem__(self,subscript):
+        """Supports using slices to extract a subsection along the time axis."""
         if isinstance(subscript,slice):
             res = self._iterate(
                 lambda series: series[subscript]
             )
             return type(self)(self.timeSeries[subscript],res)
     
-    def __add__(self,other):
+    def __add__(self,other) -> DataSet:
+        """Supports addition"""
         return self._iteratePair(other,add)
 
-    def __sub__(self,other):
+    def __sub__(self,other) -> DataSet:
+        """Supports subtration"""
         return self._iteratePair(other,sub)
 
-    def __neg__(self):
+    def __neg__(self) -> DataSet:
+        """Supports negative"""
         res = self._iterate(neg)
         return type(self)(self.timeSeries,res)
 
