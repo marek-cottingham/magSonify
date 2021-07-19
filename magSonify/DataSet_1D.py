@@ -45,8 +45,8 @@ class DataSet_1D(DataSet):
         return type(self)(self.timeSeries[subscript],self.x[subscript])
 
     def _iteratePair(self,other,lamb):
-        """Execute function {lamb} on each element pair in self.data and self.other with the same 
-        keys
+        """Execute function ``lamb`` on each element pair in ``self.data`` and ``self.other`` 
+        with the same keys
         """
         self._raiseIfTimeSeriesNotEqual(other)
         res = {}
@@ -67,20 +67,20 @@ class DataSet_1D(DataSet):
 
         Parameters
         ----------
-        shift:
+        :param shift:
             The multiple by which to shift the pitch of the input field.
-        scaleLogSpacing:
+        :param scaleLogSpacing:
             Scale spacing in log space, a lower value leads to higher
             resolution in frequency space and more processing time.
-        interpolateFactor:
+        :param interpolateFactor:
             If not None, specifies the facator by which the density of the coefficients should be
             increased. Used when generating time stretched audio.
-        maxNumberSamples:
+        :param maxNumberSamples:
             The maximum number of samples for the largest scale in the wavelet wavelets.transform, used to
             prevent computations for inaubidle frequencies.
-        wavelet:
+        :param wavelet:
             Wavelet function to use. If none is given, the Morlet wavelet will be used by default.
-        preserveScaling:
+        :param preserveScaling:
             Whether to preserve the scaling of the data when outputing.
         """
 
@@ -129,6 +129,7 @@ class DataSet_1D(DataSet):
         self.x = np.real(rx)
 
     def waveletStretch(self,stretch,interpolateBefore=None,interpolateAfter=None,scaleLogSpacing=0.12):
+        """Stretches the data using wavelet transforms"""
         if interpolateBefore is None and interpolateAfter is None:
             interpolateAfter = stretch
         if interpolateBefore is not None:
@@ -136,17 +137,19 @@ class DataSet_1D(DataSet):
         self.waveletPitchShift(stretch,scaleLogSpacing,interpolateAfter)
 
     def paulStretch(self,stretch,window=0.015):
-        """ Stretches the data according the paulstretch algorithm
-        stretch:
-            The factor by which to stretch the data
-        window:
-            The window size to be used by the paulstrtch algorithm. A {window} of 0.1 is
+        """Stretches the data according the paulstretch algorithm
+
+        :param stretch:
+            The factor by which to stretch the data.
+        :param window:
+            The window size to be used by the paulstrtch algorithm. A ``window`` of 0.1 is
             equivalent to 4410 data points.
         """
         self.timeSeries.interpolate(stretch)
         self.x = paulstretch(self.x,stretch,window)
 
     def phaseVocoderStretch(self,stretch,frameLength=512,synthesisHop=None):
+        """Stretches the data using a phase vocoder"""
         if synthesisHop is None:
             synthesisHop = frameLength//16
         reader = ArrayReader(np.array((self.x,)))
@@ -161,6 +164,7 @@ class DataSet_1D(DataSet):
         self.x = writer.data.flatten()
 
     def wsolaStretch(self,stretch,frameLength=512,synthesisHop=None,tolerance=None):
+        """Stretches the data using WSOLA"""
         if synthesisHop is None:
             synthesisHop = frameLength//8
         reader = ArrayReader(np.array((self.x,)))

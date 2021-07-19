@@ -27,16 +27,16 @@ class MagnetometerData():
         raise NotImplementedError
 
     def fillLessThanRadius(self,radiusInEarthRadii,const=0) -> None:
-        """Fills all values in the magnetic field with {const} when the radius is below the 
-        specificed value.
+        """Fills all values in the magnetic field with ``const`` when the radius is below the 
+        specified value.
         """
         assert(self.position.timeSeries == self.magneticField.timeSeries)
         radiusMask = self.position.data["radius"] < radiusInEarthRadii
         self.magneticField.fillMask(radiusMask,const)
 
     def convertToMeanFieldCoordinates(self) -> None:
-        """ Converts the magnetic field data in self.magneticField to mean field coordinates,
-        saving the output in self.magneticFieldMeanFieldCoordinates. self.meanField must be 
+        """ Converts the magnetic field data in ``self.magneticField`` to mean field coordinates,
+        saving the output in ``self.magneticFieldMeanFieldCoordinates``. ``self.meanField`` must be 
         specified and contain a 3D dataset with the mean magnetic field.
         """
         assert(self.position.timeSeries == self.magneticField.timeSeries)
@@ -59,8 +59,8 @@ class MagnetometerData():
         )
 
     def removeMagnetosheath(self) -> None:
-        """Removes portions of magnetic field data while the satelliet is in the magnetosheath.
-        self.peemIdentifyMagnetosheath must be specified."""
+        """Removes portions of magnetic field data while the satellite is in the magnetosheath.
+        ``self.peemIdentifyMagnetosheath`` must be specified."""
         fluxX = self.peemIdentifyMagnetosheath.data['flux_x']
         fluxY = self.peemIdentifyMagnetosheath.data['flux_y']
         perpFlux = (fluxX**2 + fluxY**2)**(1/2)
@@ -182,6 +182,7 @@ class THEMISdata(MagnetometerData):
     
     def defaultProcessing(self,removeMagnetosheath=False,minRadius=4) -> None:
         """Performs a standard processing procedure on THEMIS data.
+
         :param removeMagnetosheath: Whether to remove data while in the magnetosheath
         :param minRadius: Radius in earth radii below which to remove magnetic field data
         """

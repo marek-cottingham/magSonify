@@ -83,4 +83,15 @@ DocTest
 ----------------
 .. autoclass:: magSonify.MagnetometerData
    :members:
-   :undoc-members:
+
+.. autoclass:: magSonify.THEMISdata
+   :members:
+
+.. autoclass:: magSonify.DataSet
+   :members:
+
+.. autoclass:: magSonify.DataSet_3D
+   :members:
+
+.. autoclass:: magSonify.DataSet_1D
+   :members:

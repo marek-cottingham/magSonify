@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 from operator import add, neg, sub
+from typing import List
 from .Audio import writeoutAudio
 import numpy as np
 from scipy.interpolate.interpolate import interp1d
@@ -20,7 +23,7 @@ class DataSet():
             dataInterateOver = enumerate(self.data)
         return dataInterateOver
     
-    def keys(self):
+    def keys(self) -> List:
         """Returns all keys in DataSeries.data"""
         return [x[0] for x in self.items()] 
 
@@ -39,10 +42,14 @@ class DataSet():
     def interpolate(self,ref_or_factor) -> None:
         """Interpolates the data and time series.
         
-        ref_or_factor:
-            Either reference (TimeSeries or DataSeries) to interpolate data to or factor to multiply
-            current TimeSeries density by. If reference is passed, s.TimeSeries will be set to the 
-            new time series.
+        :param ref_or_factor:
+            A reference object or factor to use to interpolate the data.
+
+            If ``TimeSeries`` or ``DataSet`` is passed, this will interpolate the data to have a matching 
+            time series.
+
+            If a numerical type is passed, the data will be interpolated to an evenly spaced time
+            series with ``factor`` times the original sample point density.
         """
         # Warning: This can extrapolate outside the data range - there is not range checking. 
         # This extrapolation is not reliable and should only be allowed for points very slightly 
@@ -76,9 +83,9 @@ class DataSet():
             newTimes.interpolate(ref_or_factor)
         return newTimes
 
-    def runningAverage(self,samples=None,timeWindow=None):
-        """Returns a running average of the data with window size {samples} or period {timeWindow}.
-        Pass only {samples} OR {timeWindow} exculsively.
+    def runningAverage(self,samples=None,timeWindow=None) -> DataSet:
+        """Returns a running average of the data with window size ``samples`` or period ``timeWindow``.
+        Pass only ``samples`` OR ``timeWindow`` exculsively.
         """
         if timeWindow is not None:
             samples = int(timeWindow / self.timeSeries.getMeanInterval())
@@ -98,22 +105,24 @@ class DataSet():
         meanData = self._iterate(_runningAverage)
         return type(self)(self.timeSeries,meanData)
 
-    def extractKey(self,key):
-        """Extract element from data[key] in new DataSet"""
+    def extractKey(self,key) -> DataSet_1D:
+        """Extract element from ``data[key]`` in new data set"""
         return DataSet_1D(self.timeSeries,deepcopy(self.data[key]))
 
     def genMonoAudio(self,key,file,**kwargs) -> None:
         writeoutAudio(self.data[key],file,**kwargs)
 
-    def copy(self):
+    def copy(self) -> None:
+        """Returns a copy of the data set"""
         return type(self)(self.timeSeries,deepcopy(self.data))
 
-    def fillMask(self,mask,const=0):
+    def fillMask(self,mask,const=0) -> None:
+        """Fill values according to a mask across all components"""
         for i,d in self.items():
             d[mask] = const
 
     def _iterate(self,lamb,replace=False):
-        """Execute function {lamb} on each element in self.data"""
+        """Execute function ``lamb`` on each element in ``self.data``"""
         res = {}
         for i,d in self.items():
             if replace:
@@ -123,8 +132,8 @@ class DataSet():
         return res
 
     def _iteratePair(self,other,lamb):
-        """Execute function {lamb} on each element pair in self.data and self.other with the same 
-        keys
+        """Execute function ``lamb`` on each element pair in ``self.data`` and ``other.data`` with 
+        the same keys
         """
         self._raiseIfTimeSeriesNotEqual(other)
         res = {}
@@ -166,13 +175,14 @@ class DataSet_3D(DataSet):
         super().__init__(timeSeries,data)
 
     def genStereoAudio(self,file,**kwargs) -> None:
+        """Generates a stereo audio output"""
         audio = np.array([
             self.data[0] + 0.5 * self.data[1],
             0.5 * self.data[1] + self.datca[2],
         ])
         writeoutAudio(audio.T,file,**kwargs)
 
-    def cross(self,other):
+    def cross(self,other) -> DataSet_3D:
         """Computes the cross product of 3D datasets"""
         self._raiseIfTimeSeriesNotEqual(other)
         res = {}
@@ -183,7 +193,7 @@ class DataSet_3D(DataSet):
         res[2] = sd[0] * od[1] - od[1] * sd[0]
         return DataSet_3D(self.timeSeries,res)
 
-    def dot(self,other):
+    def dot(self,other) -> DataSet_1D:
         """Computes to dot product of 3D datasets"""
         self._raiseIfTimeSeriesNotEqual(other)
         res = {}
@@ -199,7 +209,13 @@ class DataSet_3D(DataSet):
         divideByMagnitude = lambda series: series / vectorMagnitude
         self._iterate(divideByMagnitude,replace=True)
 
-    def coordinateTransform(self,xBasis,yBasis,zBasis):
+    def coordinateTransform(self,xBasis,yBasis,zBasis) -> DataSet_3D:
+        """Performs a coordinate transform to a system with the specified basis vectors.
+        
+        :param '_Basis':
+            The basis vectors to use, varying in time. Must be unit vectors.
+        :type '_Basis': :class:`DataSet_3D`
+        """
         bases = [xBasis,yBasis,zBasis]
         res = {}
         sd = self.data
