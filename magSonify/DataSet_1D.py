@@ -9,8 +9,20 @@ from copy import deepcopy
 
 class DataSet_1D(DataSet):
     def __init__(self,timeSeries: TimeSeries,x):
+        if self._isInitWithDict(x):
+            self.data = x
+        else:
+            self.data = [x,]
+        
         self.timeSeries = timeSeries
-        self.data = [x,]
+
+    def _isInitWithDict(self,x):
+        try:
+            if len(x.keys()) == 1 and 0 in x.keys():
+                return True
+            return False
+        except AttributeError:
+            return False
 
     @property
     def x(self):
