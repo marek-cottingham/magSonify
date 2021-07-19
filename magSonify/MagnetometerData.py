@@ -181,7 +181,7 @@ class THEMISdata(MagnetometerData):
         self.magneticField.constrainAbsoluteValue(400)
         self.meanField = self.magneticField.runningAverage(timeWindow=np.timedelta64(35,"m"))
         self.magneticField = self.magneticField - self.meanField
-        self.fillLessThanRadius(6)
+        self.fillLessThanRadius(4)
         if removeMagnetosheath:
             self.removeMagnetosheath()
         self.convertToMeanFieldCoordinates()
