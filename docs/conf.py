@@ -17,7 +17,8 @@ import pathlib
 
 path = pathlib.Path(__file__).resolve() / '..' / '..'
 sys.path.insert(0, os.path.abspath(path))
-
+path = pathlib.Path(__file__).resolve() / '..' / '..' / 'Tests_Artifacts'
+sys.path.insert(0, os.path.abspath(path))
 # -- Mock Imports -----------------------------------------------------------
 
 from unittest.mock import MagicMock

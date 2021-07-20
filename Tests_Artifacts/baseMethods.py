@@ -1,5 +1,6 @@
-
-
+"""A set of functions used to construct artifact tests from idealised signals and render
+the output of the tests
+"""
 
 import context
 
