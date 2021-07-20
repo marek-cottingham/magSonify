@@ -179,28 +179,40 @@ repository in order to run them locally.</p>
 the output of the tests</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="baseMethods.PSD">
-<span class="sig-prename descclassname"><span class="pre">baseMethods.</span></span><span class="sig-name descname"><span class="pre">PSD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataSet</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="apidocs.html#magSonify.DataSet_1D" title="magSonify.DataSet_1D.DataSet_1D"><span class="pre">magSonify.DataSet_1D.DataSet_1D</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#baseMethods.PSD" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">baseMethods.</span></span><span class="sig-name descname"><span class="pre">PSD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataSet</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="apidocs.html#magSonify.DataSet_1D" title="magSonify.DataSet_1D.DataSet_1D"><span class="pre">magSonify.DataSet_1D.DataSet_1D</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.array</span></span></span><a class="headerlink" href="#baseMethods.PSD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the PSD of a data set</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="baseMethods.PSD_freqs">
-<span class="sig-prename descclassname"><span class="pre">baseMethods.</span></span><span class="sig-name descname"><span class="pre">PSD_freqs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataSet</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="apidocs.html#magSonify.DataSet_1D" title="magSonify.DataSet_1D.DataSet_1D"><span class="pre">magSonify.DataSet_1D.DataSet_1D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampleRate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">44100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#baseMethods.PSD_freqs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">baseMethods.</span></span><span class="sig-name descname"><span class="pre">PSD_freqs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataSet</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="apidocs.html#magSonify.DataSet_1D" title="magSonify.DataSet_1D.DataSet_1D"><span class="pre">magSonify.DataSet_1D.DataSet_1D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampleRate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">44100</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.array</span></span></span><a class="headerlink" href="#baseMethods.PSD_freqs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the corresponding frequencies for the PSD of a data set</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="baseMethods.compare_Harmonic">
 <span class="sig-prename descclassname"><span class="pre">baseMethods.</span></span><span class="sig-name descname"><span class="pre">compare_Harmonic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">algorithm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freqs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stretch</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#baseMethods.compare_Harmonic" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Computes the expeted and actual time stretch on a harmonic with the given algorithm</p>
+<p>See also: <a class="reference internal" href="#baseMethods.getAfterAlgorithm" title="baseMethods.getAfterAlgorithm"><code class="xref py py-func docutils literal notranslate"><span class="pre">baseMethods.getAfterAlgorithm()</span></code></a></p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="baseMethods.compare_Sine">
 <span class="sig-prename descclassname"><span class="pre">baseMethods.</span></span><span class="sig-name descname"><span class="pre">compare_Sine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">algorithm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stretch</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#baseMethods.compare_Sine" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Computes the expeted and actual time stretch on a sine wave with the given algorithm</p>
+<p>See also: <a class="reference internal" href="#baseMethods.getAfterAlgorithm" title="baseMethods.getAfterAlgorithm"><code class="xref py py-func docutils literal notranslate"><span class="pre">baseMethods.getAfterAlgorithm()</span></code></a></p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="baseMethods.getAfterAlgorithm">
 <span class="sig-prename descclassname"><span class="pre">baseMethods.</span></span><span class="sig-name descname"><span class="pre">getAfterAlgorithm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">before</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="apidocs.html#magSonify.DataSet_1D" title="magSonify.DataSet_1D.DataSet_1D"><span class="pre">magSonify.DataSet_1D.DataSet_1D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">stretch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#baseMethods.getAfterAlgorithm" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Process data series with the given time stretch algorithm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>algorithm</strong> – Can be ‘waveletStretch’, ‘paulStretch’, ‘phaseVocoderStretch’ or ‘wsolaStretch’</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="baseMethods.getAfterPaustretch">
@@ -210,37 +222,44 @@ the output of the tests</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="baseMethods.getBeforeAndExpectation_Harmonic">
 <span class="sig-prename descclassname"><span class="pre">baseMethods.</span></span><span class="sig-name descname"><span class="pre">getBeforeAndExpectation_Harmonic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">freqs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration_seconds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stretch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#baseMethods.getBeforeAndExpectation_Harmonic" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get generated data sets for a simulated harmonic, before and after a time stretch</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="baseMethods.getBeforeAndExpectation_Sine">
 <span class="sig-prename descclassname"><span class="pre">baseMethods.</span></span><span class="sig-name descname"><span class="pre">getBeforeAndExpectation_Sine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">freq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration_seconds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stretch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#baseMethods.getBeforeAndExpectation_Sine" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get generated data sets for a simulated sine wave, before and after a time stretch</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="baseMethods.getBeforeAndExpectation_Sweep">
-<span class="sig-prename descclassname"><span class="pre">baseMethods.</span></span><span class="sig-name descname"><span class="pre">getBeforeAndExpectation_Sweep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration_seconds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stretch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'logarithmic'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#baseMethods.getBeforeAndExpectation_Sweep" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">baseMethods.</span></span><span class="sig-name descname"><span class="pre">getBeforeAndExpectation_Sweep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">startingFreq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">finalFreq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration_seconds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stretch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'logarithmic'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#baseMethods.getBeforeAndExpectation_Sweep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get generated data sets for a simulated frequency sweep, before and after a time stretch</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="baseMethods.normalisePSD">
 <span class="sig-prename descclassname"><span class="pre">baseMethods.</span></span><span class="sig-name descname"><span class="pre">normalisePSD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">psd</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#baseMethods.normalisePSD" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Normalise a PSD so that its highest peak has a magnitude of 1</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="baseMethods.plotPSD">
 <span class="sig-prename descclassname"><span class="pre">baseMethods.</span></span><span class="sig-name descname"><span class="pre">plotPSD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expectation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">after</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showPlot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#baseMethods.plotPSD" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Plots the PSD of the provided pair of data sets</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="baseMethods.plotPSD_Harmonic">
 <span class="sig-prename descclassname"><span class="pre">baseMethods.</span></span><span class="sig-name descname"><span class="pre">plotPSD_Harmonic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">algorithm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freqs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stretch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showPlot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#baseMethods.plotPSD_Harmonic" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>See also: <a class="reference internal" href="#baseMethods.compare_Harmonic" title="baseMethods.compare_Harmonic"><code class="xref py py-func docutils literal notranslate"><span class="pre">baseMethods.compare_Harmonic()</span></code></a></p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="baseMethods.plotPSD_Sine">
 <span class="sig-prename descclassname"><span class="pre">baseMethods.</span></span><span class="sig-name descname"><span class="pre">plotPSD_Sine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">algorithm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stretch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showPlot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#baseMethods.plotPSD_Sine" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>See also: <a class="reference internal" href="#baseMethods.compare_Sine" title="baseMethods.compare_Sine"><code class="xref py py-func docutils literal notranslate"><span class="pre">baseMethods.compare_Sine()</span></code></a></p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="baseMethods.plotPSDpaulstretchHarmonic">
@@ -255,7 +274,13 @@ the output of the tests</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="baseMethods.reducePlotResolution">
 <span class="sig-prename descclassname"><span class="pre">baseMethods.</span></span><span class="sig-name descname"><span class="pre">reducePlotResolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frequencies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PSD</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#baseMethods.reducePlotResolution" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Reduce PSD resolution to allow plotting with matplotlib. Smooths the PSD.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">(</span> <span class="pre">reducedFreq:</span> <span class="pre">np.array,</span> <span class="pre">reducedPSD:</span> <span class="pre">np.array</span> <span class="pre">)</span></code></p>
+</dd>
+</dl>
+</dd></dl>
 
 </div>
 </div>
