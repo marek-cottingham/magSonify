@@ -9,6 +9,7 @@
    :maxdepth: 2
 
    /src/introduction
+   /src/exampleCode
    /src/usage_notes
    /src/apidocs
    /src/artifactTesting
