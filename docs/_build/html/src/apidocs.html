@@ -96,7 +96,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#dataset">DataSet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dataset-3d">DataSet_3D</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dataset-1d">DataSet_1D</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#timeseries">TimeSeries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#timeseries">TimeSeries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#generatetimeseries">generateTimeSeries</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#simulate-data">Simulate Data</a></li>
 </ul>
 </li>
@@ -386,7 +389,7 @@ are set to <code class="docutils literal notranslate"><span class="pre">-max</sp
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>ref_or_factor</strong> – <p>A reference object or factor to use to interpolate the data.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code> or <a class="reference internal" href="#magSonify.DataSet" title="magSonify.DataSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataSet</span></code></a> is passed, this will interpolate the data to have a matching 
+<p>If <a class="reference internal" href="#magSonify.TimeSeries" title="magSonify.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> or <a class="reference internal" href="#magSonify.DataSet" title="magSonify.DataSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataSet</span></code></a> is passed, this will interpolate the data to have a matching 
 time series.</p>
 <p>If a numerical type is passed, the data will be interpolated to an evenly spaced time
 series with <code class="docutils literal notranslate"><span class="pre">factor</span></code> times the original sample point density.</p>
@@ -725,6 +728,8 @@ with <code class="docutils literal notranslate"><span class="pre">factor</span><
 
 </dd></dl>
 
+<div class="section" id="generatetimeseries">
+<h3>generateTimeSeries<a class="headerlink" href="#generatetimeseries" title="Permalink to this headline">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="magSonify.generateTimeSeries">
 <span class="sig-prename descclassname"><span class="pre">magSonify.</span></span><span class="sig-name descname"><span class="pre">generateTimeSeries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.datetime64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.datetime64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeUnit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.timedelta64</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">numpy.timedelta64(1,</span> <span class="pre">'s')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spacing</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.timedelta64</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#magSonify.generateTimeSeries" title="Permalink to this definition">¶</a></dt>
@@ -743,6 +748,7 @@ Specify only <code class="docutils literal notranslate"><span class="pre">num</s
 </dl>
 </dd></dl>
 
+</div>
 </div>
 <div class="section" id="simulate-data">
 <h2>Simulate Data<a class="headerlink" href="#simulate-data" title="Permalink to this headline">¶</a></h2>

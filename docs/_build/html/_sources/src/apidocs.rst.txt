@@ -38,6 +38,8 @@ TimeSeries
     :undoc-members:
     :special-members: __eq__, __getitem__
 
+generateTimeSeries
+*******************
 .. autofunction:: magSonify.generateTimeSeries
 
 Simulate Data
