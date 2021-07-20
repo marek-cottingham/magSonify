@@ -181,4 +181,4 @@ class TimeSeries():
             myNewTimeSeries = myTimeSeries[100:200]
         """
         if isinstance(subscript,slice):
-            return type(self)(self.times[subscript],self.timeUnit,self.startTime)
+            return type(self)(self.asNumpy()[subscript],self.timeUnit)
