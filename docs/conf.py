@@ -18,6 +18,10 @@ import pathlib
 path = pathlib.Path(__file__).resolve() / '..' / '..'
 sys.path.insert(0, os.path.abspath(path))
 
+# -- Setup mocks for install packages
+
+autodoc_mock_imports = ["soundfile"]
+
 
 # -- Project information -----------------------------------------------------
 
