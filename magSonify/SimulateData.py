@@ -1,10 +1,13 @@
 
 from datetime import time
+from magSonify.DataSet import DataSet
 import numpy as np
 from numpy.core.arrayprint import _array_str_implementation
 from scipy import signal
 from .TimeSeries import TimeSeries
 from scipy.signal import chirp
+
+rng: np.random.Generator = np.random.default_rng()
 
 class SimulateData():
     def _setupTimeSeries(s, timeSeries, stretch=None):
@@ -65,6 +68,15 @@ class SimulateData():
         t1 = np.max(times)
         signal = chirp(times,f0*stretch,t1,f1*stretch,method=method) * amplitdue
         return signal
+
+    def applyGaussianWhiteNoise(self,dataSet:DataSet,noiseMagnitude=1) -> None:
+        """Apply gaussian white noise to the input data set"""
+        def _applyNoise(inputArray:np.array) -> np.array:
+            global rng
+            noiseData = rng.normal(0,noiseMagnitude,inputArray.shape)
+            return inputArray + noiseData
+        
+        return type(dataSet)(dataSet.timeSeries,dataSet._iterate(_applyNoise))
 
     def waveOrientOffset(s,waveform,direction=(1,0,0),offset=(0,0,0)):
         """ Rotate and offset a given waveform in 3D space, returning a list with the series for the
