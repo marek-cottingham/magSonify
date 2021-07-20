@@ -9,9 +9,9 @@ audio. It includes time stretching methods in order to aid sonification of data 
 Currently the project provides ready built support for THEMIS satellites only. Users can specify
 imports from other satellites by defining their own subclasses.
 
-- Docs: To be generated
-- Issue Tracker: (https://github.com/TheMuonNeutrino/magSonify/issues)
-- Source Code: (https://github.com/TheMuonNeutrino/magSonify)
+- Docs: https://magsonify.readthedocs.io/en/latest/src/introduction.html
+- Issue Tracker: https://github.com/TheMuonNeutrino/magSonify/issues
+- Source Code: https://github.com/TheMuonNeutrino/magSonify
 
 
 Features
