@@ -18,11 +18,6 @@ import pathlib
 path = pathlib.Path(__file__).resolve() / '..' / '..'
 sys.path.insert(0, os.path.abspath(path))
 
-# -- Setup mocks for install packages
-
-autodoc_mock_imports = ["soundfile"]
-
-
 # -- Project information -----------------------------------------------------
 
 project = 'magSonify'
@@ -42,6 +37,7 @@ extensions = [
     'sphinx.ext.autodoc',
     # 'sphinx_autodoc_typehints'
 ]
+autodoc_mock_imports = ["soundfile"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
