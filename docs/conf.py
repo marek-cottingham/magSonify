@@ -18,6 +18,18 @@ import pathlib
 path = pathlib.Path(__file__).resolve() / '..' / '..'
 sys.path.insert(0, os.path.abspath(path))
 
+# -- Mock Imports -----------------------------------------------------------
+
+from unittest.mock import MagicMock
+
+class Mock(MagicMock):
+    @classmethod
+    def __getattr__(cls, name):
+            return MagicMock()
+
+MOCK_MODULES = ['soundfile']
+sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+
 # -- Project information -----------------------------------------------------
 
 project = 'magSonify'
@@ -37,7 +49,6 @@ extensions = [
     'sphinx.ext.autodoc',
     # 'sphinx_autodoc_typehints'
 ]
-autodoc_mock_imports = ["soundfile"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
