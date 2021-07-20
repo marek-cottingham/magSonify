@@ -16,7 +16,6 @@ from magSonify import DataSet_1D, SimulateData
 from magSonify import TimeSeries
 from scipy.interpolate.interpolate import interp1d
 from scipy.ndimage import uniform_filter1d
-from scipy.optimize.minpack import curve_fit
 
 
 def getBeforeAndExpectation_Sine(freq,duration_seconds,stretch = 16):
