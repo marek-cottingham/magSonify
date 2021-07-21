@@ -121,7 +121,7 @@ class DataSet():
         """
         writeoutAudio(self.data[key],file,**kwargs)
 
-    def copy(self) -> None:
+    def copy(self) -> DataSet:
         """Returns a copy of the data set"""
         return type(self)(self.timeSeries,deepcopy(self.data))
 
