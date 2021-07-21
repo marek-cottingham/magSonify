@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from operator import add, neg, sub
-from typing import List, Tuple, Union
+from typing import List, Tuple
 from .Audio import writeoutAudio
 import numpy as np
 from scipy.interpolate.interpolate import interp1d
