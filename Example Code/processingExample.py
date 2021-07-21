@@ -12,7 +12,7 @@ event2008_12_07 = (datetime(2008,12,7), datetime(2008,12,10))
 event2011_09_02 = (datetime(2011, 9, 2), datetime(2011, 9, 6))
 
 # Import the satellite data, specifying which themis satellite to use
-mag.importCdasAsync(
+mag.importCDAS(
     *event2008_12_07,
     satellite='D'
 )

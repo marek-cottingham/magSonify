@@ -26,6 +26,36 @@ class MagnetometerData():
 
         ``keys: 'density','velocity_x','flux_x',flux_y'`` """
 
+    def _importAsync(self,funcs,startDatetime,endDatetime,*args) -> None:
+        """ Runs the CDAS imports defined in ``funcs`` asyncronously.
+
+        :param funcs:
+            Tuple of functions to execute. Each function should be of the form
+            ``func(startDatetime,endDatetime,*args) -> None``. Any imported data
+            should be written to a class attribute.
+
+            .. Warning::
+
+                These functions should not read data from the class or modify the same attributes
+                as there is no prevention of a race condition. The functions are run simulataneously
+                using ``threading`` library.
+
+        :param startDatetime:
+            Start of data range as ``datatime.datetime`` or ``numpy.datetime64``
+        :param endDatetime:
+            End of data range as ``datatime.datetime`` or ``numpy.datetime64``
+        :param \*args:
+            Arbitrary arguments to be passed to the functions.
+        """
+        arguments = (startDatetime,endDatetime,*args)
+        fetchers = []
+        for func in funcs:
+            fetch = Thread(target=func,args=arguments)
+            fetch.start()
+            fetchers.append(fetch)
+        for fetch in fetchers:
+            fetch.join()
+
     def fillLessThanRadius(self,radiusInEarthRadii,const=0) -> None:
         """Fills all values in the magnetic field with ``const`` when the radius is below the 
         specified value.
@@ -110,43 +140,21 @@ class THEMISdata(MagnetometerData):
         ):
             x.interpolateReference(refTimeSeries)
 
-    def importCDAS(s,startDate,endDate,satellite="D") -> None:
-        """ Imports magnetic field, position, radial distance and peem data for the designated THEMIS
-            satellite and date range.
-            The possible satellite letters are: "A", "B", "C", "D" or "E".
-            
-            .. note::
-
-                Consider using :meth:`importCdasAsync` instead, as this is faster.
-        """
-        args = (startDate,endDate,satellite)
-        s._importCdasMagneticField(*args)
-        s._importCdasPosition(*args)
-        s._importCdasPeem(*args)
-
-    def importCdasAsync(self,startDate,endDate,satellite="D") -> None:
+    def importCDAS(self,startDate,endDate,satellite="D") -> None:
         """ Imports magnetic field, position, radial distance and peem data for the designated 
-            THEMIS satellite and date range. Uses asyncronous web requests.
+            THEMIS satellite and datetime range.
             The possible satellite letters are: "A", "B", "C", "D" or "E".
+            See also: :meth:`MagnetometerData._importAsync`
         """
-        args = (startDate,endDate,satellite)
-        fetchers = []
-        # These functions cannot modify the same variables/attributes as there 
-        # is no prevention of a race condition
         funcs = (self._importCdasMagneticField,self._importCdasPosition,self._importCdasPeem)
-        for func in funcs:
-            fetch = Thread(target=func,args=args)
-            fetch.start()
-            fetchers.append(fetch)
-        for fetch in fetchers:
-            fetch.join()
+        self._importAsync(funcs,startDate,endDate,satellite)
 
-    def _importCdasPosition(s, startDate, endDate, satellite) -> None:
+    def _importCdasPosition(s, startDatetime, endDatetime, satellite) -> None:
         data = cdas.get_data(
             'sp_phys',
             f'TH{satellite.upper()}_OR_SSC',
-            startDate,
-            endDate,
+            startDatetime,
+            endDatetime,
             ['XYZ_GSM','RADIUS'],
         )
         s.position = DataSet_3D(
@@ -205,7 +213,7 @@ class THEMISdata(MagnetometerData):
         :param removeMagnetosheath: Whether to remove data while in the magnetosheath
         :param minRadius: Radius in earth radii below which to remove magnetic field data
         """
-        self.importCdasAsync(
+        self.importCDAS(
             datetime(2007,9,4),
             datetime(2007,9,5)
         )

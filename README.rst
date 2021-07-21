@@ -26,7 +26,8 @@ Features
 * Remove data below a certain altitude
 * Remove data in the magnotosheath
 * Removing duplicate data points in CDAS data
-* Time stretch data for sonification using 4 different algorithms
+* Time stretch data for sonification using 4 different algorithms:
+
    * Wavelet based stretch
    * Paulstretch
    * Phase vocoder
@@ -52,7 +53,7 @@ Usage example
    start = datetime(2008,12,7)
    end = datetime(2008,12,10)
    myTHEMISdata = magSonify.THEMISdata()
-   myTHEMISdata.importCdasAsync(
+   myTHEMISdata.importCDAS(
       start,end,satellite='D'
    )
    myTHEMISdata.defaultProcessing(removeMagnetosheath=True,minRadius=4)

@@ -5,6 +5,7 @@ Magnetometer data
 -------------------------------
 .. autoclass:: magSonify.MagnetometerData
    :members:
+   :private-members:
 
 THEMIS data
 ---------------
