@@ -22,7 +22,7 @@ class MagnetometerData():
         """The magnetic field in mean field align coordinates"""
 
         self.peemIdentifyMagnetosheath = DataSet_Placeholder()
-        """Required series for removal of magnetosheath
+        """Required information for removal of magnetosheath
 
         ``keys: 'density','velocit_x','flux_x',flux_y'`` """
 
