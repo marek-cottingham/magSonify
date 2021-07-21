@@ -278,7 +278,8 @@ class DataSet_3D(DataSet):
         """Performs a coordinate transform to a system with the specified basis vectors.
         
         :param '_Basis':
-            The basis vectors to use, varying in time. Must be unit vectors.
+            A basis vector, specified as a unit vectior which varies over time. Must be expressed 
+            in the original coordinate system.
         :type '_Basis': :class:`DataSet_3D`
         """
         bases = [xBasis,yBasis,zBasis]
