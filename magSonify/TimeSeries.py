@@ -117,34 +117,37 @@ class TimeSeries():
         return float((self.times[-1] - self.times[0])/len(self.times))
 
     def asFloat(self) -> np.array( () ,np.float64):
-        """:rtype: `np.array(dtype = np.timedelta64)`"""
+        """:rtype: ``np.array(dtype = np.float)``"""
         return self.times
 
     def asTimedelta(self) -> np.array( () ,np.timedelta64):
-        """:rtype: `np.array(dtype = np.timedelta64)`"""
+        """:rtype: ``np.array(dtype = np.timedelta64)``"""
         return self.times * self.timeUnit
 
     def asDatetime(self) -> np.array( () ,np.datetime64):
-        """:rtype: `np.array(dtype = np.datetime64)`"""
+        """:rtype: ``np.array(dtype = np.datetime64)``"""
         self._raiseIfNoStartTime()
         return self.asTimedelta() + self.startTime
 
     def asNumpy(self) -> np.array:
-        """Returns the most suitable numpy represenation"""
+        """Returns the most suitable numpy represenation
+        
+        :rtype: ``np.array(dtype = np.datetime64)`` | ``np.array(dtype = np.timedelta64)``
+        """
         if self.startTime is not None:
             return self.asDatetime()
         return self.asTimedelta()
 
     def argFirstAfter(self,datetime) -> int:
-        """Returns the argument of the first time occuring after ``datetime``"""
+        """Returns the argument of the first time point occuring after ``datetime``"""
         datetime = np.datetime64(datetime)
         self._raiseIfNoStartTime()
         val = (datetime - self.startTime) / self.timeUnit
         return np.argmax(self.times - val)
 
     def interpolate(self,factor) -> None:
-        """Convert the time series to a series with evenely space times over the same interval
-        with ``factor`` times the original sample density.
+        """Interpolates the time series, increasing the density of points by ``factor`` times and 
+        evenly spacing the points. If ``factor < 1``, reduces density of points.
         """
         self.times = np.linspace(
             self.times[0],
@@ -159,8 +162,8 @@ class TimeSeries():
             self.times = self.times * (self.timeUnit / newTimeUnit)
             self.timeUnit = newTimeUnit
 
-    def copy(self) -> TimeSeries:
-        """Copies the time series"""
+    def getCopy(self) -> TimeSeries:
+        """Returns a copy of the time series"""
         return type(self)(self.times.copy(),self.timeUnit,self.startTime)
 
     def __eq__(self,other: TimeSeries) -> bool:

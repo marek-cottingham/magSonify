@@ -69,7 +69,7 @@ def _getBeforeAndExpectation_Func(kwargs, stretch, ts: TimeSeries, genFunc, genF
             **kwargs,
         )
     )
-    new_ts = ts.copy()
+    new_ts = ts.getCopy()
     new_ts.interpolate(stretch)
     expectation = magSonify.DataSet_1D(
         new_ts,

@@ -48,9 +48,9 @@ class MagnetometerData():
         assert(self.position.timeSeries == self.magneticField.timeSeries)
         assert(self.magneticField.timeSeries == self.meanField.timeSeries)
 
-        fieldUnitVector = self.meanField.copy()
+        fieldUnitVector = self.meanField.getCopy()
         fieldUnitVector.makeUnitVector()
-        earthUnitVector = -(self.position.copy())
+        earthUnitVector = -(self.position.getCopy())
         earthUnitVector.makeUnitVector()
 
         polUnitVector = fieldUnitVector.cross(earthUnitVector)

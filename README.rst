@@ -1,5 +1,8 @@
 MagSonify
 ================
+.. image:: https://readthedocs.org/projects/magsonify/badge/?version=latest
+   :target: https://magsonify.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
 
 MagSonify enables the sonification of space magnetic field data in python.
 
