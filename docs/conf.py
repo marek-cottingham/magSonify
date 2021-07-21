@@ -48,8 +48,6 @@ release = '0.1dev'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    # 'sphinx_autodoc_typehints',
-    'code_include.extension'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
