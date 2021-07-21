@@ -64,7 +64,7 @@ def icwt(
 ):
     """ Computes the inverse continous wavelet transform.
 
-    coefficients:
+    :param coefficients:
         The coefficients produced from the forward CWT, in a 2D numpy array.
     """
     # Based on CT98: https://psl.noaa.gov/people/gilbert.p.compo/Torrence_compo1998.pdf
@@ -75,7 +75,7 @@ def icwt(
     return x
 
 def icwt_noAdmissibilityCondition(coefficients,scales,**kwargs):
-    """ Computes the inverse continous wavlet transform.
+    """ Computes the inverse continous wavlet transform using an alternative algorithm.
     """
     # Based on the method presented in: 
     #   Computational implementation of the inverse continuous wavelet transform without a 
