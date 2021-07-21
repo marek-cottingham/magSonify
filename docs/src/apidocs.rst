@@ -11,6 +11,12 @@ THEMIS data
 .. autoclass:: magSonify.THEMISdata
    :members:
    :show-inheritance:
+   :exclude-members: defaultProcessing
+
+   .. automethod:: magSonify.THEMISdata.defaultProcessing
+
+      .. code-include:: :meth:`magSonify.THEMISdata.defaultProcessing`
+
 
 DataSet
 ------------
