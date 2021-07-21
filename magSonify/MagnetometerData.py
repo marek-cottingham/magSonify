@@ -24,7 +24,7 @@ class MagnetometerData():
         self.peemIdentifyMagnetosheath = DataSet_Placeholder()
         """Required information for removal of magnetosheath
 
-        ``keys: 'density','velocit_x','flux_x',flux_y'`` """
+        ``keys: 'density','velocity_x','flux_x',flux_y'`` """
 
     def fillLessThanRadius(self,radiusInEarthRadii,const=0) -> None:
         """Fills all values in the magnetic field with ``const`` when the radius is below the 
@@ -35,9 +35,15 @@ class MagnetometerData():
         self.magneticField.fillFlagged(radiusMask,const)
 
     def convertToMeanFieldCoordinates(self) -> None:
-        """ Converts the magnetic field data in ``self.magneticField`` to mean field coordinates,
-        saving the output in ``self.magneticFieldMeanFieldCoordinates``. ``self.meanField`` must be 
-        specified and contain a 3D dataset with the mean magnetic field.
+        """ Converts the magnetic field data in :attr:`magneticField` to mean field coordinates,
+        saving the output in :attr:`magneticFieldMeanFieldCoordinates`.
+        
+        .. warning::
+
+            :attr:`meanField` must be specified and contain a 3D dataset with the mean 
+            magnetic field.
+
+            :attr:`magneticField` must be specified
         """
         assert(self.position.timeSeries == self.magneticField.timeSeries)
         assert(self.magneticField.timeSeries == self.meanField.timeSeries)
@@ -60,7 +66,11 @@ class MagnetometerData():
 
     def removeMagnetosheath(self) -> None:
         """Removes portions of magnetic field data while the satellite is in the magnetosheath.
-        ``self.peemIdentifyMagnetosheath`` must be specified."""
+
+        .. warning::
+
+            :attr:`peemIdentifyMagnetosheath` *must* be specified.
+        """
         fluxX = self.peemIdentifyMagnetosheath.data['flux_x']
         fluxY = self.peemIdentifyMagnetosheath.data['flux_y']
         perpFlux = (fluxX**2 + fluxY**2)**(1/2)
@@ -83,6 +93,10 @@ class THEMISdata(MagnetometerData):
     def interpolate(self,spacingInSeconds=3) -> None:
         """Interpolates data sets :attr:`magneticField`, :attr:`position` and 
         :attr:`peemIdentifyMagnetosheath` to the specified spacing.
+
+        A default spacing of 3s is chossen for THEMIS data. This is slightly smaller than the mean
+        sample spacing in the raw magnetometer data of ~3.17 s. Using a consistent value aids in 
+        establishing the correspondence between frequencies in sonified audio and the raw data.
         """
         refTimeSeries = generateTimeSeries(
             self.magneticField.timeSeries.getStart(),
@@ -101,7 +115,9 @@ class THEMISdata(MagnetometerData):
             satellite and date range.
             The possible satellite letters are: "A", "B", "C", "D" or "E".
             
-            Consider using :meth:`importCdasAsync` instead, as this is faster.
+            .. note::
+
+                Consider using :meth:`importCdasAsync` instead, as this is faster.
         """
         args = (startDate,endDate,satellite)
         s._importCdasMagneticField(*args)
