@@ -15,15 +15,22 @@ THEMIS data
 
    .. automethod:: magSonify.THEMISdata.defaultProcessing
 
-      .. code-include:: :meth:`magSonify.THEMISdata.defaultProcessing`
+      The processing is completed by the following code:
 
+      ..  literalinclude:: ../../magSonify/MagnetometerData.py
+         :pyobject: THEMISdata.defaultProcessing
+         :lines: 7-
+         :dedent: 8
 
 DataSet
 ------------
 .. autoclass:: magSonify.DataSet
    :members:
-   :private-members: _iterate, _iteratePair
    :special-members: __add__, __sub__, __neg__, __getitem__
+   
+   .. automethod:: _iterate
+
+   .. automethod:: _iteratePair
 
 DataSet_3D
 --------------
