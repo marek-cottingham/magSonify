@@ -80,19 +80,21 @@ class MagnetometerData():
 
     
 class THEMISdata(MagnetometerData):
-    def interpolate_3s(self) -> None:
-        """Iterpolates all data to 3 second spacing"""
-        timeSeries_3s = generateTimeSeries(
+    def interpolate(self,spacingInSeconds=3) -> None:
+        """Interpolates data sets :attr:`magneticField`, :attr:`position` and 
+        :attr:`peemIdentifyMagnetosheath` to the specified spacing.
+        """
+        refTimeSeries = generateTimeSeries(
             self.magneticField.timeSeries.getStart(),
             self.magneticField.timeSeries.getEnd(),
-            spacing=np.timedelta64(3,'s')
+            spacing=np.timedelta64(spacingInSeconds,'s')
         )
         for x in (
             self.magneticField,
             self.position,
             self.peemIdentifyMagnetosheath
         ):
-            x.interpolate(timeSeries_3s)
+            x.interpolateReference(refTimeSeries)
 
     def importCDAS(s,startDate,endDate,satellite="D") -> None:
         """ Imports magnetic field, position, radial distance and peem data for the designated THEMIS
@@ -194,7 +196,7 @@ class THEMISdata(MagnetometerData):
         
         self.magneticField.removeDuplicateTimes()
         self.peemIdentifyMagnetosheath.removeDuplicateTimes()
-        self.interpolate_3s()
+        self.interpolate()
         self.magneticField.constrainAbsoluteValue(400)
         self.meanField = self.magneticField.runningAverage(timeWindow=np.timedelta64(35,"m"))
         self.magneticField = self.magneticField - self.meanField

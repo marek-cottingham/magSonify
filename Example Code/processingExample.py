@@ -23,7 +23,7 @@ mag.magneticField.removeDuplicateTimes()
 mag.peemIdentifyMagnetosheath.removeDuplicateTimes()
 
 # Interpolate the data to a consistent, know spacing
-mag.interpolate_3s()
+mag.interpolate(spacingInSeconds=3)
 
 mag.magneticField.constrainAbsoluteValue(400)
 

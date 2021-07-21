@@ -12,9 +12,9 @@ from copy import deepcopy
 class DataSet():
     """Represents a data set with multiple data series sampled at common time points."""
     def __init__(self,timeSeries: TimeSeries,data):
-        self.timeSeries = timeSeries
+        self.timeSeries: TimeSeries = timeSeries
         """:class:`TimeSeries` represeting the sampling times for the dataset"""
-        self.data = data
+        self.data: dict = data
         """Dictionary containing the data series"""
 
     def items(self) -> Tuple:
@@ -43,49 +43,48 @@ class DataSet():
             d[d>max] = max
             d[d<-max] = -max
 
-    def interpolate(self,ref_or_factor) -> None:
-        """Interpolates the data and time series.
-        
-        :param ref_or_factor:
-            A reference object or factor to use to interpolate the data.
-
-            If :class:`TimeSeries` or :class:`DataSet` is passed, this will interpolate the data to have a matching 
-            time series.
-
-            If a numerical type is passed, the data will be interpolated to an evenly spaced time
-            series with ``factor`` times the original sample point density.
+    def interpolateFactor(self,factor: float) -> None:
+        """Interpolates the data set, increasing the sample time resolution by 
+        ``factor`` times and evenly spacing the samples. 
+        If ``factor < 1``, reduces sample resolution.
         """
-        # Warning: This can extrapolate outside the data range - there is not range checking. 
-        # This extrapolation is not reliable and should only be allowed for points very slightly 
-        # outside the data range.
+        newTimes = self.timeSeries.copy()
+        newTimes.interpolate(factor)
+        self._interpolate(newTimes)
 
-        if isinstance(ref_or_factor,DataSet):
-            ref_or_factor = ref_or_factor.timeSeries
+    def interpolateReference(self,ref: TimeSeries) -> None:
+        """Interpolates the data set such that the new sample times are those of 
+        the time series ``ref``.
 
-        newTimes = self._getInterpolationTimeSeries(ref_or_factor)
+        .. note::
+            This can extrapolate outside the data range - there is no range checking. 
+            This extrapolation is not reliable and should only be allowed for points very slightly 
+            outside the data range.
+        """
 
+        self._setupTimeSeriesForInterpolation(ref)
+        self._interpolate(ref)
+
+    def _interpolate(self, newTimes: TimeSeries):
         for i, d in self.items():
             fd = interp1d(self.timeSeries.asFloat(),d,kind="cubic",fill_value="extrapolate")
             self.data[i] = fd(newTimes.asFloat())
 
         self.timeSeries = newTimes
 
-    def _getInterpolationTimeSeries(self, ref_or_factor) -> TimeSeries:
-        if isinstance(ref_or_factor,TimeSeries):
-            if ref_or_factor.startTime is not None:
-                self.timeSeries = TimeSeries(
-                    self.timeSeries.asDatetime(),
-                    ref_or_factor.timeUnit,
-                    ref_or_factor.startTime
-                )
-            else:
-                self.timeSeries = self.timeSeries.copy()
-                self.timeSeries.changeUnit(ref_or_factor.timeUnit)
-            newTimes = ref_or_factor
-        else: #Treat ref_or_factor as number
-            newTimes = self.timeSeries.copy()
-            newTimes.interpolate(ref_or_factor)
-        return newTimes
+    def _setupTimeSeriesForInterpolation(self, ref: TimeSeries) -> None:
+        """Sets up :attr:`timeSeries` for interpolation by matching the units and 
+        start time of ``ref``"""
+        if ref.startTime is not None:
+            self.timeSeries = TimeSeries(
+                self.timeSeries.asDatetime(),
+                ref.timeUnit,
+                ref.startTime
+            )
+        else:
+            self.timeSeries = self.timeSeries.copy()
+            self.timeSeries.changeUnit(ref.timeUnit)
+
 
     def runningAverage(self,samples=None,timeWindow=None) -> DataSet:
         """Returns a running average of the data with window size ``samples`` or period ``timeWindow``.

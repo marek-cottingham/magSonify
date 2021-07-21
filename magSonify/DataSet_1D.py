@@ -150,7 +150,7 @@ class DataSet_1D(DataSet):
         if interpolateBefore is None and interpolateAfter is None:
             interpolateAfter = stretch
         if interpolateBefore is not None:
-            self.interpolate(interpolateBefore)
+            self.interpolateFactor(interpolateBefore)
         self.waveletPitchShift(stretch,scaleLogSpacing,interpolateAfter)
 
     def paulStretch(self,stretch,window=0.015) -> None:
