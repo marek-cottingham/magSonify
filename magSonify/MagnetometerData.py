@@ -140,14 +140,14 @@ class THEMISdata(MagnetometerData):
         ):
             x.interpolateReference(refTimeSeries)
 
-    def importCDAS(self,startDate,endDate,satellite="D") -> None:
+    def importCDAS(self,startDatetime,endDatetime,satellite="D") -> None:
         """ Imports magnetic field, position, radial distance and peem data for the designated 
             THEMIS satellite and datetime range.
             The possible satellite letters are: "A", "B", "C", "D" or "E".
             See also: :meth:`MagnetometerData._importAsync`
         """
         funcs = (self._importCdasMagneticField,self._importCdasPosition,self._importCdasPeem)
-        self._importAsync(funcs,startDate,endDate,satellite)
+        self._importAsync(funcs,startDatetime,endDatetime,satellite)
 
     def _importCdasPosition(s, startDatetime, endDatetime, satellite) -> None:
         data = cdas.get_data(
@@ -167,12 +167,12 @@ class THEMISdata(MagnetometerData):
             }
         )
 
-    def _importCdasMagneticField(s, startDate, endDate, satellite) -> None:
+    def _importCdasMagneticField(s, startDatetime, endDatetime, satellite) -> None:
         data = cdas.get_data(
             'sp_phys',
             f'TH{satellite.upper()}_L2_FGM',
-            startDate,
-            endDate,
+            startDatetime,
+            endDatetime,
             [f'th{satellite.lower()}_fgs_gsmQ']
         )
         s.magneticField = DataSet_3D(
@@ -184,12 +184,12 @@ class THEMISdata(MagnetometerData):
             ]
         )
     
-    def _importCdasPeem(s,startDate,endDate,satellite) -> None:
+    def _importCdasPeem(s,startDatetime,endDatetime,satellite) -> None:
         data = cdas.get_data(
            'sp_phys',
            f'TH{satellite.upper()}_L2_MOM',
-           startDate,
-           endDate,
+           startDatetime,
+           endDatetime,
            [
                f'th{satellite.lower()}_peem_density',
                f'th{satellite.lower()}_peem_velocity_gsm',
@@ -213,11 +213,6 @@ class THEMISdata(MagnetometerData):
         :param removeMagnetosheath: Whether to remove data while in the magnetosheath
         :param minRadius: Radius in earth radii below which to remove magnetic field data
         """
-        self.importCDAS(
-            datetime(2007,9,4),
-            datetime(2007,9,5)
-        )
-        
         self.magneticField.removeDuplicateTimes()
         self.peemIdentifyMagnetosheath.removeDuplicateTimes()
         self.interpolate()
