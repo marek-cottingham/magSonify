@@ -10,25 +10,35 @@ from .TimeSeries import TimeSeries
 from copy import deepcopy
 
 class DataSet():
-    """Represents a data set with multiple data series sampled at common time points."""
+    """Represents a data set with multiple data series sampled at common time points.
+    
+    :param timeSeries:
+        Time series representing the sampling times.
+    :param data:
+        Dictionary of numpy arrays containing the data. Convention is for 'x', 'y' and 'z' axes 
+        to be represented under the keys ``int`` ``0``, ``1`` and ``2`` respectively if they are 
+        present. Array should be 1D.
+    """
     def __init__(self,timeSeries: TimeSeries,data):
         self.timeSeries: TimeSeries = timeSeries
         """:class:`TimeSeries` represeting the sampling times for the dataset"""
-        self.data: dict = data
-        """Dictionary containing the data series"""
 
-    def items(self) -> Tuple:
-        """Returns a list of tuples, containg index-data pairs for each element in :attr:`data`
-        """
+        data = self._convertToDictIfArray(data)
+        self.data: dict = data
+        """Dictionary of numpy arrays containing the data."""
+
+    def _convertToDictIfArray(self,data):
         try:
-            dataInterateOver = self.data.items()
+            data.items()
         except AttributeError:
-            dataInterateOver = enumerate(self.data)
-        return dataInterateOver
-    
-    def keys(self) -> List:
-        """Returns all keys in :attr:`data`"""
-        return [x[0] for x in self.items()] 
+            data = dict(enumerate(data))
+        return data
+
+    def items(self) -> enumerate:
+        """Returns an iterable containing all key-value pairs in :attr:`data`.
+        Equivalent to ``self.data.items()``
+        """
+        return self.data.items()
 
     def fillNaN(self,const=0) -> None:
         """Fills ``NaN`` values in the data with the constant ``const``"""
@@ -222,13 +232,15 @@ class DataSet():
 from .DataSet_1D import DataSet_1D
         
 class DataSet_3D(DataSet):
-    """Represents a vector quantity sampled at multiple time points.
+    """Represents a data set with multiple data series sampled at common time points.
     
-    :param TimeSeries timeSeries:
-        The sampling time point
-    :param dict data:
-        The data series.
-        The keys ``0, 1, 2`` must be defined, though not exclusively.
+    :param timeSeries:
+        Time series representing the sampling times.
+    :param data:
+        Dictionary of numpy arrays containing the data. The dictionary must have the keys
+        ``int`` ``0``, ``1`` and ``2`` which represent the x', 'y' and 'z' axes respectively. 
+        Array should be 1D. Other keys may be included, although these will be ignored by vector 
+        specific methods, eg. :meth:`cross`, :meth:`dot`.
     """
     def __init__(self,timeSeries: TimeSeries,data):
         try:

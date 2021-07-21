@@ -8,6 +8,19 @@ from audiotsm.io.array import ArrayReader, ArrayWriter
 from copy import deepcopy
 
 class DataSet_1D(DataSet):
+    """Represents a data set with one component, ie. where the samples are scalars.
+    Supports a series of time stretching methods.
+
+    :param timeSeries:
+        Time series representing the sampling times.
+    :param x:
+        The single data series as type ``numpy.array``. The length of the array 
+        should be the same as that of ``timeSeries``.
+        
+        Can also pass a dict with the single key ``0``, in which case the 
+        corresponding value should be populated with a numpy array. This is used
+        allow compatibility with inherited methods from DataSet.
+    """
     def __init__(self,timeSeries: TimeSeries,x):
         if self._isInitWithDict(x):
             self.data = x
@@ -41,22 +54,6 @@ class DataSet_1D(DataSet):
         attempting to output audio.
         """
         self.x = self.x / np.max(np.abs(self.x)) * maxAmplitude
-
-    def copy(self) -> None:
-        return type(self)(self.timeSeries,deepcopy(self.x))
-
-    def __getitem__(self, subscript):
-        return type(self)(self.timeSeries[subscript],self.x[subscript])
-
-    def _iteratePair(self,other,lamb):
-        """Execute function ``lamb`` on each element pair in ``self.data`` and ``self.other`` 
-        with the same keys
-        """
-        self._raiseIfTimeSeriesNotEqual(other)
-        res = {}
-        for i, d in self.items():
-            res[i] = lamb(d,other.data[i])
-        return type(self)(self.timeSeries,res[0])
 
     def waveletPitchShift(
             self,
