@@ -32,7 +32,7 @@ class MagnetometerData():
         """
         assert(self.position.timeSeries == self.magneticField.timeSeries)
         radiusMask = self.position.data["radius"] < radiusInEarthRadii
-        self.magneticField.fillMask(radiusMask,const)
+        self.magneticField.fillFlagged(radiusMask,const)
 
     def convertToMeanFieldCoordinates(self) -> None:
         """ Converts the magnetic field data in ``self.magneticField`` to mean field coordinates,
@@ -66,7 +66,7 @@ class MagnetometerData():
         perpFlux = (fluxX**2 + fluxY**2)**(1/2)
         density = self.peemIdentifyMagnetosheath.data['density']
         velocityX = self.peemIdentifyMagnetosheath.data['velocity_x']
-        removeSheathMask = logical_and(
+        removeSheathFlags = logical_and(
             (self.position.data["radius"] > 8),
             logical_or(
                 (density > 10),
@@ -76,7 +76,7 @@ class MagnetometerData():
                 )
             )
         )
-        self.magneticField.fillMask(removeSheathMask)
+        self.magneticField.fillFlagged(removeSheathFlags)
 
     
 class THEMISdata(MagnetometerData):

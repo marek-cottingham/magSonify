@@ -125,14 +125,22 @@ class DataSet():
         """Returns a copy of the data set"""
         return type(self)(self.timeSeries,deepcopy(self.data))
 
-    def fillMask(self,mask,const=0) -> None:
-        """Fill values according to a mask across all components"""
+    def fillFlagged(self,flags: np.array,const=0) -> None:
+        """Fill values according to an array of flags, across all components
+
+        :param flags: 
+            `Boolean array index 
+            <https://numpy.org/devdocs/reference/arrays.indexing.html#boolean-array-indexing>`_
+            of same length as the data set, identifying the indicies to fill.
+        :param const:
+            The value to fill with.
+        """
         for i,d in self.items():
-            d[mask] = const
+            d[flags] = const
 
     def removeDuplicateTimes(self) -> None:
         """Removes duplicate values in the time series by deleting all but the first occurence.
-        Removes correspoinding points in each data series.
+        Removes correspoinding points in each component.
         """
         unique, index = np.unique(self.timeSeries.times, return_index=True)
         self.timeSeries = self.timeSeries.copy()
