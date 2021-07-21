@@ -10,7 +10,7 @@ from scipy.signal import chirp
 rng: np.random.Generator = np.random.default_rng()
 
 class SimulateData():
-    def _setupTimeSeries(s, timeSeries, stretch=None):
+    def _setupTimeSeries(s, timeSeries: TimeSeries, stretch=None):
         timeSeries = timeSeries.copy()
         timeSeries.changeUnit(np.timedelta64(1,'s'))
         if stretch is not None:

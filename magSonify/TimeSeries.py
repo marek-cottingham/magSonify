@@ -162,7 +162,7 @@ class TimeSeries():
             self.times = self.times * (self.timeUnit / newTimeUnit)
             self.timeUnit = newTimeUnit
 
-    def getCopy(self) -> TimeSeries:
+    def copy(self) -> TimeSeries:
         """Returns a copy of the time series"""
         return type(self)(self.times.copy(),self.timeUnit,self.startTime)
 

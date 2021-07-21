@@ -58,7 +58,7 @@ class DataSet():
         ``factor`` times and evenly spacing the samples. 
         If ``factor < 1``, reduces sample resolution.
         """
-        newTimes = self.timeSeries.getCopy()
+        newTimes = self.timeSeries.copy()
         newTimes.interpolate(factor)
         self._interpolate(newTimes)
 
@@ -92,7 +92,7 @@ class DataSet():
                 ref.startTime
             )
         else:
-            self.timeSeries = self.timeSeries.getCopy()
+            self.timeSeries = self.timeSeries.copy()
             self.timeSeries.changeUnit(ref.timeUnit)
 
 
@@ -130,7 +130,7 @@ class DataSet():
         """
         writeoutAudio(self.data[key],file,sampleRate)
 
-    def getCopy(self) -> DataSet:
+    def copy(self) -> DataSet:
         """Returns a copy of the data set"""
         return type(self)(self.timeSeries,deepcopy(self.data))
 
@@ -152,7 +152,7 @@ class DataSet():
         Removes correspoinding points in each component.
         """
         unique, index = np.unique(self.timeSeries.times, return_index=True)
-        self.timeSeries = self.timeSeries.getCopy()
+        self.timeSeries = self.timeSeries.copy()
         self.timeSeries.times = unique
         for i,d in self.items():
             self.data[i] = d[index]
