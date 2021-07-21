@@ -1,5 +1,0 @@
-Example Code
-=============
-
-.. literalinclude:: ../../Example Code/processingExample.py
-    :language: python
