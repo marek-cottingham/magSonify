@@ -238,7 +238,7 @@ class DataSet_3D(DataSet):
         Time series representing the sampling times.
     :param data:
         Dictionary of numpy arrays containing the data. The dictionary must have the keys
-        ``int`` ``0``, ``1`` and ``2`` which represent the x', 'y' and 'z' axes respectively. 
+        ``int`` ``0``, ``1`` and ``2`` which represent the 'x', 'y' and 'z' axes respectively. 
         Array should be 1D. Other keys may be included, although these will be ignored by vector 
         specific methods, eg. :meth:`cross`, :meth:`dot`.
     """
