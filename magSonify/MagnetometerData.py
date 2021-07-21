@@ -99,7 +99,7 @@ class MagnetometerData():
 
         .. warning::
 
-            :attr:`peemIdentifyMagnetosheath` *must* be specified.
+            :attr:`peemIdentifyMagnetosheath` must be specified.
         """
         fluxX = self.peemIdentifyMagnetosheath.data['flux_x']
         fluxY = self.peemIdentifyMagnetosheath.data['flux_y']
