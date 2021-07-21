@@ -148,23 +148,37 @@ class DataSet():
         for i,d in self.items():
             self.data[i] = d[index]
 
-    def _iterate(self,lamb,replace=False) -> dict:
-        """Execute function ``lamb`` on each element in :attr:`data`
+    def _iterate(self,lamb: function,replace=False) -> dict:
+        """Execute function ``lamb`` on each component in :attr:`data`
         
-        :return dict: Returns a dict with the equivalent keys as in :attr:`data`
+        :param lamb:
+            Function to perform on each component, should accept a single parameter which is a 
+            1D numpy array and return an array of the same shape as output.
+        :type lamb: function
+        :return: 
+            A dictionary of numpy arrays with the same keys as in :attr:`data`, unless 
+            ``replace=True``, in which case returns ``None``.
+        :rtype: ``dict`` | ``None``
         """
-        res = {}
+        newData = {}
         for i,d in self.items():
             if replace:
                 self.data[i] = lamb(d)
             else:
-                res[i] = lamb(d)
-        return res
+                newData[i] = lamb(d)
+        if replace:
+            return None
+        return newData
 
-    def _iteratePair(self,other,lamb) -> DataSet:
-        """Execute function ``lamb`` on each element pair in ``self.data`` and ``other.data`` with 
-        the same keys. ``self`` and ``other`` must have the same time series and same keys in 
+    def _iteratePair(self,other: DataSet,lamb: function) -> DataSet:
+        """Execute function ``lamb`` on each component pair in ``self.data`` and ``other.data`` 
+        with the same keys. ``self`` and ``other`` must have the same time series and same keys in 
         :attr:`data`.
+
+        :param lamb:
+            Performed on each component, should accept two parameters which are 
+            1D numpy arrays of the same shape and return an array of the same shape as output.
+        :type lamb: function
         """
         self._raiseIfTimeSeriesNotEqual(other)
         res = {}

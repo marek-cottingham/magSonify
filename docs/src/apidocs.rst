@@ -30,6 +30,12 @@ DataSet
    
    .. automethod:: _iterate
 
+      Example of how :meth:`_iterate` is used in :meth:`SimulateData.applyGaussianWhiteNoise`:
+
+      .. literalinclude:: ../../magSonify/SimulateData.py
+         :pyobject: SimulateData.applyGaussianWhiteNoise
+         :dedent: 4
+      
    .. automethod:: _iteratePair
 
 DataSet_3D
