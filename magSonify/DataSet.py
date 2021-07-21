@@ -113,13 +113,13 @@ class DataSet():
         """Extract element from ``self.data[key]`` in new data set"""
         return DataSet_1D(self.timeSeries,deepcopy(self.data[key]))
 
-    def genMonoAudio(self,key,file,**kwargs) -> None:
+    def genMonoAudio(self,key,file,sampleRate=44100) -> None:
         """Generate a mono audio file from data in the series ``self.data[key]``
         
         :param int sampleRate:
             The sample rate of the output audio, default is 44100.
         """
-        writeoutAudio(self.data[key],file,**kwargs)
+        writeoutAudio(self.data[key],file,sampleRate)
 
     def copy(self) -> DataSet:
         """Returns a copy of the data set"""
@@ -240,13 +240,13 @@ class DataSet_3D(DataSet):
             raise AttributeError("Data must contain the keys 0, 1 and 2")
         super().__init__(timeSeries,data)
 
-    def genStereoAudio(self,file,**kwargs) -> None:
+    def genStereoAudio(self,file,sampleRate=44100) -> None:
         """Generates a stereo audio output in the specified file"""
         audio = np.array([
             self.data[0] + 0.5 * self.data[1],
             0.5 * self.data[1] + self.datca[2],
         ])
-        writeoutAudio(audio.T,file,**kwargs)
+        writeoutAudio(audio.T,file,sampleRate)
 
     def cross(self,other) -> DataSet_3D:
         """Computes the cross product of 3D datasets"""

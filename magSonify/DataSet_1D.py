@@ -12,7 +12,7 @@ class DataSet_1D(DataSet):
         if self._isInitWithDict(x):
             self.data = x
         else:
-            self.data = [x,]
+            self.data = {0: x}
         
         self.timeSeries = timeSeries
 
