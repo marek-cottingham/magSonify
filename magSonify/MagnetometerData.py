@@ -137,9 +137,11 @@ class THEMISdata(MagnetometerData):
         for x in (
             self.magneticField,
             self.position,
-            self.peemIdentifyMagnetosheath
         ):
             x.interpolateReference(refTimeSeries)
+
+        if self.peemIdentifyMagnetosheath is not None:
+            self.peemIdentifyMagnetosheath.interpolateReference(refTimeSeries)
 
     def importCDAS(self,startDatetime,endDatetime,satellite="D") -> None:
         """ Imports magnetic field, position, radial distance and peem data for the designated 
@@ -208,9 +210,12 @@ class THEMISdata(MagnetometerData):
                     'flux_y': data[f'FY_ELEC_MOM_ESA-{satellite.upper()}']
                 }
             )
-        except ValueError: 
+        except ValueError:
             # Sometimes we get an exception due to data unavailability. As 
             # magnotosheath removal is not critical, we skip the peem data in this case.
+
+            print(f"Waring: Failed to obtain peem data for interval {startDatetime} "
+                f"- {endDatetime}, skipping magnetosheath removal for this period.")
             pass
     
     def defaultProcessing(self,removeMagnetosheath=False,minRadius=4) -> None:
@@ -219,6 +224,7 @@ class THEMISdata(MagnetometerData):
         :param removeMagnetosheath: Whether to remove data while in the magnetosheath
         :param minRadius: Radius in earth radii below which to remove magnetic field data
         """
+        self.position.removeDuplicateTimes()
         self.magneticField.removeDuplicateTimes()
         if self.peemIdentifyMagnetosheath is not None:
             self.peemIdentifyMagnetosheath.removeDuplicateTimes()
