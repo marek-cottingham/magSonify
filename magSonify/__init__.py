@@ -21,8 +21,8 @@ if CACHING_ENABLED:
 from .MagnetometerData import MagnetometerData, THEMISdata
 from .SimulateData import SimulateData
 from .TimeSeries import TimeSeries, generateTimeSeries
-from .DataSet import DataSet, DataSet_3D, DataSet_Placeholder, DataSet_3D_Placeholder
-from .DataSet_1D import DataSet_1D, DataSet_1D_placeholder
+from .DataSet import DataSet, DataSet_3D
+from .DataSet_1D import DataSet_1D
 
 
 

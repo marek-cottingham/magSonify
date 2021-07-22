@@ -193,6 +193,3 @@ class DataSet_1D(DataSet):
         )
         timeSeriesModification.run(reader, writer)
         self.x = writer.data.flatten()
-class DataSet_1D_placeholder(DataSet_1D):
-    def __init__(self):
-        pass

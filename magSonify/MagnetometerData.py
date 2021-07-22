@@ -1,7 +1,7 @@
 
 from datetime import datetime
 from .TimeSeries import TimeSeries, generateTimeSeries
-from .DataSet import DataSet, DataSet_3D, DataSet_3D_Placeholder, DataSet_Placeholder
+from .DataSet import DataSet, DataSet_3D
 from .DataSet_1D import DataSet_1D
 from threading import Thread
 import numpy as np
@@ -12,16 +12,16 @@ from ai import cdas
 class MagnetometerData():
     """Class providing a high level api for data import and processing"""
     def __init__(self):
-        self.magneticField = DataSet_3D_Placeholder()
+        self.magneticField: DataSet_3D = None
         """The magnetic field at the satellite"""
-        self.position = DataSet_3D_Placeholder()
+        self.position: DataSet_3D = None
         """The position of the satellite"""
-        self.meanField = DataSet_3D_Placeholder()
+        self.meanField: DataSet_3D = None
         """The mean magnetic field after a rolling average"""
-        self.magneticFieldMeanFieldCoordinates = DataSet_3D_Placeholder()
+        self.magneticFieldMeanFieldCoordinates: DataSet_3D = None
         """The magnetic field in mean field align coordinates"""
 
-        self.peemIdentifyMagnetosheath = DataSet_Placeholder()
+        self.peemIdentifyMagnetosheath: DataSet = None
         """Required information for removal of magnetosheath
 
         ``keys: 'density','velocity_x','flux_x',flux_y'`` """
@@ -41,9 +41,9 @@ class MagnetometerData():
                 using ``threading`` library.
 
         :param startDatetime:
-            Start of data range as ``datatime.datetime`` or ``numpy.datetime64``
+            Start of data range as ``datetime.datetime`` or ``numpy.datetime64``
         :param endDatetime:
-            End of data range as ``datatime.datetime`` or ``numpy.datetime64``
+            End of data range as ``datetime.datetime`` or ``numpy.datetime64``
         :param \*args:
             Arbitrary arguments to be passed to the functions.
         """
@@ -97,10 +97,11 @@ class MagnetometerData():
     def removeMagnetosheath(self) -> None:
         """Removes portions of magnetic field data while the satellite is in the magnetosheath.
 
-        .. warning::
-
-            :attr:`peemIdentifyMagnetosheath` must be specified.
+        `peemIdentifyMagnetosheath` must be specified, otherwise no action is taken.
         """
+        if self.peemIdentifyMagnetosheath is None:
+            return None
+        
         fluxX = self.peemIdentifyMagnetosheath.data['flux_x']
         fluxY = self.peemIdentifyMagnetosheath.data['flux_y']
         perpFlux = (fluxX**2 + fluxY**2)**(1/2)
@@ -185,27 +186,32 @@ class THEMISdata(MagnetometerData):
         )
     
     def _importCdasPeem(s,startDatetime,endDatetime,satellite) -> None:
-        data = cdas.get_data(
-           'sp_phys',
-           f'TH{satellite.upper()}_L2_MOM',
-           startDatetime,
-           endDatetime,
-           [
-               f'th{satellite.lower()}_peem_density',
-               f'th{satellite.lower()}_peem_velocity_gsm',
-               f'th{satellite.lower()}_peem_flux'
-            ]
-        )
-        timeSeries = TimeSeries(data["UT"])
-        s.peemIdentifyMagnetosheath = DataSet(
-            timeSeries,
-            {
-                'density': data[f"N_ELEC_MOM_ESA-{satellite.upper()}"],
-                'velocity_x': data[f'VX_ELEC_GSM_MOM_ESA-{satellite.upper()}'],
-                'flux_x': data[f'FX_ELEC_MOM_ESA-{satellite.upper()}'],
-                'flux_y': data[f'FY_ELEC_MOM_ESA-{satellite.upper()}']
-            }
-        )
+        try:
+            data = cdas.get_data(
+            'sp_phys',
+            f'TH{satellite.upper()}_L2_MOM',
+            startDatetime,
+            endDatetime,
+            [
+                f'th{satellite.lower()}_peem_density',
+                f'th{satellite.lower()}_peem_velocity_gsm',
+                f'th{satellite.lower()}_peem_flux'
+                ]
+            )
+            timeSeries = TimeSeries(data["UT"])
+            s.peemIdentifyMagnetosheath = DataSet(
+                timeSeries,
+                {
+                    'density': data[f"N_ELEC_MOM_ESA-{satellite.upper()}"],
+                    'velocity_x': data[f'VX_ELEC_GSM_MOM_ESA-{satellite.upper()}'],
+                    'flux_x': data[f'FX_ELEC_MOM_ESA-{satellite.upper()}'],
+                    'flux_y': data[f'FY_ELEC_MOM_ESA-{satellite.upper()}']
+                }
+            )
+        except ValueError: 
+            # Sometimes we get an exception due to data unavailability. As 
+            # magnotosheath removal is not critical, we skip the peem data in this case.
+            pass
     
     def defaultProcessing(self,removeMagnetosheath=False,minRadius=4) -> None:
         """Performs a standard processing procedure on THEMIS data.
@@ -214,7 +220,8 @@ class THEMISdata(MagnetometerData):
         :param minRadius: Radius in earth radii below which to remove magnetic field data
         """
         self.magneticField.removeDuplicateTimes()
-        self.peemIdentifyMagnetosheath.removeDuplicateTimes()
+        if self.peemIdentifyMagnetosheath is not None:
+            self.peemIdentifyMagnetosheath.removeDuplicateTimes()
         self.interpolate()
         self.magneticField.constrainAbsoluteValue(400)
         self.meanField = self.magneticField.runningAverage(timeWindow=np.timedelta64(35,"m"))

@@ -301,11 +301,3 @@ class DataSet_3D(DataSet):
             self._raiseIfTimeSeriesNotEqual(basis)
             res[i] = sd[0] * basis.data[0] + sd[1] * basis.data[1] + sd[2] * basis.data[2]
         return DataSet_3D(self.timeSeries,res)
-
-class DataSet_3D_Placeholder(DataSet_3D):
-    def __init__(self):
-        pass
-
-class DataSet_Placeholder(DataSet):
-    def __init__(self):
-        pass
