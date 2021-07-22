@@ -1,3 +1,6 @@
+import context
+context.get()
+
 from magSonify.DataSet_1D import DataSet_1D
 import numpy as np
 import scipy as sp
