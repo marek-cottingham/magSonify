@@ -23,6 +23,7 @@ setuptools.setup(
         'scipy',
         'ai.cdas',
         'audiotsm',
-        'SoundFile'
+        'SoundFile',
+        'sounddevice'
     ]
  )
