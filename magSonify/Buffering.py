@@ -12,9 +12,28 @@ import numpy as np
 from time import sleep
 
 class STOPVALUE:
+    """
+    Indicates that a queue has finished, no new values will be put. eg.
+    
+    ::
+
+        def myWorker():
+            while True:
+                # Does some processing, breaks out of the loop when done
+                myQueue.put(val)
+            myQueue.put(STOPVALUE())
+    """
     pass
 
 class HiddenPrints:
+    """
+    Used to hide prints within a context handler. ie.
+
+    ::
+
+        with HiddenPrints():
+            # Some code where we want to suppress console output
+    """
     def __enter__(self):
         self._original_stdout = sys.stdout
         sys.stdout = open(os.devnull, 'w')
@@ -24,6 +43,7 @@ class HiddenPrints:
         sys.stdout = self._original_stdout
 
 class BaseProcess(mp.Process):
+    """Base process for multiprocessing"""
 
     def __init__(self, task, taskArgs, queues, name=None):
         if name is None:
@@ -39,14 +59,15 @@ class BaseProcess(mp.Process):
         self.startTime = timer()
 
     def importer(self, events: tuple, dataClass = THEMISdata):
-        """
+        """ Multiprocessing wrapper of CDAS import.
+
         :param dataClass:
             The high level class for satellite data, subclassed from 
-            :MagnetometerData. eg. THEMISdata
-            Should implement ``importCDAS(startDatetime,endDateTime,[*args])``
-            Should implement ``defaultProcessing()``
+            :class:`MagnetometerData`. eg. :class:`THEMISdata`.
+            Should implement method ``.importCDAS(startDatetime,endDateTime,[*args])``
+            Should implement method ``.defaultProcessing([*args])``
         :param events: 
-            Tuple of Tuple entry, each entry contain args for importCDAS in the form
+            Tuple, each value contain a tuple with args for importCDAS in the form
             (startDatetime,endDatetime,*args)
         """
 
@@ -64,6 +85,12 @@ class BaseProcess(mp.Process):
         self.importedQueue.put(STOPVALUE())
 
     def processing(self, processingArgs: tuple = ()):
+        """Multiprocessing wrapper of default processing.
+
+        :param processingArgs:
+            Args for ``dataClass.defaultProcessing``
+            (See for example: :meth:`THEMISdata.defaultProcessing`)
+        """
         try:
             while True:
                 mag: THEMISdata = self.importedQueue.get()
@@ -79,6 +106,16 @@ class BaseProcess(mp.Process):
             raise
 
     def sonification(self,axis: int = 1, algorithm: str = "waveletStretch", algArgs: tuple = (16, 0.5, 16)):
+        """Multiprocessing wrapper of time stretching signal for sonification
+
+        :param int axis:
+            The axis along which to extract sound audio. Can be ``int`` ``0``, ``1`` or ``2``.
+        :param algorithm:
+            String referencing the time stretching algorithm to use. Can be ``'waveletStretch'``, 
+            ``'paulStretch'``, ``'phaseVocoderStretch'`` or ``'wsolaStretch'``.
+        :param Tuple algArgs:
+            The arguments to be passed to time stretching function.
+        """
         while True:
             mag: THEMISdata = self.processedQueue.get()
             if isinstance(mag, STOPVALUE):
@@ -91,6 +128,7 @@ class BaseProcess(mp.Process):
         self.sonifiedQueue.put(STOPVALUE())
 
     def playback(self,sampleRate=44100//2):
+        """Multiprocessing method for writting audio to a continous output stream"""
 
         availableAudio = np.zeros(1,dtype=np.float64)
         audioLock = mp.Lock()

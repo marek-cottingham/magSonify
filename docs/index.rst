@@ -10,6 +10,7 @@
 
    /src/introduction
    /src/exampleCode
-   /src/usage_notes
    /src/apidocs
+   /src/usage_notes
    /src/artifactTesting
+   /src/multiprocessing
