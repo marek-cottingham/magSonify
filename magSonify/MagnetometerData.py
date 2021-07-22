@@ -97,7 +97,7 @@ class MagnetometerData():
     def removeMagnetosheath(self) -> None:
         """Removes portions of magnetic field data while the satellite is in the magnetosheath.
 
-        `peemIdentifyMagnetosheath` must be specified, otherwise no action is taken.
+        :attr:`peemIdentifyMagnetosheath` must be specified, otherwise no action is taken.
         """
         if self.peemIdentifyMagnetosheath is None:
             return None
