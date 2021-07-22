@@ -5,7 +5,6 @@
 /Audio*
 /*.wav
 
-/magSonify/THEMISorbitNumber.py
 Tests_Artifacts/OLD_artifactTest.py
 **.ipynb_checkpoints
 magSonify/devCaching/config.py

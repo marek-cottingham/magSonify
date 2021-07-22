@@ -46,8 +46,8 @@ class DataSet_1D(DataSet):
     def x(self,x):
         self.data[0] = x
 
-    def genMonoAudio(self, file, **kwargs) -> None:
-        return super().genMonoAudio(0, file, **kwargs)
+    def genMonoAudio(self, file, sampleRate=44100) -> None:
+        return super().genMonoAudio(0, file, sampleRate)
  
     def normalise(self,maxAmplitude=1) -> None:
         """Normalises the data set to within a maximum amplitude. Should be used before
@@ -109,6 +109,7 @@ class DataSet_1D(DataSet):
             magnitude, phase = wavelets.transform.interpolateCoeffsPolar(
                 magnitude,phase,interpolateFactor
             )
+            self.timeSeries = self.timeSeries.copy()
             self.timeSeries.interpolate(interpolateFactor)
 
         coefficients_shifted = magnitude * np.exp(1j * phase * shift)
