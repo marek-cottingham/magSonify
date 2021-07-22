@@ -10,6 +10,7 @@ cdas_cache_path = os.path.join(
     "CDAScache"
 )
 
+# Unused
 memory_cache_path = os.path.join(
     local_app_path,
     "memoryCache"
