@@ -1,7 +1,8 @@
 
-import context
 
-context.get()
+if __name__ == "__main__":
+    import context
+    context.get()
 
 import os
 import unittest

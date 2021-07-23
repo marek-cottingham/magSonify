@@ -1,10 +1,12 @@
 from datetime import datetime
 import unittest
 import numpy as np
-import context
-context.get()
 
-from numpyunittest import numpyunittest_TestCase
+if __name__ == "__main__":
+    import context
+    context.get()
+
+from numpyUnitTestCase import numpyunittest_TestCase
 from magSonify.SimulateData import SimulateData
 from magSonify.TimeSeries import TimeSeries, generateTimeSeries
 
@@ -20,8 +22,8 @@ class SimulateDataTests(numpyunittest_TestCase):
 
     def test_genSine(self):
         ts = self.pre()
-        x = SimulateData().genSine(ts,1,200)
-        xstretch = SimulateData().genSineExpectation(ts,2,1,200)
+        x = SimulateData().genSine(ts,200)
+        xstretch = SimulateData().genSineExpectation(ts,2,200)
         self.assertAlmostEqual(np.mean(x), 0)
         self.assertAlmostEqual(np.max(x), 1)
         self.assertAlmostEqual(np.min(x), -1)
