@@ -40,6 +40,12 @@ class DataSet():
         """
         return self.data.items()
 
+    def keys(self) -> enumerate:
+        """Returns an iterable containing all keys in :attr:`data`.
+        Equivalent to ``self.data.keys()``
+        """
+        return self.data.keys()
+
     def fillNaN(self,const=0) -> None:
         """Fills ``NaN`` values in the data with the constant ``const``"""
         for i, d in self.items():
