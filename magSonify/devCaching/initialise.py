@@ -1,6 +1,6 @@
 import os
 
-localappdata = os.getenv("LOCALAPPDATA"),
+localappdata = os.getenv("LOCALAPPDATA")
 
 
 
@@ -22,4 +22,4 @@ def ensurePath(directory):
     """Checks that a directory is present, creating if it is not
     """
     if not os.path.exists(directory):
-        os.mkdir(directory)
+        os.mkdir(directory) 
