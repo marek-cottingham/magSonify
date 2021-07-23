@@ -109,8 +109,7 @@ class DataSet_1D(DataSet):
             magnitude, phase = wavelets.transform.interpolateCoeffsPolar(
                 magnitude,phase,interpolateFactor
             )
-            self.timeSeries = self.timeSeries.copy()
-            self.timeSeries.interpolate(interpolateFactor)
+            self._stretchTimeseries(interpolateFactor)
 
         coefficients_shifted = magnitude * np.exp(1j * phase * shift)
 
@@ -128,6 +127,13 @@ class DataSet_1D(DataSet):
         else:
             rx = wavelets.transform.icwt(coefficients_shifted)
         self.x = np.real(rx)
+    
+    def _stretchTimeseries(self, stretch):
+        self.timeSeries = self.timeSeries.copy()
+        self.timeSeries.interpolate(stretch)
+    
+    def _correctTimeseries(self):
+        self.timeSeries = self.timeSeries[:len(self.x)]
 
     def waveletStretch(
         self,stretch,interpolateBefore=None,interpolateAfter=None,scaleLogSpacing=0.12
@@ -152,20 +158,37 @@ class DataSet_1D(DataSet):
         self.waveletPitchShift(stretch,scaleLogSpacing,interpolateAfter)
 
     def paulStretch(self,stretch,window=0.015) -> None:
-        """Stretches the data according the paulstretch algorithm
+        """Stretches the data according the paulstretch algorithm.
 
         :param stretch:
             The factor by which to stretch the data.
         :param window:
             The window size to be used by the paulstrtch algorithm. A ``window`` of 0.1 is
             equivalent to 4410 data points.
+        
+        .. note::
+
+            Some samples may be clipped at the end of the data set.
         """
-        self.timeSeries = self.timeSeries.copy()
-        self.timeSeries.interpolate(stretch)
+        self._stretchTimeseries(stretch)
         self.x = paulstretch(self.x,stretch,window)
+        self._correctTimeseries()
 
     def phaseVocoderStretch(self,stretch,frameLength=512,synthesisHop=None) -> None:
-        """Time stretches the data using a phase vocoder"""
+        """Time stretches the data using a phase vocoder
+        
+        See also: `audiotsm.phasevocoder <https://audiotsm.readthedocs.io/en/latest/tsm.html#audiotsm.phasevocoder>`_
+
+        :param frameLength: the length of the frames
+        :type frameLength: int
+        :param synthesisHop: 
+            the number of samples between two consecutive synthesis frames (``frameLength // 16`` by default).
+        :type synthesisHop: int
+
+        .. note::
+
+            Some samples may be clipped at the end of the data set.
+        """
         if synthesisHop is None:
             synthesisHop = frameLength//16
         reader = ArrayReader(np.array((self.x,)))
@@ -178,9 +201,24 @@ class DataSet_1D(DataSet):
         )
         timeSeriesModification.run(reader, writer)
         self.x = writer.data.flatten()
+        self._stretchTimeseries(stretch)
+        self._correctTimeseries()
 
     def wsolaStretch(self,stretch,frameLength=512,synthesisHop=None,tolerance=None) -> None:
-        """Time stretches the data using WSOLA"""
+        """Time stretches the data using WSOLA
+
+        See also: `audiotsm.wsola <https://audiotsm.readthedocs.io/en/latest/tsm.html#audiotsm.wsola>`_
+
+        :param frame_length: the length of the frames
+        :type frame_length: int
+        :param synthesis_hop: 
+            the number of samples between two consecutive synthesis frames (``frame_length // 8`` by default).
+        :type synthesis_hop: int
+
+        .. note::
+
+            Some samples may be clipped at the end of the data set.
+        """
         if synthesisHop is None:
             synthesisHop = frameLength//8
         reader = ArrayReader(np.array((self.x,)))
@@ -194,3 +232,5 @@ class DataSet_1D(DataSet):
         )
         timeSeriesModification.run(reader, writer)
         self.x = writer.data.flatten()
+        self._stretchTimeseries(stretch)
+        self._correctTimeseries()
