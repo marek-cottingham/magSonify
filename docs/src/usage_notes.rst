@@ -25,7 +25,7 @@ As there is no functionality to limit the size of this cache or automatically de
 is only suitable for development purposes. 
 
 The cache is disabled by default. To enable it, create
-the file ``magSonify\devCaching\config.py`` containing the line::
+the file ``magSonify/devCaching/config.py`` containing the line::
 
     CACHING_ENABLED = True
 
@@ -36,8 +36,8 @@ the file ``magSonify\devCaching\config.py`` containing the line::
 
 .. note::
 
-    The default cache path is ``%localappdata%\magSonify``. This is only available on windows
-    systems. To change the cache path, modify ``magSonify\devCaching\initialise.py``.
+    The default cache path is ``%localappdata%/magSonify``. This is only available on windows
+    systems. To change the cache path, modify ``magSonify/devCaching/initialise.py``.
 
 The following cache management methods are available:
 

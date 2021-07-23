@@ -2,7 +2,7 @@ Dev: Multiprocessing
 ======================
 
 Methods for accelerating program execution by using multiprocessing. Currently in development.
-Exectution example in ``.\Example Code\devBufferingTest.py\``.
+Exectution example in ``./Example Code/devBufferingTest.py``.
 
 BaseProcess
 --------------
