@@ -129,7 +129,6 @@ class DataSet_1D(DataSet):
         self.x = np.real(rx)
     
     def _stretchTimeseries(self, stretch):
-        self.timeSeries = self.timeSeries.copy()
         self.timeSeries.interpolate(stretch)
     
     def _correctTimeseries(self):

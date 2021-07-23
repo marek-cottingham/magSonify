@@ -20,7 +20,9 @@ class DataSet():
         present. Array should be 1D.
     """
     def __init__(self,timeSeries: TimeSeries,data):
-        self.timeSeries: TimeSeries = timeSeries
+        # We use a copy of the time series here in order to prevent issues occuring due to multiple
+        # data sets sharing the same time series.
+        self.timeSeries: TimeSeries = timeSeries.copy()
         """:class:`TimeSeries` represeting the sampling times for the dataset"""
 
         data = self._convertToDictIfArray(data)
@@ -98,7 +100,6 @@ class DataSet():
                 ref.startTime
             )
         else:
-            self.timeSeries = self.timeSeries.copy()
             self.timeSeries.changeUnit(ref.timeUnit)
 
 
@@ -158,7 +159,6 @@ class DataSet():
         Removes correspoinding points in each component.
         """
         unique, index = np.unique(self.timeSeries.times, return_index=True)
-        self.timeSeries = self.timeSeries.copy()
         self.timeSeries.times = unique
         for i,d in self.items():
             self.data[i] = d[index]
