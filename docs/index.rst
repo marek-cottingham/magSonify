@@ -11,6 +11,7 @@
    /src/introduction
    /src/exampleCode
    /src/apidocs
+   /src/tests
    /src/usage_notes
    /src/artifactTesting
    /src/multiprocessing
