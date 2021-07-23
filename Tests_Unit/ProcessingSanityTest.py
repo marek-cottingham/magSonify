@@ -50,7 +50,7 @@ class THEMISProcessingTestCase(unittest.TestCase):
 
     def _import(self):
         mag = THEMISdata()
-        mag.importCDAS(datetime(2007,9,4),datetime(2007,9,5))
+        mag.importCDAS(datetime(2007,9,4,6),datetime(2007,9,4,18))
         return mag
 
     def testProcessing(self):
