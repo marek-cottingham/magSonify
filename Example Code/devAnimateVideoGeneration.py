@@ -16,8 +16,11 @@ import shutil
 
 OVERRIDE_FRAME_RATE = 25
 videoDir = 'Audio & Video 2021 07 21'
-#algname = "Wavelet"
-algname = "Phase_Vocoder"
+algname = "Wavelet"
+#algname = "Phase_Vocoder"
+#algname = "Paulstretch"
+component_n = 2
+MIN_FRAME_TO_PROCESS = 0
 
 if not os.path.exists(videoDir):
         os.mkdir(videoDir)
@@ -33,8 +36,6 @@ mag.importCDAS(
 )
 mag.defaultProcessing()
 
-component_n = 0
-
 component = mag.magneticFieldMeanFieldCoordinates.extractKey(component_n)
 audio: DataSet_1D = component.copy()
 if algname == "Wavelet":
@@ -43,6 +44,10 @@ if algname == "Wavelet":
     n_frames = len(audio.x) * OVERRIDE_FRAME_RATE // (44100//2)
 if algname == "Phase_Vocoder":
     audio.phaseVocoderStretch(16)
+    audio.genMonoAudio(os.path.join(videoDir, f"{algname}_audio_axis={component_n}.wav"),sampleRate=44100)
+    n_frames = len(audio.x) * OVERRIDE_FRAME_RATE // (44100)
+if algname == "Paulstretch":
+    audio.paulStretch(16)
     audio.genMonoAudio(os.path.join(videoDir, f"{algname}_audio_axis={component_n}.wav"),sampleRate=44100)
     n_frames = len(audio.x) * OVERRIDE_FRAME_RATE // (44100)
 
@@ -68,7 +73,8 @@ ax2: matplotlib.axes.Axes = plt.subplot2grid((4, 5*9), (2, 0), rowspan=2, colspa
 ax3: matplotlib.axes.Axes = plt.subplot2grid((4, 5*9), (1, 3*9), rowspan=2, colspan=2*7)
 
 ax1.plot(component.timeSeries.asDatetime(), component.x, 'b')
-ax1.set_ylabel('pol [nT]',fontsize=10)
+componentNames = {0: 'com', 1: 'pol', 2: 'tor'}
+ax1.set_ylabel(f'{componentNames[component_n]} [nT]',fontsize=20)
 ax1.set_xlim(xlim)
 ax1.set_ylim([-5,5])
 
@@ -78,25 +84,26 @@ im=ax2.pcolormesh(dt_list, f*1000., np.abs(Zxx_dBdt), vmin=0, vmax=0.04, shading
 ax2.set(ylim=[0,25])
 ax2.xaxis.set_major_formatter(myFmt)
 #ax2.set_title('STFT Magnitude')
-ax2.set_ylabel('Frequency [mHz]',fontsize=10)
-ax2.set_xlabel('Time [UT]',fontsize=10)
+ax2.set_ylabel('Frequency [mHz]',fontsize=20)
+ax2.set_xlabel('Time [UT]',fontsize=20)
 
 ax3.yaxis.tick_right()
 ax3.plot(mag.position.data[0],mag.position.data[1])
 ax3.plot(0,0,marker='.',color='b')
 ax3.set(xlim=[-6,6])
-ax3.set_title("Radius: n RE")
+ax3.set_title("Radius: n RE",fontsize=20)
 
 plt.setp(ax1.get_xticklabels(), visible=False)
 
 for i,frameArg in enumerate(argframes):
-    if i>=1000: #Used to skip frames if continuing aftor crash
+    if i>=MIN_FRAME_TO_PROCESS: #Used to skip frames if continuing aftor crash
         try:
             temp1 = ax1.axvline(component.timeSeries.asDatetime()[frameArg],color='r')
             temp2 = ax2.axvline(component.timeSeries.asDatetime()[frameArg],color='r')
             temp3 = ax3.plot(mag.position.data[0][frameArg],mag.position.data[1][frameArg],color='r',marker=".")
             ax3.set_title(
-                "Radius: {0:.1f} Earth radii".format(mag.position.data['radius'][frameArg])
+                "Radius: {0:.1f} Earth radii".format(mag.position.data['radius'][frameArg]),
+                fontsize=20
             )
 
             plt.savefig(os.path.join(videoDir,"frames",f'frame_{("000"+str(i))[-4:]}.png'))
@@ -119,4 +126,4 @@ os.chdir("..")
 shutil.move( os.path.join("frames",f'Animated_plot_axis={component_n}.mp4'),f'Animated_plot_axis={component_n}.mp4')
 
 subprocess.call(["ffmpeg", "-i", f"Animated_plot_axis={component_n}.mp4", "-i", f"{algname}_audio_axis={component_n}.wav", 
-    "-c", "copy", f"{algname}_video_axis={component_n}.mkv"])
+    "-c", "copy", f"{algname}_video_{componentNames[component_n]}.mkv"])
