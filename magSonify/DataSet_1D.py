@@ -160,6 +160,7 @@ class DataSet_1D(DataSet):
             The window size to be used by the paulstrtch algorithm. A ``window`` of 0.1 is
             equivalent to 4410 data points.
         """
+        self.timeSeries = self.timeSeries.copy()
         self.timeSeries.interpolate(stretch)
         self.x = paulstretch(self.x,stretch,window)
 
