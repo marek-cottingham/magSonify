@@ -185,3 +185,6 @@ class TimeSeries():
         """
         if isinstance(subscript,slice):
             return type(self)(self.asNumpy()[subscript],self.timeUnit)
+
+    def __len__(self):
+        return len(self.times)
