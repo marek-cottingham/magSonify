@@ -1,5 +1,5 @@
 import os, shutil
-from .initialise import memory_cache_path,cdas_cache_path
+from .initialise import cdas_cache_path
 
 def _get_directory_size(directory):
     """Returns the `directory` size in bytes and number of files"""
@@ -24,12 +24,9 @@ def _get_directory_size(directory):
 def cacheDetails():
     """Prints cache details to console"""
     cdasSize = _get_directory_size(cdas_cache_path/1024**2)
-    memorySize = _get_directory_size(memory_cache_path/1024**2)
     print(f"CDAS cache size: {cdasSize}")
-    print(f"Memory cache size: {memorySize}")
 
 def deleteCache():
     """Deletes the cache"""
     shutil.rmtree(cdas_cache_path)
-    shutil.rmtree(memory_cache_path)
     print("The cache has been deleted")
