@@ -9,3 +9,4 @@ Tests_Artifacts/OLD_artifactTest.py
 **.ipynb_checkpoints
 magSonify/devCaching/config.py
 **_build
+Example Code/devInterProcessCommunication.py
