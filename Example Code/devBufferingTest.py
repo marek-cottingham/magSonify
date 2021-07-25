@@ -8,12 +8,12 @@ from magSonify import THEMISdata
 from magSonify.Buffering import BaseProcess
 
 dataClass = THEMISdata
-start = datetime(2007,9,21)
+start = datetime(2007,9,20)
 intervalHours = 12
 events = ((
     start+timedelta(hours=(i)*intervalHours),
     start+timedelta(hours=(i+1)*intervalHours)
-    ) for i in range(20))
+    ) for i in range(30))
 events = list(events)
 
 if __name__ == "__main__":
