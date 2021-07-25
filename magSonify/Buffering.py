@@ -25,23 +25,6 @@ class STOPVALUE:
     """
     pass
 
-class HiddenPrints:
-    """
-    Used to hide prints within a context handler. ie.
-
-    ::
-
-        with HiddenPrints():
-            # Some code where we want to suppress console output
-    """
-    def __enter__(self):
-        self._original_stdout = sys.stdout
-        sys.stdout = open(os.devnull, 'w')
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        sys.stdout.close()
-        sys.stdout = self._original_stdout
-
 class BaseProcess(mp.Process):
     """Base process for multiprocessing"""
 
@@ -74,8 +57,7 @@ class BaseProcess(mp.Process):
         for event in events:
             try:
                 mag: THEMISdata = dataClass()
-                with HiddenPrints():
-                    mag.importCDAS(*event)
+                mag.importCDAS(*event)
                 self.importedQueue.put(mag)
             except Exception as e:
                 print(f"Exception for event starting on {event[0]}, skipping")
