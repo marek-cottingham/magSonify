@@ -20,7 +20,7 @@ THEMIS data
 
       ..  literalinclude:: ../../magSonify/MagnetometerData.py
          :pyobject: THEMISdata.defaultProcessing
-         :lines: 7-
+         :lines: 11-
          :dedent: 8
 
 DataSet

@@ -30,6 +30,7 @@ class MagnetometerData():
 
         eg.
         ::
+            
             # User defines each of these methods for data from a particular satellite
             funcs = (self._importCdasMagneticField,self._importCdasPosition,self._importCdasPeem)
             self._importAsync(funcs,startDatetime,endDatetime,*args)
