@@ -27,7 +27,7 @@ class DataSet_1D(DataSet):
         else:
             self.data = {0: x}
         
-        self.timeSeries = timeSeries
+        self.timeSeries = timeSeries.copy()
 
     def _isInitWithDict(self,x):
         try:
