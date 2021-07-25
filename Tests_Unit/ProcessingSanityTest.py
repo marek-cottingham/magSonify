@@ -10,7 +10,7 @@ import magSonify
 from magSonify.MagnetometerData import THEMISdata
 from magSonify.DataSet import DataSet
 from magSonify.DataSet_1D import DataSet_1D
-from datetime import date, datetime
+from datetime import datetime
 
 class THEMISProcessingTestCase(unittest.TestCase):
     eventSuite = (
