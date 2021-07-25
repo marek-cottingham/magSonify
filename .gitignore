@@ -3,6 +3,7 @@
 /.venv
 **__pycache__
 /Audio*
+/devIPC*
 /*.wav
 
 Tests_Artifacts/OLD_artifactTest.py

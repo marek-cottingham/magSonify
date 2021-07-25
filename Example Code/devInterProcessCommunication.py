@@ -7,11 +7,14 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import numpy as np
 import io
+from timeit import default_timer as timer
 
 import context as sonifyContext
 sonifyContext.get()
 
 import magSonify
+
+diskSaveComparePNG_SVG = True
 
 context = zmq.Context()
 socket = context.socket(zmq.REP)
@@ -29,6 +32,7 @@ while True:
     datetimeConverted = datetime.datetime.strptime(datetimeStr,"%d/%m/%Y")
 
     # Do data processing
+    startTime = timer()
     mag = magSonify.THEMISdata()
     interval = datetime.timedelta(hours=int(hours))
     mag.importCDAS(
@@ -38,8 +42,10 @@ while True:
     )
     mag.defaultProcessing()
     ax = mag.magneticFieldMeanFieldCoordinates.extractKey(componentToInt[component])
+    print(f"Took {timer()-startTime} s to process")
 
     # Generate the plot
+    startTime = timer()
     nperseg = 1024//2
     f, t, Zxx_dBdt = stft(ax.x, fs=1/3.0, nperseg=nperseg, noverlap=nperseg//4*3)
     dt_list = [datetimeConverted+datetime.timedelta(seconds=ii) for ii in t]
@@ -55,14 +61,30 @@ while True:
     ax2.set_title('STFT Magnitude')
     ax2.set_ylabel('Frequency [mHz]')
     ax2.set_xlabel('Time [UT]')
+    print(f"Took {timer()-startTime} s to plot")
 
     # Save plot to string buffer and prepare to send
     
+    startTime = timer()
     imgdata = io.BytesIO()
 
-    plt.savefig(imgdata, format='svg')
+    #plt.savefig(imgdata, format='svg')
+    plt.savefig(imgdata, format='png')
 
     print(imgdata)
+    print(f"Took {timer()-startTime} s to save to bytes io")
 
     #  Send reply back to client
+    startTime = timer()
     socket.send(imgdata.getvalue())
+    print(f"Took {timer()-startTime} s to send over IPC")
+
+    if diskSaveComparePNG_SVG:
+        from magSonify.Utilities import ensureFolder
+        ensureFolder("devIPC_Images")
+        startTime = timer()
+        plt.savefig("devIPC_Images/svg.svg")
+        print(f"Took {timer()-startTime} s to save SVG to disk")
+        startTime = timer()
+        plt.savefig("devIPC_Images/png.png")
+        print(f"Took {timer()-startTime} s to save PNG to disk")
