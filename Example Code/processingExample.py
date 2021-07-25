@@ -17,12 +17,7 @@ mag.importCDAS(
     satellite='D'
 )
 
-# Sometimes CDAS has duplicate time entries, we remove all but the first in order to prevent
-# errors when interpolating the data
-mag.magneticField.removeDuplicateTimes()
-mag.peemIdentifyMagnetosheath.removeDuplicateTimes()
-
-# Interpolate the data to a consistent, know spacing
+# Interpolate the data to a consistent, know spacing (also cleans the data to remove duplicates)
 mag.interpolate(spacingInSeconds=3)
 
 mag.magneticField.constrainAbsoluteValue(400)
