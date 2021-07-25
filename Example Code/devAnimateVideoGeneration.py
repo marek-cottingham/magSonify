@@ -1,7 +1,9 @@
+
 import context
 context.get()
 
 from magSonify.DataSet_1D import DataSet_1D
+from magSonify.Utilities import ensureFolder
 import numpy as np
 import scipy as sp
 from scipy.signal import stft
@@ -15,17 +17,15 @@ import subprocess
 import shutil
 
 OVERRIDE_FRAME_RATE = 25
-videoDir = 'Audio & Video 2021 07 21'
+videoDir = 'Audio_Video_Animation_DevExample'
 algname = "Wavelet"
 #algname = "Phase_Vocoder"
 #algname = "Paulstretch"
 component_n = 2
 MIN_FRAME_TO_PROCESS = 0
 
-if not os.path.exists(videoDir):
-        os.mkdir(videoDir)
-if not os.path.exists(os.path.join(videoDir,"frames")):
-        os.mkdir(os.path.join(videoDir,"frames"))
+ensureFolder(videoDir)
+ensureFolder(os.path.join(videoDir,"frames"))
 
 start_time = datetime(2008, 12, 7)
 end_time = datetime(2008, 12, 10)

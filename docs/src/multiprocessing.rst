@@ -12,5 +12,3 @@ BaseProcess
     :show-inheritance:
 
 .. autoclass:: magSonify.Buffering.STOPVALUE
-
-.. autoclass:: magSonify.Buffering.HiddenPrints

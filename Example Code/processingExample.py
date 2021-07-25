@@ -3,7 +3,12 @@ context.get()
 
 from datetime import datetime
 from magSonify.MagnetometerData import THEMISdata
+from magSonify.Utilities import ensureFolder
 import numpy as np
+
+outputDir = "Audio_Processing_Example"
+
+ensureFolder(outputDir)
 
 mag = THEMISdata()
 
@@ -17,12 +22,7 @@ mag.importCDAS(
     satellite='D'
 )
 
-# Sometimes CDAS has duplicate time entries, we remove all but the first in order to prevent
-# errors when interpolating the data
-mag.magneticField.removeDuplicateTimes()
-mag.peemIdentifyMagnetosheath.removeDuplicateTimes()
-
-# Interpolate the data to a consistent, know spacing
+# Interpolate the data to a consistent, know spacing (also cleans the data to remove duplicates)
 mag.interpolate(spacingInSeconds=3)
 
 mag.magneticField.constrainAbsoluteValue(400)
@@ -44,17 +44,17 @@ mag.magneticFieldMeanFieldCoordinates.fillNaN()
 com = mag.magneticFieldMeanFieldCoordinates.extractKey(0)
 com.phaseVocoderStretch(16)
 com.normalise()
-com.genMonoAudio("Example of com x16 with phase vocoder.wav")
+com.genMonoAudio(f"{outputDir}/Example of com x16 with phase vocoder.wav")
 
 pol = mag.magneticFieldMeanFieldCoordinates.extractKey(1)
 pol.phaseVocoderStretch(16)
 pol.normalise()
-pol.genMonoAudio("Example of pol x16 with phase vocoder.wav")
+pol.genMonoAudio(f"{outputDir}/Example of pol x16 with phase vocoder.wav")
 
 tor = mag.magneticFieldMeanFieldCoordinates.extractKey(2)
 tor.phaseVocoderStretch(16)
 tor.normalise()
-tor.genMonoAudio("Example of tor x16 with phase vocoder.wav")
+tor.genMonoAudio(f"{outputDir}/Example of tor x16 with phase vocoder.wav")
 
 # Disable the wavelet stretch output if it's taking too long
 # exit()
@@ -62,14 +62,14 @@ tor.genMonoAudio("Example of tor x16 with phase vocoder.wav")
 com = mag.magneticFieldMeanFieldCoordinates.extractKey(0)
 com.waveletStretch(16,0.5,16)
 com.normalise()
-com.genMonoAudio("Example of com x16 with wavelets.wav",sampleRate=44100//2)
+com.genMonoAudio(f"{outputDir}/Example of com x16 with wavelets.wav",sampleRate=44100//2)
 
 pol = mag.magneticFieldMeanFieldCoordinates.extractKey(1)
 pol.waveletStretch(16,0.5,16)
 pol.normalise()
-pol.genMonoAudio("Example of pol x16 with wavelets.wav",sampleRate=44100//2)
+pol.genMonoAudio(f"{outputDir}/Example of pol x16 with wavelets.wav",sampleRate=44100//2)
 
 tor = mag.magneticFieldMeanFieldCoordinates.extractKey(2)
 tor.waveletStretch(16,0.5,16)
 tor.normalise()
-tor.genMonoAudio("Example of tor x16 with wavelets.wav",sampleRate=44100//2)
+tor.genMonoAudio(f"{outputDir}/Example of tor x16 with wavelets.wav",sampleRate=44100//2)

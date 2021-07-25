@@ -2,8 +2,6 @@ import os
 
 localappdata = os.getenv("LOCALAPPDATA")
 
-
-
 if localappdata is not None:
     local_app_path = os.path.join(
         localappdata,
@@ -17,9 +15,3 @@ else:
     print("Failed to get cache path, do not use cache operations")
     local_app_path = None
     cdas_cache_path = None
-
-def ensurePath(directory):
-    """Checks that a directory is present, creating if it is not
-    """
-    if not os.path.exists(directory):
-        os.mkdir(directory) 
