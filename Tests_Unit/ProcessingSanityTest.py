@@ -15,7 +15,7 @@ from datetime import date, datetime
 class THEMISProcessingTestCase(unittest.TestCase):
     eventSuite = (
         (datetime(2007,9,4,6),datetime(2007,9,4,18),"d"),
-        (datetime(2008,12,7,6),datetime(2008,12,7,18),"d"),
+        #(datetime(2008,12,7,6),datetime(2008,12,7,18),"d"),
     )
 
     def verify_magSane(self,mag:THEMISdata):
@@ -64,7 +64,7 @@ class THEMISProcessingTestCase(unittest.TestCase):
 
     def _testProcessingForEvent(self,event):
         step_list =[
-        "mag = self._import(event)"
+        "'Test the imported data'",
         "mag.position.removeDuplicateTimes()",
         "mag.magneticField.removeDuplicateTimes()",
         "if mag.peemIdentifyMagnetosheath is not None: mag.peemIdentifyMagnetosheath.removeDuplicateTimes()",
@@ -77,7 +77,7 @@ class THEMISProcessingTestCase(unittest.TestCase):
         "mag.convertToMeanFieldCoordinates()",
         "mag.magneticFieldMeanFieldCoordinates.fillNaN()",
         ]
-        mag = None
+        mag = self._import(event)
         for step in step_list:
             try:
                 exec(step)
