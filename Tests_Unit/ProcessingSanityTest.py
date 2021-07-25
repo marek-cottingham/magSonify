@@ -10,9 +10,14 @@ import magSonify
 from magSonify.MagnetometerData import THEMISdata
 from magSonify.DataSet import DataSet
 from magSonify.DataSet_1D import DataSet_1D
-from datetime import datetime
+from datetime import date, datetime
 
 class THEMISProcessingTestCase(unittest.TestCase):
+    eventSuite = (
+        (datetime(2007,9,4,6),datetime(2007,9,4,18),"d"),
+        (datetime(2008,12,7,6),datetime(2008,12,7,18),"d"),
+    )
+
     def verify_magSane(self,mag:THEMISdata):
         """Performs sanity tests on THEMISdata class instances"""
         for name,expectedkeys in {
@@ -45,17 +50,22 @@ class THEMISProcessingTestCase(unittest.TestCase):
         self.assertNotEqual(len(ax.timeSeries.asDatetime()),0)
         self.assertFalse(np.all(ax.x == 0))
 
-    def testImport(self):
-        mag = self._import()
-        self.verify_magSane(mag)
-
-    def _import(self):
+    def _import(
+            self,
+            event=(datetime(2007,9,4,6),datetime(2007,9,4,18),"d")
+        ):
         mag = THEMISdata()
-        mag.importCDAS(datetime(2007,9,4,6),datetime(2007,9,4,18))
+        mag.importCDAS(*event)
         return mag
 
     def testProcessing(self):
-        step_list =["mag.position.removeDuplicateTimes()",
+        for event in self.eventSuite:
+            self._testProcessingForEvent(event)
+
+    def _testProcessingForEvent(self,event):
+        step_list =[
+        "mag = self._import(event)"
+        "mag.position.removeDuplicateTimes()",
         "mag.magneticField.removeDuplicateTimes()",
         "if mag.peemIdentifyMagnetosheath is not None: mag.peemIdentifyMagnetosheath.removeDuplicateTimes()",
         "mag.interpolate()",
@@ -65,8 +75,9 @@ class THEMISProcessingTestCase(unittest.TestCase):
         "mag.fillLessThanRadius(4)",
         "mag.removeMagnetosheath()",
         "mag.convertToMeanFieldCoordinates()",
-        "mag.magneticFieldMeanFieldCoordinates.fillNaN()",]
-        mag = self._import()
+        "mag.magneticFieldMeanFieldCoordinates.fillNaN()",
+        ]
+        mag = None
         for step in step_list:
             try:
                 exec(step)
@@ -76,15 +87,20 @@ class THEMISProcessingTestCase(unittest.TestCase):
                 raise
 
     def testSonification(self):
-        mag: DataSet_1D = self._import()
+        for event in self.eventSuite:
+            self._testSonificationForEvent(event)
+
+    def _testSonificationForEvent(self, event):
+        mag: DataSet_1D = self._import(event)
         mag.defaultProcessing()
         for alg, algArgs in {
-            "waveletStretch": (16,),
-            "waveletStretch": (16, 0.5, 16),
-            "paulStretch": (16,),
-            "phaseVocoderStretch": (16,),
-            "wsolaStretch": (16,)
-        }.items():
+                "phaseVocoderStretch": (16,),
+                "waveletStretch": (16,),
+                "waveletStretch": (16, 0.5, 16),
+                "paulStretch": (16,),
+                "wsolaStretch": (16,),
+                "phaseVocoderStretch": (16,), # This is run twice to detect a particular regression bug
+            }.items():
             try:
                 ax = mag.magneticFieldMeanFieldCoordinates.extractKey(0)
                 getattr(ax,alg)(*algArgs)
