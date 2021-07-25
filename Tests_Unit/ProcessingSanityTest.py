@@ -16,6 +16,7 @@ class THEMISProcessingTestCase(unittest.TestCase):
     eventSuite = (
         (datetime(2007,9,4,6),datetime(2007,9,4,18),"d"),
         #(datetime(2008,12,7,6),datetime(2008,12,7,18),"d"),
+        #(datetime(2011, 9, 1, 23), datetime(2011, 9, 6)),
     )
 
     def verify_magSane(self,mag:THEMISdata):
