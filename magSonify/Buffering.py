@@ -21,6 +21,7 @@ class STOPVALUE:
             while True:
                 # Does some processing, breaks out of the loop when done
                 myQueue.put(val)
+                break
             myQueue.put(STOPVALUE())
     """
     pass
@@ -60,7 +61,7 @@ class BaseProcess(mp.Process):
                 mag.importCDAS(*event)
                 self.importedQueue.put(mag)
             except Exception as e:
-                print(f"Exception for event starting on {event[0]}, skipping")
+                print(f"Exception importing interval starting on {event[0]}, skipping")
                 print(e)
                 pass
             #print(f"Imported {event[0]} @ {timer() - self.startTime} s")
@@ -84,11 +85,11 @@ class BaseProcess(mp.Process):
             self.processedQueue.put(STOPVALUE())
         except Exception:
             self.processedQueue.put(STOPVALUE())
-            print("Exception on interval starting at:",mag.position.timeSeries.getStart())
+            print("Exception processing interval starting at:",mag.position.timeSeries.getStart())
             raise
 
     def sonification(self,axis: int = 1, algorithm: str = "waveletStretch", algArgs: tuple = (16, 0.5, 16)):
-        """Multiprocessing wrapper of time stretching signal for sonification
+        """Multiprocessing wrapper of time stretching signal for sonification.
 
         :param int axis:
             The axis along which to extract sound audio. Can be ``int`` ``0``, ``1`` or ``2``.
@@ -98,19 +99,24 @@ class BaseProcess(mp.Process):
         :param Tuple algArgs:
             The arguments to be passed to time stretching function.
         """
-        while True:
-            mag: THEMISdata = self.processedQueue.get()
-            if isinstance(mag, STOPVALUE):
-                break
-            ax = mag.magneticFieldMeanFieldCoordinates.extractKey(axis)
-            getattr(ax,algorithm)(*algArgs)
-            ax.normalise()
-            self.sonifiedQueue.put(ax)
-            #print(f"Sonified {mag.magneticField.timeSeries.getStart()} @ {timer() - self.startTime} s")
-        self.sonifiedQueue.put(STOPVALUE())
+        try:
+            while True:
+                mag: THEMISdata = self.processedQueue.get()
+                if isinstance(mag, STOPVALUE):
+                    break
+                ax = mag.magneticFieldMeanFieldCoordinates.extractKey(axis)
+                getattr(ax,algorithm)(*algArgs)
+                ax.normalise()
+                self.sonifiedQueue.put(ax)
+                #print(f"Sonified {mag.magneticField.timeSeries.getStart()} @ {timer() - self.startTime} s")
+            self.sonifiedQueue.put(STOPVALUE())
+        except Exception:
+            self.processedQueue.put(STOPVALUE())
+            print("Exception sonifying interval starting at:",ax.timeSeries.getStart())
+            raise
 
     def playback(self,sampleRate=44100//2):
-        """Multiprocessing method for writting audio to a continous output stream"""
+        """Multiprocessing method for playing audio as a continous output stream"""
 
         availableAudio = np.zeros(1,dtype=np.float64)
         audioLock = mp.Lock()
@@ -118,7 +124,7 @@ class BaseProcess(mp.Process):
         donePlayingEvent = mp.Event()
         i = 0
 
-        def callback(outdata,frames,time,status):
+        def audioCallback(outdata,frames,time,status):
             nonlocal availableAudio
             nonlocal i
             if status:
@@ -140,7 +146,7 @@ class BaseProcess(mp.Process):
         myStream = sounddevice.OutputStream(
             samplerate=sampleRate//2,
             blocksize=44100//10,
-            callback=callback,
+            callback=audioCallback,
             finished_callback=donePlayingEvent.set,
             channels = 1,
         )
