@@ -5,8 +5,13 @@ context.get()
 from timeit import default_timer as timer
 import os, sys
 
-STRETCH = 16
+from magSonify.Utilities import ensureFolder
 
+outputDir = "Audio_Time_Compare"
+
+ensureFolder(outputDir)
+
+STRETCH = 16
 class encloseTimer():
     times = {}
     def __init__(self,name):
@@ -60,12 +65,12 @@ for i,day in enumerate(X):
             getattr(_pol,algName)(STRETCH,*args)
             _pol.normalise()
         if algName == "waveletStretch":
-            _pol.genMonoAudio(f"Audio Time Compare\{algName}-half-res x{STRETCH}_{day}.wav",sampleRate=44100//2)
+            _pol.genMonoAudio(f"{outputDir}/{algName}-half-res x{STRETCH}_{day}.wav",sampleRate=44100//2)
         else:
-            _pol.genMonoAudio(f"Audio Time Compare\{algName} x{STRETCH}_{day}.wav")
+            _pol.genMonoAudio(f"{outputDir}/{algName} x{STRETCH}_{day}.wav")
 
     print(f"  {round((i+1)/Xlen*100,1)} % complete",end="\r",flush=True)
 
 encloseTimer(None).printout()
-sys.stdout = open("Audio Time Compare\\_TimingsLog.txt","w+")
+sys.stdout = open(f"{outputDir}/_TimingsLog.txt","w+")
 encloseTimer(None).printout()

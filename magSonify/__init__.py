@@ -1,7 +1,7 @@
 # WARNING: Delete cache before package uninstall by calling cacheControl.deleteCache()
 
-
 from ai import cdas
+from .Utilities import ensureFolder
 
 try:
     from .devCaching.config import CACHING_ENABLED
@@ -9,10 +9,10 @@ except ImportError:
     CACHING_ENABLED = False
 
 def enableCaching():
-    from .devCaching.initialise import ensurePath,local_app_path,cdas_cache_path
+    from .devCaching.initialise import local_app_path,cdas_cache_path
     if local_app_path is not None:
-        ensurePath(local_app_path)
-        ensurePath(cdas_cache_path)
+        ensureFolder(local_app_path)
+        ensureFolder(cdas_cache_path)
         cdas.set_cache("True",cdas_cache_path)
 
 if CACHING_ENABLED:
