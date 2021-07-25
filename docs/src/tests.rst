@@ -10,9 +10,9 @@ Testing files:
 
     Test to catch errors in processing code. Executes a broad set of import, data processing and 
     sonification functions. In particular looks for mismatch between length of 
-    :attr:`magSonify.DataSet.timeSeries` and values in :attr:`magSonify.DataSet.data`, a common issue which arises
-    due to :attr:`magSonify.DataSet.timeSeries` not being updated correctly or not being copied prior to
-    modification.
+    :attr:`magSonify.DataSet.timeSeries` and values in :attr:`magSonify.DataSet.data`, a common 
+    bug which arises due to :attr:`magSonify.DataSet.timeSeries` not being updated correctly or 
+    being modified while shared between multiple data sets.
 
 ``./Tests_Unit/SimulateDataTest.py``
 
