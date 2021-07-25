@@ -1,5 +1,4 @@
 
-from datetime import datetime, time
 from .TimeSeries import TimeSeries, generateTimeSeries
 from .DataSet import DataSet, DataSet_3D
 from .DataSet_1D import DataSet_1D
@@ -28,6 +27,12 @@ class MagnetometerData():
 
     def _importAsync(self,funcs,startDatetime,endDatetime,*args) -> None:
         """ Runs the CDAS imports defined in ``funcs`` asyncronously.
+
+        eg.
+        ::
+            # User defines each of these methods for data from a particular satellite
+            funcs = (self._importCdasMagneticField,self._importCdasPosition,self._importCdasPeem)
+            self._importAsync(funcs,startDatetime,endDatetime,*args)
 
         :param funcs:
             Tuple of functions to execute. Each function should be of the form
@@ -131,6 +136,37 @@ class MagnetometerData():
             if x is not None:
                 x.removeDuplicateTimes()
                 x.interpolateReference(refTimeSeries)
+
+    def _importCdasItemWithExceptions(self,
+        cdasArgs: tuple,
+        timeSeriesKey: str,
+        targetKeys: dict,
+        returnClassType: type = DataSet,
+    ):
+        """Imports cdas data for the given ``cdasArgs``, extracting a dataset.
+
+        :param tuple cdasArgs: Arguments for ``ai.cdas.get_data()``
+        :param str timeSeriesKey: The key that the times are refered to as in CDAS data return
+        :param dict targetKeys:
+            Dictionary where its values are the keys in CDAs data to include in the data set, and
+            its keys are the keys that should be used to reference these within the data set.
+        :param type returnClassType: 
+            Class used to construct the returned data set, eg. :class:`DataSet`, :class:`DataSet_3D`
+        """
+        data = cdas.get_data(*cdasArgs)
+        if data is None:
+            raise CdasImportError.CdasNoDataReturnedError
+        timeSeries = TimeSeries(data[timeSeriesKey])
+        selecetedData = {}
+
+        for key, cdasKey in targetKeys.items():
+            try:
+                d = data[cdasKey]
+            except KeyError:
+                raise CdasImportError.CdasKeyMissingError(f"Key not found:",cdasKey)
+            selecetedData[key] = d
+
+        return returnClassType(timeSeries,selecetedData)
     
 class THEMISdata(MagnetometerData):
     def interpolate(self,spacingInSeconds=3) -> None:
@@ -213,37 +249,6 @@ class THEMISdata(MagnetometerData):
         self.peemIdentifyMagnetosheath = self._importCdasItemWithExceptions(
             cdasArgs,timeSeriesKey,targetKeys,DataSet
         )
-
-    def _importCdasItemWithExceptions(self,
-        cdasArgs: tuple,
-        timeSeriesKey: str,
-        targetKeys: dict,
-        returnClassType: type = DataSet,
-    ):
-        """Imports cdas data for the given ``cdasArgs``, extracting a dataset.
-
-        :param tuple cdasArgs: Arguments for ``ai.cdas.get_data()``
-        :param str timeSeriesKey: The key that the times are refered to as in CDAS data return
-        :param dict targetKeys:
-            Dictionary where its values are the keys in CDAs data to include in the data set, and
-            its keys are the keys that should be used to reference these within the data set.
-        :param type returnClassType: 
-            Class used to construct the returned data set, eg. :class:`DataSet`, :class:`DataSet_3D`
-        """
-        data = cdas.get_data(*cdasArgs)
-        if data is None:
-            raise CdasImportError.CdasNoDataReturnedError
-        timeSeries = TimeSeries(data[timeSeriesKey])
-        selecetedData = {}
-
-        for key, cdasKey in targetKeys.items():
-            try:
-                d = data[cdasKey]
-            except KeyError:
-                raise CdasImportError.CdasKeyMissingError(f"Key not found:",cdasKey)
-            selecetedData[key] = d
-
-        return returnClassType(timeSeries,selecetedData)
     
     def defaultProcessing(self,
         removeMagnetosheath=False,
