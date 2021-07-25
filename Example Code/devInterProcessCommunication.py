@@ -14,7 +14,7 @@ sonifyContext.get()
 
 import magSonify
 
-diskSaveComparePNG_SVG = True
+diskSaveComparePNG_SVG = False
 
 context = zmq.Context()
 socket = context.socket(zmq.REP)
@@ -61,6 +61,7 @@ while True:
     ax2.set_title('STFT Magnitude')
     ax2.set_ylabel('Frequency [mHz]')
     ax2.set_xlabel('Time [UT]')
+    ax2.grid(False)
     print(f"Took {timer()-startTime} s to plot")
 
     # Save plot to string buffer and prepare to send
@@ -83,7 +84,7 @@ while True:
         from magSonify.Utilities import ensureFolder
         ensureFolder("devIPC_Images")
         startTime = timer()
-        plt.savefig("devIPC_Images/svg.svg")
+        plt.savefig("devIPC_Images/svg-no_grid.svg")
         print(f"Took {timer()-startTime} s to save SVG to disk")
         startTime = timer()
         plt.savefig("devIPC_Images/png.png")
