@@ -114,7 +114,7 @@ def interpolateCoeffs(coeffs,interpolate_factor):
 
 def interpolateCoeffsPolar(magnitude,phase,interpolate_factor):
     """ Interpolates the polar form of the coefficients produced by CWT. Magnitude and phase
-    interpolated spereately.
+    interpolated sperately.
     """
     original_steps = np.linspace(0,1,magnitude.shape[1])
     new_steps = np.linspace(0,1,int(magnitude.shape[1]*interpolate_factor))
