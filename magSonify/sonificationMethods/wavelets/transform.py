@@ -13,8 +13,12 @@ def generateCwtScales(
 ):
     """ Generates a set of scales to be used to when scaling the wavlet function
     during CWT and ICWT.
+
+    :param dataLength: 
+        The length of the data series to be subject to the forward CWT. Used to correctly
+        constrain the largest scale. If maxNumberSamples is greater than dataLength or none, it will 
+        be set to this value.
     """
-    # Based on CT98: https://psl.noaa.gov/people/gilbert.p.compo/Torrence_compo1998.pdf
 
     if maxNumberSamples is None or maxNumberSamples > dataLength:
         maxNumberSamples = dataLength
@@ -39,11 +43,6 @@ def _generateSmallestScale(sampleSpacingTime, wavelet):
 def cwt(x, scales, sampleSpacingTime=1, waveletFunction=Morlet()):
     """ Computes the forward continous wavelet transform.
     """
-    # Based on CT98: https://psl.noaa.gov/people/gilbert.p.compo/Torrence_compo1998.pdf
-    # output = np.zeros(
-    #     (len(scales),) + x.shape,
-    #     dtype=np.complex128
-    # )
     output = []
 
     for i, s in enumerate(scales):
@@ -67,20 +66,20 @@ def icwt(
     :param coefficients:
         The coefficients produced from the forward CWT, in a 2D numpy array.
     """
-    # Based on CT98: https://psl.noaa.gov/people/gilbert.p.compo/Torrence_compo1998.pdf
     real_sum = np.sum(coefficients.real.T, axis=-1).T
     x =  (
         scaleLogSpacing * sampleSpacingTime ** .5 / (waveletRescaleFactor * waveletTimeFactor)
     ) * real_sum
     return x
 
-def icwt_noAdmissibilityCondition(coefficients,scales,**kwargs):
+def icwt_noAdmissibilityCondition(coefficients,scales):
     """ Computes the inverse continous wavlet transform using an alternative algorithm.
+
+    :param coefficients:
+        The coefficients produced from the forward CWT, in a 2D numpy array.
+    :param scales:
+        The set of scales to be used to when scaling the wavlet function.
     """
-    # Based on the method presented in: 
-    #   Computational implementation of the inverse continuous wavelet transform without a 
-    #   requirement of the admissibility condition. Eugene B. Postnikov, Elena A. Lebedeva, 
-    #   Anastasia I. Lavrova. 2015. https://arxiv.org/abs/1507.04971
     x = np.trapz(np.diff(coefficients).T,scales,axis=-1).T.imag
     x *= 2*np.pi
     return x
