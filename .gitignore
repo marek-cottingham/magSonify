@@ -5,6 +5,7 @@
 /Audio*
 /devIPC*
 /*.wav
+/*.svg
 
 Tests_Artifacts/OLD_artifactTest.py
 **.ipynb_checkpoints
