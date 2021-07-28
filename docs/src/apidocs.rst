@@ -67,3 +67,7 @@ Simulate Data
 .. autoclass:: magSonify.SimulateData
    :members:
    :undoc-members:
+
+Utilities
+-----------
+.. autofunction:: magSonify.Utilities.ensureFolder

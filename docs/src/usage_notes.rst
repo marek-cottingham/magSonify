@@ -50,3 +50,14 @@ The following cache management methods are available:
         >>> from magSonify.devCaching.cacheControl import deleteCache
         >>> deleteCache()
         The cache has been deleted
+
+Relative module imports for code development
+----------------------------------------------
+Examples and testing code can be run without installing magSonify or adding it to the system path.
+This is achieved with through a helper utility in the same folder called ``context.py``.
+
+.. note::
+
+    The current directory must be set to the project root directory ``./`` in order for this to work.
+
+.. autofunction:: context.get
