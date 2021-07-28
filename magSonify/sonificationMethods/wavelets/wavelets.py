@@ -7,15 +7,19 @@ import scipy.optimize
 import scipy.special
 from scipy.special import factorial
 
-__all__ = ['Morlet', 'Paul']
+__all__ = ['Morlet',]
 
 
 class Morlet(object):
-    def __init__(self, w0=6):
-        """w0 is the nondimensional frequency constant. If this is
+    """ Definition of Morlet wavelet function
+
+    :param int w0:
+        Nondimensional frequency constant. If this is
         set too low then the wavelet does not sample very well: a
         value over 5 should be ok; Terrence and Compo set it to 6.
-        """
+    """
+    def __init__(self, w0=6):
+        
         self.w0 = w0
         if w0 == 6:
             # value of C_d from TC98
@@ -28,38 +32,32 @@ class Morlet(object):
         """
         Complex Morlet wavelet, centred at zero.
 
-        Parameters
-        ----------
-        t : float
+        :param float t:
             Time. If s is not specified, this can be used as the
             non-dimensional time t/s.
-        s : float
+        :param float s:
             Scaling factor. Default is 1.
-        complete : bool
+        :param bool complete:
             Whether to use the complete or the standard version.
 
-        Returns
-        -------
-        out : complex
+        :return:
             Value of the Morlet wavelet at the given time
 
-        See Also
-        --------
-        scipy.signal.gausspulse
+        The standard version:
 
-        Notes
-        -----
-        The standard version::
+        .. math::
 
-            pi**-0.25 * exp(1j*w*x) * exp(-0.5*(x**2))
+            \pi^{-0.25} \, \\text{exp}(iwx) \, \\text{exp}(-0.5(x^2))
 
         This commonly used wavelet is often referred to simply as the
         Morlet wavelet.  Note that this simplified version can cause
         admissibility problems at low values of `w`.
 
-        The complete version::
+        The complete version:
 
-            pi**-0.25 * (exp(1j*w*x) - exp(-0.5*(w**2))) * exp(-0.5*(x**2))
+        .. math::
+
+            \pi^{-0.25} \, ( \\text{exp}(iwx) - \\text{exp}(-0.5(w^2))) \, \\text{exp}(-0.5(x^2))
 
         The complete version of the Morlet wavelet, with a correction
         term to improve admissibility. For `w` greater than 5, the
@@ -70,7 +68,6 @@ class Morlet(object):
 
         The fundamental frequency of this wavelet in Hz is given
         by ``f = 2*s*w*r / M`` where r is the sampling rate.
-
         """
         w = self.w0
 
@@ -90,10 +87,8 @@ class Morlet(object):
         """Equivalent Fourier period of Morlet"""
         return 4 * np.pi * s / (self.w0 + (2 + self.w0 ** 2) ** .5)
 
-    def scale_from_period(self, period):
-        """
-        Compute the scale from the fourier period.
-        Returns the scale
+    def scale_from_period(self, period) -> np.array:
+        """Compute the scale from the fourier period.
         """
         # Solve 4 * np.pi * scale / (w0 + (2 + w0 ** 2) ** .5)
         #  for s to obtain this formula
@@ -104,18 +99,14 @@ class Morlet(object):
     def frequency(self, w, s=1.0):
         """Frequency representation of Morlet.
 
-        Parameters
-        ----------
-        w : float
+        :param float w:
             Angular frequency. If `s` is not specified, i.e. set to 1,
             this can be used as the non-dimensional angular
             frequency w * s.
-        s : float
+        :param float s:
             Scaling factor. Default is 1.
 
-        Returns
-        -------
-        out : complex
+        :return:
             Value of the Morlet wavelet at the given frequency
         """
         x = w * s
@@ -131,6 +122,8 @@ class Morlet(object):
         effect decays by a factor of 1/e^2.
 
         This can be worked out analytically by solving
+
+        .. math::
 
             |Y_0(T)|^2 / |Y_0(0)|^2 = 1 / e^2
         """
