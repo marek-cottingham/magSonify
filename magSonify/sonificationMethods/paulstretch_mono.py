@@ -13,7 +13,19 @@
 import numpy as np
 
 
-def paulstretch(audioSample,stretch,windowsize_seconds,samplerate=44100):
+def paulstretch(
+    audioSample: np.array,
+    stretch: float, 
+    windowsize_seconds: float, 
+    samplerate=44100, 
+    debugOutput=False
+) -> np.array:
+    """ Implementation of paulstretch.
+
+    :param debugOutput:
+        Returns a tuple as output, where the first element is the standard output and the second
+        element is a 2D numpy array containing the amplitude component of the fft of each window.
+    """
     
     smp = audioSample
 
@@ -43,6 +55,7 @@ def paulstretch(audioSample,stretch,windowsize_seconds,samplerate=44100):
     hinv_buf=hinv_sqrt2-(1.0-hinv_sqrt2)*np.cos(np.arange(half_windowsize,dtype='float')*2.0*np.pi/half_windowsize)
 
     finalOutput = []
+    debugOutput = []
 
     while True:
 
@@ -55,6 +68,7 @@ def paulstretch(audioSample,stretch,windowsize_seconds,samplerate=44100):
     
         #get the amplitudes of the frequency components and discard the phases
         freqs=abs(np.fft.rfft(buf))
+        debugOutput.append(freqs.copy())
 
         #randomize the phases by multiplication with a random complex number with modulus=1
         ph=np.random.uniform(0,2*np.pi,len(freqs))*1j
@@ -80,7 +94,10 @@ def paulstretch(audioSample,stretch,windowsize_seconds,samplerate=44100):
         finalOutput.append(output)
 
     finalOutput = np.concatenate(finalOutput)
-    return finalOutput
+    if debugOutput:
+        return finalOutput, np.array(debugOutput)
+    else:
+        return finalOutput
 
 
 
