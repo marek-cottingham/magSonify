@@ -66,6 +66,10 @@ class DataSet_1D(DataSet):
         ) -> None:
         """Pitch shifts the data on specified axes by ``shift`` times using 
         the continous wavlet transform.
+
+        The attributes ``.coefficients`` and ``.coefficients_shifted`` are populated with
+        the coefficents produced by the CWT, before and after interpolation.
+        The attribute ``scales`` is populated with the scales used for the forward CWT.
         
         :param shift:
             The multiple by which to shift the pitch of the input field.
@@ -95,7 +99,8 @@ class DataSet_1D(DataSet):
             wavelet,
         )
         coefficients = wavelets.transform.cwt(self.x,scales,sampleSeperation,wavelet)
-
+    
+        self.scales = scales
         self.coefficients = coefficients
 
         # Rescale the coefficients as in
