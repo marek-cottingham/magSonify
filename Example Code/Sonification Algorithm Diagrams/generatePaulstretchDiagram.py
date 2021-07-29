@@ -21,7 +21,7 @@ xlow = 6300+scan
 xhigh = 6300+scan+interval
 
 useBreakingLines = True
-useSubplotVariedLengths = False
+useSubplotVariedLengths = True
 
 event = (
         datetime.datetime(2008,12,7),
@@ -89,11 +89,6 @@ for i,pos in enumerate(startPos[xlimcoeffs]):
 
 l1, = ax1.plot(preStretchX,polBefore.x[xlim1])
 
-# coefficientsTimes = np.linspace(
-#     timesRelativeToIntervalStart[0],
-#     timesRelativeToIntervalStart[-1],
-#     coefficients.shape[0]+1
-# )[:-1]
 coefficientsTimes = timesRelativeToIntervalStart[startPos]
 coefficientsTimes = coefficientsTimes + (timesRelativeToIntervalStart[1]-timesRelativeToIntervalStart[0])/2
 
@@ -148,6 +143,11 @@ for ax in (ax1,ax2,ax3):
     if not showFullDay_waveforms and not showFullDay_spetrogram:
         ax.set_xlim([preStretchX[0],preStretchX[-1]])
 
+print("Window length:", len(windowSeries))
 plt.tight_layout()
-plt.savefig("Paulstretch Diagram.svg")
-#plt.show()
+
+magSonify.Utilities.ensureFolder("Algorithm Diagrams")
+plt.savefig("Algorithm Diagrams/Paulstretch Diagram.svg")
+
+
+plt.show()

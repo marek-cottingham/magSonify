@@ -140,5 +140,10 @@ if useBreakingLines:
 for ax in (ax1,ax2,ax3,):
     plt.setp(ax.get_xticklabels(), visible=False)
 
-plt.savefig("Wavelet Diagram.svg")
+magSonify.Utilities.ensureFolder("Algorithm Diagrams")
+if plotPhases:
+    plt.savefig("Algorithm Diagrams/Wavelet Diagram Phases.svg")
+else:
+    plt.savefig("Algorithm Diagrams/Wavelet Diagram Magnitudes.svg")
+
 plt.show()
