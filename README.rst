@@ -66,4 +66,9 @@ Usage example
 
 License
 ----------------
+Copyright (c) 2021 Marek Cottingham (mc3219@ic.ac.uk)
 The MIT License. See LICENSE.txt for details.
+
+Includes modified versions or sections of 
+`paulstretch_python <https://github.com/paulnasca/paulstretch_python>`_,
+`aaren/wavelets <https://github.com/aaren/wavelets>`_ and `audiotsm <https://github.com/Muges/audiotsm>`_
