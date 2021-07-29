@@ -23,8 +23,9 @@ def paulstretch(
     """ Implementation of paulstretch.
 
     :param debugOutput:
-        Returns a tuple as output, where the first element is the standard output and the second
-        element is a 2D numpy array containing the amplitude component of the fft of each window.
+        Returns a tuple as output, where the first element is the standard output, the second
+        element is a 2D numpy array containing the amplitude component of the fft of each window,
+        the third is the start index of each window and the fourth is the window function.
     """
     
     smp = audioSample
@@ -56,6 +57,7 @@ def paulstretch(
 
     finalOutput = []
     debugOutput = []
+    intervalStarts = []
 
     while True:
 
@@ -68,7 +70,9 @@ def paulstretch(
     
         #get the amplitudes of the frequency components and discard the phases
         freqs=abs(np.fft.rfft(buf))
+
         debugOutput.append(freqs.copy())
+        intervalStarts.append(istart_pos)
 
         #randomize the phases by multiplication with a random complex number with modulus=1
         ph=np.random.uniform(0,2*np.pi,len(freqs))*1j
@@ -95,7 +99,7 @@ def paulstretch(
 
     finalOutput = np.concatenate(finalOutput)
     if debugOutput:
-        return finalOutput, np.array(debugOutput)
+        return finalOutput, np.array(debugOutput), np.array(intervalStarts), window
     else:
         return finalOutput
 
