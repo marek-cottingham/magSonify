@@ -10,8 +10,8 @@ shift of the position of the analysis frames.
 
 import numpy as np
 
-from audiotsm.base import AnalysisSynthesisTSM, Converter
-from audiotsm.utils.windows import hanning
+from .base import AnalysisSynthesisTSM, Converter
+from .utils.windows import hanning
 
 
 class WSOLAConverter(Converter):

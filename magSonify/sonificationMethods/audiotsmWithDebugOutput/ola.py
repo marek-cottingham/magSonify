@@ -5,8 +5,8 @@ The :mod:`audiotsm.ola` module implements the OLA (Overlap-Add) time-scale
 modification procedure.
 """
 
-from audiotsm.base import AnalysisSynthesisTSM, Converter
-from audiotsm.utils.windows import hanning
+from .base import AnalysisSynthesisTSM, Converter
+from .utils.windows import hanning
 
 
 class OLAConverter(Converter):

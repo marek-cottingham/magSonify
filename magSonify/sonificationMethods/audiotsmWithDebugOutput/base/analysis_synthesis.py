@@ -7,7 +7,7 @@ real-time analysis-synthesis based audio time-scale modification procedures.
 
 import numpy as np
 
-from audiotsm.utils import (windows, CBuffer, NormalizeBuffer)
+from ..utils import (windows, CBuffer, NormalizeBuffer)
 from .tsm import TSM
 
 EPSILON = 0.0001
@@ -94,6 +94,10 @@ class AnalysisSynthesisTSM(TSM):
     def __init__(self, converter, channels, frame_length, analysis_hop,
                  synthesis_hop, analysis_window, synthesis_window,
                  delta_before=0, delta_after=0):
+
+        ####### DEBUG INFO SAVING ######## --------------------------------------------------------
+        self.STFT_DEBUG = []
+
         # pylint: disable=too-many-arguments
         self._converter = converter
 
@@ -186,6 +190,9 @@ class AnalysisSynthesisTSM(TSM):
 
         # Convert the analysis frame into a synthesis frame
         synthesis_frame = self._converter.convert_frame(self._analysis_frame)
+
+        ####### DEBUG INFO SAVING ######## --------------------------------------------------------
+        self.STFT_DEBUG.append(self._converter.STFT_DEBUG)
 
         # Apply the synthesis window
         windows.apply(synthesis_frame, self._synthesis_window)

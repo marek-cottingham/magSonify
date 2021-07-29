@@ -7,8 +7,8 @@ modification procedure.
 
 import numpy as np
 
-from audiotsm.base import AnalysisSynthesisTSM, Converter
-from audiotsm.utils.windows import hanning
+from .base import AnalysisSynthesisTSM, Converter
+from .utils.windows import hanning
 
 
 def find_peaks(amplitude):
@@ -110,7 +110,10 @@ class PhaseVocoderConverter(Converter):
             stft = np.fft.rfft(frame[k])
             amplitude = np.abs(stft)
             phase = np.angle(stft)
-            del stft
+            
+            ####### DEBUG INFO SAVING ######## -------------------------------------------------
+            self.STFT_DEBUG = stft
+
 
             peaks = self._find_peaks(amplitude)
             closest_peak = get_closest_peaks(peaks)
@@ -151,8 +154,6 @@ class PhaseVocoderConverter(Converter):
 
             # Save the phase for the next analysis frame
             self._previous_phase[k, :] = phase
-            del phase
-            del amplitude
 
         self._first = False
 
