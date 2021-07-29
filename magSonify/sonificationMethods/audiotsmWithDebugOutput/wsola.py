@@ -26,6 +26,7 @@ class WSOLAConverter(Converter):
         self._synthesis_frame = np.empty((channels, frame_length))
         self._natural_progression = np.empty((channels, frame_length))
         self._first = True
+        self.STFT_DEBUG = 0
 
     def clear(self):
         self._first = True

@@ -14,11 +14,11 @@ from magSonify.sonificationMethods.paulstretch_mono import paulstretch
 ### Parameters ###
 stretch = 2
 
-scan = 150-250
-interval = 950
+scan = -64 # Allows shifting the start of the interval
+interval = 512//2*3 # Number of samples in the interval
 
-xlow = 6300+scan
-xhigh = 6300+scan+interval
+xlow = 6272+scan
+xhigh = 6272+scan+interval
 
 useBreakingLines = True
 useSubplotVariedLengths = True
@@ -35,22 +35,14 @@ showFullDay_spetrogram = False
 pol, polBefore = core.setup(event)
 
 pol._stretchTimeseries(stretch)
-pol.x, coefficients, startPos, windowSeries = paulstretch(pol.x,stretch,0.015,debugOutput=True)
+# Window for paulstretch is specifed so as to be equivalent to a window of 512 samples when using 
+# the default sample rate of 44100
+pol.x, coefficients, startPos, windowSeries = paulstretch(pol.x,stretch,512/44100,debugOutput=True)
 pol._correctTimeseries()
 
-if useSubplotVariedLengths:
-    fig = plt.figure(figsize=(16,9))
 
-    ax1: matplotlib.axes.Axes = plt.subplot2grid((3, 16), (0, 3), rowspan=1, colspan=10)
-    ax2: matplotlib.axes.Axes = plt.subplot2grid((3, 16), (1, 3), rowspan=1, colspan=10)
-    ax3: matplotlib.axes.Axes = plt.subplot2grid((3, 16), (2, 0), rowspan=1, colspan=16)
-else:
-    fig, (ax1, ax2, ax3) = plt.subplots(3,1,figsize=(8,4.5),sharex='all')
-    ax1: matplotlib.axes.Axes = ax1
-    ax2: matplotlib.axes.Axes = ax2
-    ax3: matplotlib.axes.Axes = ax3
+ax1, ax2, ax3, ax1r, ax3r = core.setup3axesWithTwinsForWindows(useSubplotVariedLengths)
 
-ax1r = ax1.twinx()
 
 xlim1 = slice(xlow,xhigh)
 xlim2 = slice(xlow*stretch,xhigh*stretch)
@@ -74,20 +66,9 @@ preStretchX = timesBefore[xlim1] - timesBefore[xlow]
 
 timesRelativeToIntervalStart = timesBefore - timesBefore[xlow]
 
-for i,pos in enumerate(startPos[xlimcoeffs]):
-    
-    if i < 4:
-        color = "C1"
-        
-        l2, = ax1r.plot(
-            timesRelativeToIntervalStart[
-                pos:pos+len(windowSeries)
-            ],
-            windowSeries,
-            color=color,
-        )
+lastWindowLine_ax1 = core.plotWindows(startPos, windowSeries, ax1r, xlimcoeffs, timesRelativeToIntervalStart)
 
-l1, = ax1.plot(preStretchX,polBefore.x[xlim1])
+magFieldPlotLine, = ax1.plot(preStretchX,polBefore.x[xlim1])
 
 coefficientsTimes = timesRelativeToIntervalStart[startPos]
 coefficientsTimes = coefficientsTimes + (timesRelativeToIntervalStart[1]-timesRelativeToIntervalStart[0])/2
@@ -116,7 +97,9 @@ if useBreakingLines:
 
 postStretchX = pol.timeSeries.asFloat()[xlim2] - pol.timeSeries.asFloat()[xlow*stretch]
 
-ax3.plot(postStretchX,pol.x[xlim2])
+lastWindowLine_ax3 = core.plotWindows(startPos, windowSeries, ax3r, xlimcoeffs, timesRelativeToIntervalStart)
+
+afterPlotLine, = ax3.plot(postStretchX,pol.x[xlim2])
 
 ax2.set_yscale('log')
 ax2.set_ylim([
@@ -128,26 +111,20 @@ ax1.set_ylabel("Field [nT]")
 ax2.set_ylabel("Frequency [Hz]")
 ax3.set_ylabel("Amplitude")
 ax1r.set_ylabel("Window amplitude")
+ax3r.set_ylabel("Window amplitude")
 
-ax1.set_zorder(ax1r.get_zorder()+1)
-ax1.patch.set_visible(False)
-ax1.yaxis.label.set_color(l1.get_color())
-ax1.tick_params(axis='y', colors=l1.get_color())
-ax1r.yaxis.label.set_color(l2.get_color())
-ax1r.tick_params(axis='y', colors=l2.get_color())
+core.colorTwinAxes(ax1, ax1r, magFieldPlotLine, lastWindowLine_ax1)
+core.colorTwinAxes(ax3, ax3r, afterPlotLine, lastWindowLine_ax3)
 
 for ax in (ax1, ax2):
     plt.setp(ax.get_xticklabels(), visible=False)
 
-for ax in (ax1,ax2,ax3):
-    if not showFullDay_waveforms and not showFullDay_spetrogram:
-        ax.set_xlim([preStretchX[0],preStretchX[-1]])
+core.set_xlim(showFullDay_waveforms, showFullDay_spetrogram, (ax1, ax2, ax3), preStretchX, timesRelativeToIntervalStart)
 
 print("Window length:", len(windowSeries))
 plt.tight_layout()
 
 magSonify.Utilities.ensureFolder("Algorithm Diagrams")
 plt.savefig("Algorithm Diagrams/Paulstretch Diagram.svg")
-
 
 plt.show()

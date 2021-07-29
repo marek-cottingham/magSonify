@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import matplotlib.axes
 import numpy as np
-from magSonify.sonificationMethods.audiotsmWithDebugOutput import phasevocoder
+from magSonify.sonificationMethods.audiotsmWithDebugOutput import wsola
 from magSonify.sonificationMethods.audiotsmWithDebugOutput.io.array import ArrayReader, ArrayWriter
 
 ### Parameters ###
@@ -30,16 +30,15 @@ event = (
     )
 
 showFullDay_waveforms = False
-showFullDay_spetrogram = False
 ### End Params ###
 
 pol, polBefore = core.setup(event)
 
 frameLength = 512
-synthesisHop = frameLength//16
+synthesisHop = frameLength//8
 reader = ArrayReader(np.array((pol.x,)))
 writer = ArrayWriter(reader.channels)
-timeSeriesModification = phasevocoder(
+timeSeriesModification = wsola(
     reader.channels,
     speed = 1/stretch,
     frame_length=frameLength,
@@ -50,14 +49,26 @@ pol.x = writer.data.flatten()
 pol._stretchTimeseries(stretch)
 pol._correctTimeseries()
 
-coefficients = np.abs(np.array(timeSeriesModification.STFT_DEBUG))
 startPos = np.arange(
     0, len(polBefore.x), timeSeriesModification._analysis_hop
 )
-windowSeries = timeSeriesModification._analysis_window
+windowSeriesAnalysis = np.ones(timeSeriesModification._frame_length)
+windowSeriesSynthesis = timeSeriesModification._synthesis_window
+#Array of zeros equal to the number of windows generated
+coefficients = np.array(timeSeriesModification.STFT_DEBUG)
 
+if useSubplotVariedLengths:
+    fig = plt.figure(figsize=(8,4.5))
 
-ax1, ax2, ax3, ax1r, ax3r = core.setup3axesWithTwinsForWindows(useSubplotVariedLengths)
+    ax1: matplotlib.axes.Axes = plt.subplot2grid((2, 16), (0, 3), rowspan=1, colspan=10)
+    ax3: matplotlib.axes.Axes = plt.subplot2grid((2, 16), (1, 0), rowspan=1, colspan=16)
+else:
+    fig, (ax1, ax2, ax3) = plt.subplots(2,1,figsize=(8,4.5),sharex='all')
+    ax1: matplotlib.axes.Axes = ax1
+    ax3: matplotlib.axes.Axes = ax3
+
+ax1r = ax1.twinx()
+ax3r = ax3.twinx()
 
 xlim1 = slice(xlow,xhigh)
 xlim2 = slice(xlow*stretch,xhigh*stretch)
@@ -66,13 +77,11 @@ timesBefore = polBefore.timeSeries.asFloat()
 times = pol.timeSeries.asFloat()
 
 N = coefficients.shape[0]/len(polBefore.x)
-xlimcoeffs = slice(int(xlow*N)-1,int(xhigh*N)+5)
+xlimcoeffs = slice(int(xlow*N)+1,int(xhigh*N)+5)
 
 # Disable the use of range restriction
 if showFullDay_waveforms: 
     xlim1 = xlim2 = slice(None,None)
-if showFullDay_spetrogram:
-    xlimcoeffs = slice(None,None)
 
 
 cmap = 'plasma'
@@ -82,9 +91,17 @@ preStretchX = timesBefore[xlim1] - timesBefore[xlow]
 timesRelativeToIntervalStart = timesBefore - timesBefore[xlow]
 
 # Plot the analysis windows
-lastWindowLine_ax1 = core.plotWindows(
-    startPos, windowSeries, ax1r, xlimcoeffs, timesRelativeToIntervalStart, numberOfWindows=10
-)
+for i,pos in enumerate(startPos[xlimcoeffs]):
+    if i < 8:
+        color = "C1"
+    
+        lastWindowLine_ax1, = ax1r.plot(
+        timesRelativeToIntervalStart[
+            pos:pos+len(windowSeriesAnalysis)
+        ],
+        windowSeriesAnalysis-i,
+        color=color,
+    )
 
 magFieldPlotLine, = ax1.plot(preStretchX,polBefore.x[xlim1])
 
@@ -92,67 +109,49 @@ magFieldPlotLine, = ax1.plot(preStretchX,polBefore.x[xlim1])
 coefficientsTimes = timesRelativeToIntervalStart[startPos]
 coefficientsTimes = coefficientsTimes + (timesRelativeToIntervalStart[1]-timesRelativeToIntervalStart[0])/2
 
-coefficients = coefficients[xlimcoeffs,:]
+coefficients = coefficients[xlimcoeffs]
 coefficients = np.log(coefficients)
 
 coefficientsTimes = coefficientsTimes[xlimcoeffs]
 
 # Get frequencies
-freqs = np.fft.rfftfreq(len(windowSeries),3)
-
-# Plot coefficients
-ax2.pcolormesh(
-    coefficientsTimes,
-    freqs,
-    coefficients.T,
-    shading='auto',
-    cmap=cmap,
-)
-
-if useBreakingLines:
-    lw = 1
-    ax2.grid(True, which='minor', axis='x', linestyle='-', color='k',linewidth=lw)
-    ax2.set_xticks(
-        coefficientsTimes + (coefficientsTimes[1]-coefficientsTimes[0])/2,
-        minor=True
-    )
+freqs = np.fft.rfftfreq(len(windowSeriesSynthesis),3)
 
 # Plot after time stretch
 postStretchX = pol.timeSeries.asFloat()[xlim2] - pol.timeSeries.asFloat()[xlow*stretch]
 
 lastWindowLine_ax3 = core.plotWindows(
-    startPos, windowSeries, ax3r, xlimcoeffs, timesRelativeToIntervalStart, numberOfWindows=10
+    startPos, windowSeriesSynthesis, ax3r, xlimcoeffs, timesRelativeToIntervalStart, numberOfWindows=8
 )
 
 afterPlotLine, = ax3.plot(postStretchX,pol.x[xlim2])
 
-ax2.set_yscale('log')
-ax2.set_ylim([
-    freqs[1],freqs[-50]
-])
 
 ax3.set_xlabel("Time since start of interval [s]")
 ax1.set_ylabel("Field [nT]")
-ax2.set_ylabel("Frequency [Hz]")
 ax3.set_ylabel("Amplitude")
-ax1r.set_ylabel("Window amplitude")
+
+#ax1r.set_ylabel("Window span")
 ax3r.set_ylabel("Window amplitude")
+
+ax1r.set_ylim([-12,1])
+plt.setp(ax1r.get_yticklabels(), visible=False)
+
 
 core.colorTwinAxes(ax1, ax1r, magFieldPlotLine, lastWindowLine_ax1)
 core.colorTwinAxes(ax3, ax3r, afterPlotLine, lastWindowLine_ax3)
 
-ax2.tick_params(axis='x', colors='w')
-
-for ax in (ax1, ax2):
+for ax in (ax1, ):
     plt.setp(ax.get_xticklabels(), visible=False)
 
-core.set_xlim(showFullDay_waveforms, showFullDay_spetrogram, (ax1, ax2, ax3), preStretchX, timesRelativeToIntervalStart)
+core.set_xlim(showFullDay_waveforms, False, (ax1, ax3), preStretchX, timesRelativeToIntervalStart)
+ax1r.tick_params(axis='y', colors='w', which='both')
 
-print("Window length:", len(windowSeries))
+print("Window length:", len(windowSeriesSynthesis))
 plt.tight_layout()
 
 magSonify.Utilities.ensureFolder("Algorithm Diagrams")
-plt.savefig("Algorithm Diagrams/Phase Vocoder Diagram.svg")
+plt.savefig("Algorithm Diagrams/WSOLA Diagram.svg")
 
 
 plt.show()

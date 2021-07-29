@@ -12,6 +12,8 @@ from .utils.windows import hanning
 class OLAConverter(Converter):
     """A Converter implementing the OLA (Overlap-Add) time-scale modification
     procedure."""
+    def __init__(self):
+        self.STFT_DEBUG = 0
     def convert_frame(self, analysis_frame):
         return analysis_frame
 
