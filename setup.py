@@ -23,7 +23,6 @@ setuptools.setup(
         'numpy',
         'scipy',
         'ai.cdas',
-        'audiotsm',
         'SoundFile',
     ],
     extras_require={
