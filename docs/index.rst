@@ -10,6 +10,7 @@
 
    /src/introduction
    /src/exampleCode
+   /src/audioVideoExamples
    /src/apidocs
    /src/apiTimeStretch
    /src/tests

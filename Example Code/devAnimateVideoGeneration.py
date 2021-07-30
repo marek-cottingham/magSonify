@@ -16,13 +16,17 @@ import os
 import subprocess
 import shutil
 
+### PARAMS ###
+
 OVERRIDE_FRAME_RATE = 25
 videoDir = 'Audio_Video_Animation_DevExample'
-algname = "Wavelet"
+#algname = "Wavelet"
 #algname = "Phase_Vocoder"
-#algname = "Paulstretch"
-component_n = 2
+algname = "Paulstretch"
+component_n = 1
 MIN_FRAME_TO_PROCESS = 0
+
+### END PARAMS ###
 
 ensureFolder(videoDir)
 ensureFolder(os.path.join(videoDir,"frames"))
@@ -37,7 +41,9 @@ mag.importCDAS(
 mag.defaultProcessing()
 
 component = mag.magneticFieldMeanFieldCoordinates.extractKey(component_n)
+
 audio: DataSet_1D = component.copy()
+
 if algname == "Wavelet":
     audio.waveletStretch(16,interpolateBefore=0.5,interpolateAfter=16)
     audio.genMonoAudio(os.path.join(videoDir, f"{algname}_audio_axis={component_n}.wav"),sampleRate=44100//2)
