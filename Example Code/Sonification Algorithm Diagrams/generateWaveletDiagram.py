@@ -24,7 +24,7 @@ interval = 45 # Number of samples in the interval
 xlow = 6300+scan
 xhigh = 6300+scan+interval
 
-plotPhases = True
+plotPhases = False
 plotEntireDay = False
 
 useBreakingLines = useSubplotVariedLengths = True
@@ -37,7 +37,7 @@ pol, polBefore = core.setup(
 )
 
 # Time stretch
-pol.waveletPitchShift(stretch,preserveScaling=True,interpolateFactor=stretch)
+pol.waveletPitchShift(stretch,preserveScaling=True,interpolateFactor=stretch,maxNumberSamples=100)
 
 
 if useSubplotVariedLengths:

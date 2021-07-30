@@ -9,8 +9,8 @@ import matplotlib.pyplot as plt
 import matplotlib
 import matplotlib.axes
 import numpy as np
-from magSonify.sonificationMethods.audiotsmWithDebugOutput import wsola
-from magSonify.sonificationMethods.audiotsmWithDebugOutput.io.array import ArrayReader, ArrayWriter
+from audiotsmWithDebugOutput import wsola
+from audiotsmWithDebugOutput.io.array import ArrayReader, ArrayWriter
 
 ### Parameters ###
 stretch = 2
