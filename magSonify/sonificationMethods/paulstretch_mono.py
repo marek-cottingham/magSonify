@@ -18,7 +18,7 @@ def paulstretch(
     stretch: float, 
     windowsize_seconds: float, 
     samplerate=44100, 
-    debugOutput=False
+    enableDebugOutput=False
 ) -> np.array:
     """ Implementation of paulstretch.
 
@@ -98,7 +98,7 @@ def paulstretch(
         finalOutput.append(output)
 
     finalOutput = np.concatenate(finalOutput)
-    if debugOutput:
+    if enableDebugOutput:
         return finalOutput, np.array(debugOutput), np.array(intervalStarts), window
     else:
         return finalOutput
