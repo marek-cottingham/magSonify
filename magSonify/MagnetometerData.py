@@ -146,7 +146,9 @@ class MagnetometerData():
     ):
         """Imports cdas data for the given ``cdasArgs``, extracting a dataset.
 
-        :param tuple cdasArgs: Arguments for ``ai.cdas.get_data()``
+        :param tuple cdasArgs: 
+            Arguments for data to get, as specified for ``ai.cdas.get_data()``.
+            (str dataview, str dataset, datetime startTime, datetime stopTime, list str variables)
         :param str timeSeriesKey: The key that the times are refered to as in CDAS data return
         :param dict targetKeys:
             Dictionary where its values are the keys in CDAs data to include in the data set, and
@@ -154,7 +156,10 @@ class MagnetometerData():
         :param type returnClassType: 
             Class used to construct the returned data set, eg. :class:`DataSet`, :class:`DataSet_3D`
         """
-        data = cdas.get_data(*cdasArgs)
+        try:
+            data = cdas.get_data(*cdasArgs,progress=False)
+        except ValueError:
+            raise CdasImportError.CdasUnspecifedMissingDataError
         if data is None:
             raise CdasImportError.CdasNoDataReturnedError
         timeSeries = TimeSeries(data[timeSeriesKey])
@@ -275,4 +280,6 @@ class CdasImportError(Exception):
     class CdasNoDataReturnedError(Exception):
         pass
     class CdasKeyMissingError(Exception):
+        pass
+    class CdasUnspecifedMissingDataError(Exception):
         pass
