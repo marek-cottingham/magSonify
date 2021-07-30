@@ -24,7 +24,7 @@ interval = 45 # Number of samples in the interval
 xlow = 6300+scan
 xhigh = 6300+scan+interval
 
-plotPhases = False
+plotPhases = True
 plotEntireDay = False
 
 useBreakingLines = useSubplotVariedLengths = True
@@ -97,7 +97,7 @@ ax3.pcolormesh(
 
 ax4.plot(postStretchX,pol.x[xlim2])
 
-ax4.set_xlabel("Time (original data) since start of interval [s]")
+ax4.set_xlabel("Time since start of interval [s]")
 ax1.set_ylabel("Field [nT]")
 ax4.set_ylabel("Amplitude")
 
