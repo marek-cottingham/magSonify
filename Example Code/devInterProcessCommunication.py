@@ -79,13 +79,3 @@ while True:
     startTime = timer()
     socket.send(imgdata.getvalue())
     print(f"Took {timer()-startTime} s to send over IPC")
-
-    if diskSaveComparePNG_SVG:
-        from magSonify.Utilities import ensureFolder
-        ensureFolder("devIPC_Images")
-        startTime = timer()
-        plt.savefig("devIPC_Images/svg-no_grid.svg")
-        print(f"Took {timer()-startTime} s to save SVG to disk")
-        startTime = timer()
-        plt.savefig("devIPC_Images/png.png")
-        print(f"Took {timer()-startTime} s to save PNG to disk")
