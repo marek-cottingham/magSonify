@@ -10,6 +10,7 @@ import matplotlib
 import matplotlib.axes
 import numpy as np
 import cmocean
+from magSonify.sonificationMethods.wavelets.wavelets import Morlet
 
 ### Figure parameters ###
 
@@ -50,6 +51,8 @@ if useSubplotVariedLengths:
 else:
     fig, (ax1, ax2, ax3, ax4) = plt.subplots(4,1,figsize=(16/2,9/2))
 
+ax1r = ax1.twinx()
+
 if plotPhases:
     phaseMagSelector = np.angle
     #cmap = 'hsv'
@@ -71,9 +74,20 @@ if plotEntireDay:
 timesBefore = polBefore.timeSeries.asFloat()
 preStretchX = timesBefore[xlim1] - timesBefore[xlow]
 
-ax1.plot(preStretchX,polBefore.x[xlim1])
+magFieldPlotLine, = ax1.plot(preStretchX,polBefore.x[xlim1])
 
 Y = pol.scales
+
+waveletFunction = Morlet()
+exampleWaveletRelativeTimes = np.linspace(0,len(preStretchX),1000) - len(preStretchX)//2
+for i in range(0,21,7):
+    exampleWavelet = waveletFunction(exampleWaveletRelativeTimes,Y[i])
+
+    waveletPlotLine, = ax1r.plot(
+        np.linspace(preStretchX[0],preStretchX[-1],1000),
+        -exampleWavelet,
+        color='C1' #+ str(i+1)
+    )
 
 ax2.pcolormesh(
     preStretchX,
@@ -99,7 +113,10 @@ ax4.plot(postStretchX,pol.x[xlim2])
 
 ax4.set_xlabel("Time since start of interval [s]")
 ax1.set_ylabel("Field [nT]")
+ax1r.set_ylabel("Wavelet amplitude")
 ax4.set_ylabel("Amplitude")
+
+core.colorTwinAxes(ax1, ax1r, magFieldPlotLine, waveletPlotLine)
 
 if plotEntireDay:
     xhigh = -1
