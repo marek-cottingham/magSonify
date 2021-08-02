@@ -32,7 +32,7 @@ the file ``magSonify/devCaching/config.py`` containing the line::
 .. warning::
 
     The cache size is unlimited and there is no automatic deletion of the cache. Ensure cache
-    deletion before uninstalling the package.
+    deletion before uninstalling the package. Suitable for development only.
 
 .. note::
 

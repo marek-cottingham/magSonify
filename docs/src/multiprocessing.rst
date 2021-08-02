@@ -1,8 +1,12 @@
 Dev: Multiprocessing
 ======================
 
+.. warning::
+    DEVELOPMENT TESTING
+    MAY BE INCOMPLETE / NON FUNCTIONAL
+
 Methods for accelerating program execution by using multiprocessing. Currently in development.
-Exectution example in ``./Example Code/devBufferingTest.py``.
+Exectution example in ``./Example Code/DEV Inter-process communication/devBufferingTest.py``.
 
 Requires extra dependancies be installed:
 
