@@ -1,3 +1,10 @@
+"""
+DEVELOPMENT TESTING
+MAY BE INCOMPLETE / NON FUNCTIONAL
+
+Testing transmitting a bitmap image to C# over IPC
+"""
+
 
 import zmq
 import json, datetime

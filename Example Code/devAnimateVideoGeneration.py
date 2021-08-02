@@ -1,4 +1,14 @@
 
+"""
+DEVELOPMENT TESTING
+MAY BE INCOMPLETE / NON FUNCTIONAL
+
+Requires that ffmpeg is installed in order to run correctly
+
+Generates a large number (~1000) image files ! These need to be deleted manually !     <<<<<<<<<<
+
+"""
+
 import context
 context.get()
 

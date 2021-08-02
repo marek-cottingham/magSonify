@@ -1,3 +1,11 @@
+"""
+DEVELOPMENT TESTING
+MAY BE INCOMPLETE / NON FUNCTIONAL
+
+Testing continous audio playback with multiproccessing
+"""
+
+
 import context
 context.get()
 
