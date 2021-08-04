@@ -1,13 +1,18 @@
 import setuptools
 
-with open("README.md", "r") as fh:
+with open("README.rst", "r") as fh:
     long_description = fh.read()
 
 
 setuptools.setup(
     name='magSonify',  
     version='0.1',
-    packages=['magSonify','magSonify/wavelets'] ,
+    packages=[
+        'magSonify',
+        'magSonify/sonificationMethods',
+        'magSonify/sonificationMethods/wavelets',
+        'magSonify/devCaching'
+    ] ,
     author="Marek Cottingham",
     author_email="mcottingham@outlook.com",
     description="Package for the sonification of space magnetosphere data",
