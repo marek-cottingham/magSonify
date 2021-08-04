@@ -1,6 +1,6 @@
 
 from .TimeSeries import TimeSeries
-from .DataSet_1D import DataSet_1D, DataSet_1D_placeholder
+from .DataSet_1D import DataSet_1D
 from typing import List
 import numpy as np
 import operator
@@ -44,7 +44,7 @@ class OrbitStore():
 
 class OrbitAnalysis():
     def importFromCdas(self):
-        self.radius = DataSet_1D_placeholder
+        self.radius: DataSet_1D = None
         raise NotImplementedError
 
     def smoothOrbit(self):
