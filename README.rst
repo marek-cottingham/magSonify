@@ -13,8 +13,8 @@ Currently the project provides ready built support for THEMIS satellites only. U
 imports from other satellites by defining their own subclasses.
 
 - Docs: https://magsonify.readthedocs.io/en/latest/src/introduction.html
-- Issue Tracker: https://github.com/TheMuonNeutrino/magSonify/issues
-- Source Code: https://github.com/TheMuonNeutrino/magSonify
+- Issue Tracker: https://github.com/marek-cottingham/magSonify/issues
+- Source Code: https://github.com/marek-cottingham/magSonify/
 
 
 Features
@@ -39,7 +39,7 @@ Installation
 
 .. code:: console
 
-    pip install git+https://github.com/TheMuonNeutrino/magSonify
+    pip install git+https://github.com/marek-cottingham/magSonify/
 
 
 Usage example
