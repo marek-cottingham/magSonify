@@ -13,6 +13,7 @@ Currently the project provides ready built support for THEMIS satellites only. U
 imports from other satellites by defining their own subclasses.
 
 Example of sonification of magnetic field data:
+
 <iframe width="380" height="216" src="https://www.youtube.com/embed/wmAwFIXWMvY" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 - Docs: https://magsonify.readthedocs.io/en/latest/src/introduction.html
