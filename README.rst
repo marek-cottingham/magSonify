@@ -12,6 +12,10 @@ audio. It includes time stretching methods in order to aid sonification of data 
 Currently the project provides ready built support for THEMIS satellites only. Users can specify
 imports from other satellites by defining their own subclasses.
 
+Example of sonification of magnetic field data: https://www.youtube.com/watch?v=wmAwFIXWMvY
+
+<iframe width="380" height="216" src="https://www.youtube.com/embed/wmAwFIXWMvY" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 - Docs: https://magsonify.readthedocs.io/en/latest/src/introduction.html
 - Issue Tracker: https://github.com/marek-cottingham/magSonify/issues
 - Source Code: https://github.com/marek-cottingham/magSonify/
